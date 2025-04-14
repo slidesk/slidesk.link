@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -16,6 +17,7 @@ model User {
   name          String?
   bio           String?
   url           String?
+  avatarUrl     String?
   token         String         @unique
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
