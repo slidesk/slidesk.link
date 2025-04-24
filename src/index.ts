@@ -8,6 +8,7 @@ import mainCSS from "./views/css/main.css" with { type: "text" };
 import user from "./routes/user";
 import upload from "./routes/upload";
 import cronService from "./services/cron";
+import hosted from "./routes/hosted";
 
 const app = new Elysia()
   .use(oauth)
@@ -25,6 +26,7 @@ const app = new Elysia()
   .use(user)
   .use(login)
   .use(upload)
+  .use(hosted)
   .get(
     "/main.css",
     () => new Response(mainCSS, { headers: { "Content-Type": "text/css" } }),
@@ -32,5 +34,5 @@ const app = new Elysia()
   .listen(3000);
 
 console.log(
-  `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,
+  `🦊 Slidesk.link is running at http://${app.server?.hostname}:${app.server?.port}`,
 );
