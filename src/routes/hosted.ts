@@ -2,12 +2,14 @@ import Elysia from "elysia";
 
 const hosted = new Elysia({ prefix: "/s" })
   .get("/:uuid", async ({ params: { uuid } }) => {
-    return new Response(
-      await Bun.file(
-        `${process.cwd()}/presentations/${uuid}/__SLIDESKLINK__/index.html`,
-      ).text(),
-      { headers: { "Content-Type": "text/html" } },
+    const fichier = Bun.file(
+      `${process.cwd()}/presentations/${uuid}/__SLIDESKLINK__/index.html`,
     );
+    if (await fichier.exists())
+      return new Response(await fichier.text(), {
+        headers: { "Content-Type": "text/html" },
+      });
+    return new Response("", { status: 404 });
   })
   .get("/:uuid/*", async ({ params }) => {
     const { uuid } = params;
@@ -16,9 +18,11 @@ const hosted = new Elysia({ prefix: "/s" })
     const fichier = Bun.file(
       `${process.cwd()}/presentations/${uuid}/__SLIDESKLINK__/${file}`,
     );
-    return new Response(await fichier.text(), {
-      headers: { "Content-Type": fichier.type },
-    });
+    if (await fichier.exists())
+      return new Response(await fichier.text(), {
+        headers: { "Content-Type": fichier.type },
+      });
+    return new Response("", { status: 404 });
   })
   .ws("/:uuid/ws", {
     message(ws, message) {
