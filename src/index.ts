@@ -31,6 +31,17 @@ const app = new Elysia()
     "/main.css",
     () => new Response(mainCSS, { headers: { "Content-Type": "text/css" } }),
   )
+  .ws("/s/:uuid/ws", {
+    message(ws, message) {
+      ws.publish(ws.data.params.uuid, message);
+    },
+    open(ws) {
+      ws.subscribe(ws.data.params.uuid);
+    },
+    close(ws) {
+      ws.unsubscribe(ws.data.params.uuid);
+    },
+  })
   .listen(3000);
 
 console.log(

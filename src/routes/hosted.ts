@@ -23,11 +23,6 @@ const hosted = new Elysia({ prefix: "/s" })
         headers: { "Content-Type": fichier.type },
       });
     return new Response("", { status: 404 });
-  })
-  .ws("/:uuid/ws", {
-    message(ws, message) {
-      ws.send(message);
-    },
   });
 
 export default hosted;
