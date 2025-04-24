@@ -13,14 +13,15 @@
     "@bogeychan/elysia-oauth2": "^0.1.0",
     "@elysiajs/static": "^1.2.0",
     "@prisma/client": "^6.6.0",
-    "elysia": "^1.2.25"
+    "elysia": "^1.2.25",
+    "tar": "^7.4.3"
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --target bun --outdir ./dist",
     "start": "NODE_ENV=production bun dist/index.js",
     "test": "bun test",
-    "migrate": "prisma migrate dev --name",
+    "migrate": "bunx prisma migrate dev --name",
     "format": "bunx @biomejs/biome format ./ --write",
     "lint": "bunx @biomejs/biome lint ./ --write"
   }

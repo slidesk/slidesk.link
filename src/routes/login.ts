@@ -1,3 +1,6 @@
+import { Elysia } from "elysia";
+import oauth from "../oauth";
+
 function userPage(user: object, logout: string) {
   const html = `<!DOCTYPE html>
     <html lang="en">
@@ -14,9 +17,6 @@ function userPage(user: object, logout: string) {
 
   return new Response(html, { headers: { "Content-Type": "text/html" } });
 }
-
-import { Elysia } from "elysia";
-import oauth from "../oauth";
 
 const login = new Elysia({ prefix: "/login" })
   .use(oauth)
