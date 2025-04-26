@@ -29,12 +29,6 @@ const login = new Elysia({ prefix: "/login" })
         maxAge: 7 * 86400,
         path: "/",
       });
-      ctx.cookie.id.set({
-        value: dbUser?.id ?? "",
-        httpOnly: true,
-        maxAge: 7 * 86400,
-        path: "/",
-      });
 
       return ctx.redirect("/profile");
     }

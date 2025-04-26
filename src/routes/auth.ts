@@ -9,10 +9,10 @@ const auth = new Elysia({ prefix: "/auth" })
       secret: Bun.env.JWT_SECRET ?? "slidesk.link",
     }),
   )
-  .get("/", async ({ jwt, cookie: { auth, id }, redirect }) => {
+  .get("/", async ({ jwt, cookie: { auth }, redirect }) => {
     const profile = await jwt.verify(auth.value);
-    const token = await getToken(Number(id.value));
     if (!profile) return redirect("/login?back=auth");
+    const token = await getToken(Number(profile.id));
     return redirect(`http://localhost:1337/auth/${token}`);
   });
 
