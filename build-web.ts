@@ -44,3 +44,15 @@ await Bun.write(
       "<a href=/profile>Profile</a></li><li><a href=/exit>Logout</a>",
     ),
 );
+
+await Bun.write(
+  `${process.cwd()}/dist/profile.html`,
+  (
+    await minify.html(
+      await Bun.file(`${process.cwd()}/src/html/profile.html`).text(),
+    )
+  ).replace(
+    "<meta charset=utf-8>",
+    `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
+  ),
+);

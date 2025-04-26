@@ -19,12 +19,16 @@ export default async (userInfo: {
       } while (await checkSlug(userInfo.login));
     }
     return await create({
+      id: undefined,
       name: userInfo.name,
       bio: userInfo.bio ?? "",
       avatarUrl: userInfo.avatar_url,
+      url: "",
       slug: userInfo.login,
       token: Bun.randomUUIDv7(),
       githubId: userInfo.id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
   }
   return dbUser;

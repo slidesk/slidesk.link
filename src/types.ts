@@ -1,5 +1,5 @@
 export type SlideskLinkUser = {
-  id: number;
+  id: number | undefined;
   slug: string;
   name: string | null;
   bio: string | null;
