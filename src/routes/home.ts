@@ -1,8 +1,21 @@
 import { Elysia } from "elysia";
-import homeHTML from "../views/html/home.html" with { type: "text" };
+import { jwt } from "@elysiajs/jwt";
 
-const home = new Elysia().get("/", () => {
-  return new Response(homeHTML, { headers: { "Content-Type": "text/html" } });
-});
+const home = new Elysia()
+  .use(
+    jwt({
+      name: "jwt",
+      secret: Bun.env.JWT_SECRET ?? "slidesk.link",
+    }),
+  )
+  .get("/", async ({ jwt, cookie: { auth } }) => {
+    const profile = await jwt.verify(auth.value);
+    return new Response(
+      Bun.file(`${process.cwd()}/dist/index${profile ? "-logged" : ""}.html`),
+      {
+        headers: { "Content-Type": "text/html" },
+      },
+    );
+  });
 
 export default home;

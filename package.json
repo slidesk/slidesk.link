@@ -4,6 +4,8 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/minify": "^9.1.4",
+    "minify": "^14.0.0",
     "prisma": "^6.6.0"
   },
   "peerDependencies": {
@@ -12,6 +14,7 @@
   "dependencies": {
     "@bogeychan/elysia-oauth2": "^0.1.0",
     "@elysiajs/cron": "^1.2.0",
+    "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/static": "^1.2.0",
     "@prisma/client": "^6.6.0",
     "elysia": "^1.2.25",
@@ -24,6 +27,7 @@
     "test": "bun test",
     "migrate": "bunx prisma migrate dev --name",
     "format": "bunx @biomejs/biome format ./ --write",
-    "lint": "bunx @biomejs/biome lint ./ --write"
+    "lint": "bunx @biomejs/biome lint ./ --write",
+    "web": "bun build-web.ts"
   }
 }

@@ -1,0 +1,123 @@
+:root,
+:host {
+    --pico-font-size: 100%;
+}
+
+body {
+    padding: 8rem 0;
+}
+
+body > header {
+    position: fixed;
+    width: 100vw;
+    top: 0;
+    background-color: var(--pico-background-color);
+    box-shadow: var(--pico-box-shadow);
+    z-index: 2;
+}
+
+body > footer {
+    position: fixed;
+    width: 100vw;
+    bottom: 0;
+    background-color: var(--pico-background-color);
+    box-shadow: var(--pico-box-shadow);
+    z-index: 2;
+}
+
+#backhome {
+    display: flex;
+    align-items: center;
+
+    svg {
+        display: block;
+        width: 2em;
+        height: 2em;
+        margin-right: 0.5em;
+    }
+
+    h1 {
+        margin-bottom: 0;
+    }
+}
+
+h1 span,
+h2 span,
+footer span {
+    opacity: 0.7;
+}
+
+#home {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    width: 75%;
+    padding-top: 2rem;
+    margin: 0 auto;
+
+    figure {
+        width: 50%;
+    }
+
+    div {
+        margin-bottom: 3rem;
+        hgroup {
+            text-align: right;
+        }
+    }
+}
+
+section {
+    margin-top: 4rem;
+
+    pre {
+        width: 50%;
+        margin: 0 auto;
+    }
+}
+
+article#speaker {
+    main {
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+
+        aside {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+
+            img {
+                border-radius: 5% 5% 5% 20%;
+                outline: 0.25rem solid var(--pico-primary);
+                margin-bottom: 1rem;
+                box-shadow: var(--pico-box-shadow);
+            }
+        }
+
+        div {
+            flex-grow: 1;
+
+            hgroup {
+                margin-bottom: 2rem;
+
+                h2 {
+                    font-size: 300%;
+                }
+
+                p {
+                    font-size: 1.5rem !important;
+                    padding-left: 1rem;
+                }
+            }
+        }
+    }
+
+    footer {
+        text-align: right;
+    }
+}
+
+summary h3 {
+    display: inline;
+}

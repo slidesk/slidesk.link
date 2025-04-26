@@ -4,11 +4,13 @@ import staticPlugin from "@elysiajs/static";
 import oauth from "./oauth";
 import login from "./routes/login";
 import home from "./routes/home";
-import mainCSS from "./views/css/main.css" with { type: "text" };
 import user from "./routes/user";
 import upload from "./routes/upload";
 import cronService from "./services/cron";
 import hosted from "./routes/hosted";
+import auth from "./routes/auth";
+import profile from "./routes/profile";
+import exit from "./routes/exit";
 
 const app = new Elysia()
   .use(oauth)
@@ -16,7 +18,7 @@ const app = new Elysia()
   .use(
     cron({
       name: "clean",
-      pattern: "*/10 * * * * *",
+      pattern: "* */10 * * * *",
       run() {
         cronService();
       },
@@ -27,10 +29,9 @@ const app = new Elysia()
   .use(login)
   .use(upload)
   .use(hosted)
-  .get(
-    "/main.css",
-    () => new Response(mainCSS, { headers: { "Content-Type": "text/css" } }),
-  )
+  .use(auth)
+  .use(profile)
+  .use(exit)
   .ws("/s/:uuid/ws", {
     message(ws, message) {
       ws.publish(ws.data.params.uuid, message);

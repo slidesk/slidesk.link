@@ -1,6 +1,5 @@
 import oauth2, {
   github,
-  google,
   type TOAuth2AccessToken,
 } from "@bogeychan/elysia-oauth2";
 
@@ -11,18 +10,12 @@ let globalToken: TOAuth2AccessToken | undefined;
 
 const oauth = oauth2({
   profiles: {
-    // define multiple OAuth 2.0 profiles
     github: {
       provider: github(),
       scope: ["user"],
     },
-    google: {
-      provider: google(),
-      scope: ["https://www.googleapis.com/auth/userinfo.profile"],
-    },
   },
   state: {
-    // custom state verification between requests
     check(_ctx, _name, state) {
       return state === globalState;
     },
@@ -31,7 +24,6 @@ const oauth = oauth2({
     },
   },
   storage: {
-    // storage of users' access tokens is up to you
     get(_ctx, _name) {
       return globalToken;
     },
