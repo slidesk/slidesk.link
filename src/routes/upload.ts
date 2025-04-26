@@ -14,7 +14,7 @@ const upload = new Elysia({
     const user = await checkToken(headers["x-slidesk"]);
     if (!user) return "err: No user found";
     const count = await countByUser(user.id);
-    if (count >= 5) return "err: Too many presentation, wait 72h";
+    if (count >= 5) return "err: Too many presentations, wait 72h";
     const uuid = Bun.randomUUIDv7();
     await addHostedPresentation(uuid, user.id);
     await Bun.write(
