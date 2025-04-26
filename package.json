@@ -4,7 +4,9 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/markdown-it": "^14.1.2",
     "@types/minify": "^9.1.4",
+    "markdown-it": "^14.1.0",
     "minify": "^14.0.0",
     "prisma": "^6.6.0"
   },

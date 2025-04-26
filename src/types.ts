@@ -1,9 +1,12 @@
 export type SlideskLinkUser = {
+  id: number;
   slug: string;
-  name: string;
-  bio?: string;
-  url?: string;
-  avatarUrl?: string;
+  name: string | null;
+  bio: string | null;
+  url: string | null;
+  avatarUrl: string | null;
   token: string;
-  githubId?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  githubId: number | null;
 };
