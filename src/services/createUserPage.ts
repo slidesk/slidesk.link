@@ -55,7 +55,7 @@ export default async (u: SlideskLinkUser) => {
                   ${
                     s.url
                       ? `
-                    <a href="${s.url}" data-toolip="More info" aria-label="More info" target="_blank" rel="noopener">
+                    <a href="${s.url}" data-tooltip="More info" aria-label="More info" target="_blank" rel="noopener">
                       <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -75,7 +75,7 @@ export default async (u: SlideskLinkUser) => {
                   ${
                     s.slides
                       ? `
-                    <a href="${s.slides}" data-toolip="See presentation" aria-label="See presentation" target="_blank" rel="noopener">
+                    <a href="${s.slides}" data-tooltip="See presentation" aria-label="See presentation" target="_blank" rel="noopener">
                       <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -93,7 +93,7 @@ export default async (u: SlideskLinkUser) => {
                   ${
                     s.video
                       ? `
-                    <a href="${s.video}" data-toolip="See video" aria-label="See video" target="_blank" rel="noopener">
+                    <a href="${s.video}" data-tooltip="See video" aria-label="See video" target="_blank" rel="noopener">
                       <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
