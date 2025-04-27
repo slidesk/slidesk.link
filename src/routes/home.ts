@@ -16,6 +16,11 @@ const home = new Elysia()
         headers: { "Content-Type": "text/html" },
       },
     );
+  })
+  .get("/mentions", () => {
+    return new Response(Bun.file(`${process.cwd()}/dist/mentions.html`), {
+      headers: { "Content-Type": "text/html" },
+    });
   });
 
 export default home;

@@ -78,3 +78,15 @@ await Bun.write(
     `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
   ),
 );
+
+await Bun.write(
+  `${process.cwd()}/dist/mentions.html`,
+  (
+    await minify.html(
+      await Bun.file(`${process.cwd()}/src/html/mentions.html`).text(),
+    )
+  ).replace(
+    "<meta charset=utf-8>",
+    `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
+  ),
+);
