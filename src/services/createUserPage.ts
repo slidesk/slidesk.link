@@ -39,7 +39,7 @@ export default async (u: SlideskLinkUser) => {
       <article>
         <details>
             <summary>
-                <h3>
+                <h3 id="t${p.id}">
                     ${p.title}
                 </h3>
             </summary>
