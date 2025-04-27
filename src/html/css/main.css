@@ -76,6 +76,25 @@ section {
     }
 }
 
+@media (max-width: 1250px) {
+    #home {
+        flex-direction: column-reverse;
+
+        figure {
+            width: 100%;
+        }
+
+        div {
+            width: 100%;
+        }
+    }
+    section {
+        pre {
+            width: 100%;
+        }
+    }
+}
+
 article#speaker {
     main {
         display: flex;
