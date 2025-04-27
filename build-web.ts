@@ -3,6 +3,8 @@ import hljs from "highlight.js";
 import { minify } from "minify";
 import mainCSS from "./src/html/css/main.css" with { type: "text" };
 import picoCSS from "./src/html/css/pico.min.css" with { type: "text" };
+import { db } from "./src/db";
+import createUserPage from "./src/services/createUserPage";
 
 const css = picoCSS + mainCSS;
 const hasher = new Bun.CryptoHasher("sha1");
@@ -90,3 +92,9 @@ await Bun.write(
     `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
   ),
 );
+
+const users = await db.user.findMany();
+for await (const u of users) {
+  console.log(u.slug);
+  await createUserPage(u);
+}

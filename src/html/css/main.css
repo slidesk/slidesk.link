@@ -76,25 +76,6 @@ section {
     }
 }
 
-@media (max-width: 1250px) {
-    #home {
-        flex-direction: column-reverse;
-
-        figure {
-            width: 100%;
-        }
-
-        div {
-            width: 100%;
-        }
-    }
-    section {
-        pre {
-            width: 100%;
-        }
-    }
-}
-
 article#speaker {
     main {
         display: flex;
@@ -223,5 +204,43 @@ code.hljs {
     .hljs-meta,
     .hljs-quote {
         color: #979797;
+    }
+}
+
+@media (max-width: 1250px) {
+    #home {
+        flex-direction: column-reverse;
+
+        figure {
+            width: 100%;
+        }
+
+        div {
+            width: 100%;
+        }
+    }
+    section {
+        pre {
+            width: 100%;
+        }
+    }
+
+    article#speaker {
+        main {
+            flex-direction: column;
+
+            > * {
+                width: 100%;
+            }
+
+            aside {
+                align-items: start;
+
+                img {
+                    width: 75%;
+                    margin: 1rem auto 2rem;
+                }
+            }
+        }
     }
 }
