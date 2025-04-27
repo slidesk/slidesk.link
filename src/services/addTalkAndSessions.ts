@@ -4,6 +4,7 @@ import addSession from "../database/session/add";
 import deleteSessions from "../database/session/delete";
 import type { SlideskLinkUser } from "../types";
 import { parse } from "yaml";
+import createUserPage from "./createUserPage";
 
 export default async (yml: string, user: SlideskLinkUser) => {
   const parsed = parse(yml);
@@ -28,4 +29,5 @@ export default async (yml: string, user: SlideskLinkUser) => {
       });
     });
   }
+  await createUserPage(user);
 };

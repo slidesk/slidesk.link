@@ -94,7 +94,10 @@
                         </a>
                     </li>
                 </ul>
-                <ul><li><a href="/exit">Logout</a></li></li></ul>
+                <ul>
+                    <li><a href="#" id="gotomypage">My page</a></li>
+                    <li><a href="/exit">Logout</a></li>
+                </ul>
             </nav>
         </header>
         <main class="container">
@@ -103,38 +106,58 @@
                     <fieldset>
                         <label>
                             Name
-                            <input name="name" placeholder="Your name" autocomplete="name" aria-label="your name" />
+                            <input
+                                name="name"
+                                placeholder="Your name"
+                                autocomplete="name"
+                                aria-label="your name"
+                            />
                         </label>
                     </fieldset>
                     <fieldset>
                         <label>
                             Slug
-                            <input name="slug" placeholder="Your slug/login" autocomplete="nickname" aria-label="your nickname" />
+                            <input
+                                name="slug"
+                                placeholder="Your slug/login"
+                                autocomplete="nickname"
+                                aria-label="your nickname"
+                            />
                         </label>
                     </fieldset>
                     <fieldset>
                         <label>
                             AvatarUrl
-                            <input name="avatarUrl" placeholder="Your avatar url" autocomplete="off" aria-label="url of your avatar" />
+                            <input
+                                name="avatarUrl"
+                                placeholder="Your avatar url"
+                                autocomplete="off"
+                                aria-label="url of your avatar"
+                            />
                         </label>
                     </fieldset>
                     <fieldset>
                         <label>
                             Url
-                            <input name="url" placeholder="Your url" autocomplete="off" aria-label="url of your personal site"/>
+                            <input
+                                name="url"
+                                placeholder="Your url"
+                                autocomplete="off"
+                                aria-label="url of your personal site"
+                            />
                         </label>
                     </fieldset>
                     <fieldset>
                         <label>
                             Bio (markdown)
                             <textarea
-                            name="bio"
-                            placeholder="Write a professional short bio..."
-                            aria-label="Professional short bio"
+                                name="bio"
+                                placeholder="Write a professional short bio..."
+                                aria-label="Professional short bio"
                             ></textarea>
                         </label>
                     </fieldset>
-                    <input type="submit">
+                    <input type="submit" />
                 </form>
             </article>
         </main>
@@ -150,22 +173,27 @@
         </footer>
         <script>
             const autosize = () => {
-              const resize = ($text) => {
-                $text.style.height = "auto";
-                $text.style.height = `${$text.scrollHeight}px`;
-              }
-              const $text = document.querySelector("textarea");
-              $text.setAttribute("rows", 1);
-              resize($text);
-              $text.addEventListener('input', () => resize($text));
-            }
+                const resize = ($text) => {
+                    $text.style.height = "auto";
+                    $text.style.height = `${$text.scrollHeight}px`;
+                };
+                const $text = document.querySelector("textarea");
+                $text.setAttribute("rows", 1);
+                resize($text);
+                $text.addEventListener("input", () => resize($text));
+            };
             autosize();
-            fetch("/profile/data").then((response) => response.json()).then((data) => {
-              Object.entries(data).forEach(([k, v], _) => {
-                document.querySelector(`[name='${k}']`).value = v;
-              });
-              autosize();
-            });
+            fetch("/profile/data")
+                .then((response) => response.json())
+                .then((data) => {
+                    Object.entries(data).forEach(([k, v], _) => {
+                        document.querySelector(`[name='${k}']`).value = v;
+                    });
+                    document
+                        .querySelector("#gotomypage")
+                        .setAttribute("href", `/u/${data.slug}`);
+                    autosize();
+                });
         </script>
     </body>
 </html>
