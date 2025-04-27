@@ -11,7 +11,7 @@ const exit = new Elysia({ prefix: "/exit" })
     }),
   )
   .get("/", async (ctx) => {
-    ctx.cookie.auth.set({});
+    ctx.cookie.auth.remove();
     return ctx.redirect(ctx.profiles().github.logout);
   });
 
