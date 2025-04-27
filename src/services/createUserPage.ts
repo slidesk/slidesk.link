@@ -119,12 +119,13 @@ export default async (u: SlideskLinkUser) => {
     `);
   }
 
-  if (toc.length)
-    html = html.replaceAll(
-      "#TOC",
-      `<nav><ul><li>${toc.join("</li><li>")}</li></ul></nav>`,
-    );
-  else html = html.replaceAll("#TOC", "");
+  // if (toc.length)
+  //   html = html.replaceAll(
+  //     "#TOC",
+  //     `<nav><ul><li>${toc.join("</li><li>")}</li></ul></nav>`,
+  //   );
+  // else
+  html = html.replaceAll("#TOC", "");
 
   if (talks.length) html = html.replaceAll("#TALKS", talks.join(""));
   else html = html.replaceAll("#TALKS", "");
