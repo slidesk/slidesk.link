@@ -125,3 +125,84 @@ article#speaker {
 summary h3 {
     display: inline;
 }
+
+pre code.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+}
+code.hljs {
+    padding: 3px 5px;
+}
+.hljs {
+    background: #f3f3f3;
+    color: #444;
+}
+.hljs-keyword,
+.hljs-link,
+.hljs-literal,
+.hljs-section,
+.hljs-selector-tag {
+    color: #444a;
+}
+.hljs-addition,
+.hljs-attribute,
+.hljs-built_in,
+.hljs-bullet,
+.hljs-name,
+.hljs-string,
+.hljs-symbol,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-title,
+.hljs-type,
+.hljs-variable {
+    color: var(--pico-primary);
+}
+.hljs-comment,
+.hljs-deletion,
+.hljs-meta,
+.hljs-quote {
+    color: #800;
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-literal,
+.hljs-name,
+.hljs-section,
+.hljs-selector-tag,
+.hljs-strong,
+.hljs-title,
+.hljs-type {
+    font-weight: 700;
+}
+.hljs-emphasis {
+    font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+    .hljs {
+        color: #ddd;
+        background: #303030;
+    }
+    .hljs-addition,
+    .hljs-attribute,
+    .hljs-built_in,
+    .hljs-bullet,
+    .hljs-name,
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-template-tag,
+    .hljs-template-variable,
+    .hljs-title,
+    .hljs-type,
+    .hljs-variable {
+        color: var(--pico-primary);
+    }
+    .hljs-comment,
+    .hljs-deletion,
+    .hljs-meta,
+    .hljs-quote {
+        color: #979797;
+    }
+}

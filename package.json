@@ -6,6 +6,8 @@
     "@types/bun": "latest",
     "@types/markdown-it": "^14.1.2",
     "@types/minify": "^9.1.4",
+    "biome": "^0.3.3",
+    "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "minify": "^14.0.0",
     "prisma": "^6.6.0"
@@ -20,7 +22,8 @@
     "@elysiajs/static": "^1.2.0",
     "@prisma/client": "^6.6.0",
     "elysia": "^1.2.25",
-    "tar": "^7.4.3"
+    "tar": "^7.4.3",
+    "yaml": "^2.7.1"
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",

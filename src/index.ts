@@ -11,6 +11,7 @@ import hosted from "./routes/hosted";
 import auth from "./routes/auth";
 import profile from "./routes/profile";
 import exit from "./routes/exit";
+import pushtotalk from "./routes/pushtotalk";
 
 const app = new Elysia()
   .use(oauth)
@@ -32,6 +33,7 @@ const app = new Elysia()
   .use(auth)
   .use(profile)
   .use(exit)
+  .use(pushtotalk)
   .ws("/s/:uuid/ws", {
     message(ws, message) {
       ws.publish(ws.data.params.uuid, message);

@@ -1,6 +1,6 @@
 import checkGithub from "../database/user/checkGithub";
 import checkSlug from "../database/user/checkSlug";
-import create from "../database/user/create";
+import add from "../database/user/add";
 
 export default async (userInfo: {
   name: string;
@@ -18,7 +18,7 @@ export default async (userInfo: {
         userInfo.login = `${u}-${cpt++}`;
       } while (await checkSlug(userInfo.login));
     }
-    return await create({
+    return await add({
       id: undefined,
       name: userInfo.name,
       bio: userInfo.bio ?? "",
