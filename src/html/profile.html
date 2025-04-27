@@ -183,7 +183,7 @@
                 $text.addEventListener("input", () => resize($text));
             };
             autosize();
-            fetch("/profile/data")
+            fetch(`/profile/data?${Date.now()}`)
                 .then((response) => response.json())
                 .then((data) => {
                     Object.entries(data).forEach(([k, v], _) => {
