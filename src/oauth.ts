@@ -34,6 +34,7 @@ const oauth = oauth2({
       globalToken = undefined;
     },
   },
+  host: "slidesk.link",
 });
 
 export default oauth;
