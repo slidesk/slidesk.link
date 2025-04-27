@@ -11,14 +11,16 @@ const home = new Elysia()
   .get("/", async ({ jwt, cookie: { auth } }) => {
     const profile = await jwt.verify(auth.value);
     return new Response(
-      Bun.file(`${process.cwd()}/dist/index${profile ? "-logged" : ""}.html`),
+      Bun.file(
+        `${process.cwd()}/dist-html/index${profile ? "-logged" : ""}.html`,
+      ),
       {
         headers: { "Content-Type": "text/html" },
       },
     );
   })
   .get("/mentions", () => {
-    return new Response(Bun.file(`${process.cwd()}/dist/mentions.html`), {
+    return new Response(Bun.file(`${process.cwd()}/dist-html/mentions.html`), {
       headers: { "Content-Type": "text/html" },
     });
   });

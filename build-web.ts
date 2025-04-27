@@ -36,7 +36,7 @@ sessions:
 const hyml = hljs.highlight(yml, { language: "yaml" }).value;
 
 await Bun.write(
-  `${process.cwd()}/dist/index.html`,
+  `${process.cwd()}/dist-html/index.html`,
   (
     await minify.html(
       await Bun.file(`${process.cwd()}/src/html/index.html`).text(),
@@ -50,7 +50,7 @@ await Bun.write(
 );
 
 await Bun.write(
-  `${process.cwd()}/dist/index-logged.html`,
+  `${process.cwd()}/dist-html/index-logged.html`,
   (
     await minify.html(
       await Bun.file(`${process.cwd()}/src/html/index.html`).text(),
@@ -68,7 +68,7 @@ await Bun.write(
 );
 
 await Bun.write(
-  `${process.cwd()}/dist/profile.html`,
+  `${process.cwd()}/dist-html/profile.html`,
   (
     await minify.html(
       await Bun.file(`${process.cwd()}/src/html/profile.html`).text(),
@@ -80,7 +80,7 @@ await Bun.write(
 );
 
 await Bun.write(
-  `${process.cwd()}/dist/mentions.html`,
+  `${process.cwd()}/dist-html/mentions.html`,
   (
     await minify.html(
       await Bun.file(`${process.cwd()}/src/html/mentions.html`).text(),

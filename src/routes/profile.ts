@@ -15,7 +15,7 @@ const profile = new Elysia({ prefix: "/profile" })
     const profile = await jwt.verify(auth.value);
 
     if (!profile) return redirect("/home");
-    return new Response(Bun.file(`${process.cwd()}/dist/profile.html`), {
+    return new Response(Bun.file(`${process.cwd()}/dist-html/profile.html`), {
       headers: { "Content-Type": "text/html" },
     });
   })
