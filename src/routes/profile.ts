@@ -1,8 +1,8 @@
 import Elysia, { t } from "elysia";
 import { jwt } from "@elysiajs/jwt";
-import checkGithub from "../database/user/checkGithub";
 import update from "../database/user/update";
 import createUserPage from "../services/createUserPage";
+import checkId from "../database/user/checkId";
 
 const profile = new Elysia({ prefix: "/profile" })
   .use(
@@ -24,7 +24,7 @@ const profile = new Elysia({ prefix: "/profile" })
 
     if (!profile) return new Response("Unauthorized", { status: 401 });
 
-    const user = await checkGithub(Number(profile.id));
+    const user = await checkId(Number(profile.id));
 
     return new Response(
       JSON.stringify({
@@ -45,7 +45,7 @@ const profile = new Elysia({ prefix: "/profile" })
       const profile = await jwt.verify(auth.value);
       if (!profile) return new Response("Unauthorized", { status: 401 });
 
-      const user = await checkGithub(Number(profile.id));
+      const user = await checkId(Number(profile.id));
       if (user) {
         await update(user.id, body);
         await createUserPage(user);
