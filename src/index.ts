@@ -12,6 +12,7 @@ import auth from "./routes/auth";
 import profile from "./routes/profile";
 import exit from "./routes/exit";
 import pushtotalk from "./routes/pushtotalk";
+import sitemap from "./routes/sitemap";
 
 const app = new Elysia()
   .use(oauth)
@@ -34,6 +35,7 @@ const app = new Elysia()
   .use(profile)
   .use(exit)
   .use(pushtotalk)
+  .use(sitemap)
   .ws("/s/:uuid/ws", {
     message(ws, message) {
       ws.publish(ws.data.params.uuid, message);
