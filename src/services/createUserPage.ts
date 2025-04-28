@@ -17,10 +17,10 @@ export default async (u: SlideskLinkUser) => {
     .replaceAll("#NAME", u.name)
     .replaceAll("#SLUG", u.slug)
     .replaceAll("#AVATAR", u.avatarUrl);
-  if (u.bio) html = html.replaceAll("#BIO", md.render(u.bio));
-  else html = html.replaceAll("#BIO", "");
   if (u.bio) html = html.replaceAll("#BIO_BRUT", u.bio);
   else html = html.replaceAll("#BIO_BRUT", "");
+  if (u.bio) html = html.replaceAll("#BIO", md.render(u.bio));
+  else html = html.replaceAll("#BIO", "");
   if (u.url)
     html = html.replaceAll(
       "#URL",
