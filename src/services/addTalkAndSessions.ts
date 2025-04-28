@@ -8,7 +8,7 @@ import createUserPage from "./createUserPage";
 
 export default async (yml: string, user: SlideskLinkUser) => {
   const parsed = parse(yml);
-  let pres = await checkTitle(parsed.title);
+  let pres = await checkTitle(parsed.title, Number(user.id));
   if (!pres)
     pres = await addPresentation({
       userId: Number(user.id),
