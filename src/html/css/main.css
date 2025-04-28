@@ -23,6 +23,7 @@ body > footer {
     background-color: var(--pico-background-color);
     box-shadow: var(--pico-box-shadow);
     z-index: 2;
+    font-size: 0.75rem;
 }
 
 #backhome {
