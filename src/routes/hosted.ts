@@ -19,7 +19,7 @@ const hosted = new Elysia({ prefix: "/s" })
       `${process.cwd()}/presentations/${uuid}/__SLIDESKLINK__/${file}`,
     );
     if (await fichier.exists())
-      return new Response(await fichier.text(), {
+      return new Response(await fichier.bytes(), {
         headers: { "Content-Type": fichier.type },
       });
     return new Response("", { status: 404 });
