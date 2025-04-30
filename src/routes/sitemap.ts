@@ -12,7 +12,7 @@ const sitemap = new Elysia()
       <loc>https://slidesk.link/</loc>
     </url>
     <url>
-      <loc>https://slidesk.link/mentions.html</loc>
+      <loc>https://slidesk.link/mentions</loc>
     </url>
     ${[...users]
       .map(
