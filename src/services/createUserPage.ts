@@ -5,6 +5,7 @@ import userPage from "../html/user.html" with { type: "text" };
 import { Glob } from "bun";
 import getByUser from "../database/presentation/getByUser";
 import getByPresentation from "../database/session/getByPresentation";
+import { db } from "../db";
 
 const md = markdownIt({
   xhtmlOut: true,
@@ -120,13 +121,6 @@ export default async (u: SlideskLinkUser) => {
     </article>
     `);
   }
-
-  // if (toc.length)
-  //   html = html.replaceAll(
-  //     "#TOC",
-  //     `<nav><ul><li>${toc.join("</li><li>")}</li></ul></nav>`,
-  //   );
-  // else
   html = html.replaceAll("#TOC", "");
 
   if (talks.length) html = html.replaceAll("#TALKS", talks.join(""));
@@ -143,13 +137,9 @@ export default async (u: SlideskLinkUser) => {
     `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}>`,
   );
   await Bun.write(`${process.cwd()}/users/${u.slug}.html`, html);
+  await db.user.update({
+    data: { updatedAt: new Date() },
+    where: { id: u.id },
+  });
   return html;
 };
-
-/*#TALKS
-<section>
-    <h2>Talks</h2>
-
-
-</section>
-*/

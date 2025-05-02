@@ -12,7 +12,7 @@ const oauth = oauth2({
   profiles: {
     github: {
       provider: github(),
-      scope: ["user"],
+      scope: ["read:user"],
     },
   },
   state: {
