@@ -1,5 +1,6 @@
 import Elysia, { t } from "elysia";
 import { jwt } from "@elysiajs/jwt";
+import { rmSync } from "node:fs";
 import update from "../database/user/update";
 import createUserPage from "../services/createUserPage";
 import checkId from "../database/user/checkId";
@@ -117,6 +118,10 @@ const profile = new Elysia({ prefix: "/profile" })
     );
     if (hosted.includes(id)) {
       await deleteHostedById(id);
+      rmSync(`${process.cwd()}/presentations/${id}`, {
+        recursive: true,
+        force: true,
+      });
       return new Response("OK", { status: 200 });
     }
     return new Response("Unauthorized", { status: 401 });
