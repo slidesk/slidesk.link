@@ -4,7 +4,6 @@ import type { SlideskLinkUser } from "../types";
 import userPage from "../html/user.html" with { type: "text" };
 import { Glob } from "bun";
 import getByUser from "../database/presentation/getByUser";
-import getByPresentation from "../database/session/getByPresentation";
 import { db } from "../db";
 
 const md = markdownIt({
@@ -36,8 +35,6 @@ export default async (u: SlideskLinkUser) => {
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash-icon lucide-hash"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg>
         ${p.title}
     </a>`);
-    const sessions = await getByPresentation(p.id);
-
     talks.push(`
       <article>
         <details>
@@ -49,9 +46,8 @@ export default async (u: SlideskLinkUser) => {
             <blockquote>${md.render(p.abstract ?? "")}</blockquote>
         </details>
         <footer>
-            ${sessions
-              .map(
-                (s, _) => `
+            ${p.Session.map(
+              (s, _) => `
                 <div>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days-icon lucide-calendar-days"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
                   ${new Date(s.date).toDateString()}: ${s.location}
@@ -115,8 +111,7 @@ export default async (u: SlideskLinkUser) => {
                   }
                 </div>
               `,
-              )
-              .join("")}
+            ).join("")}
         </footer>
     </article>
     `);

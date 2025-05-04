@@ -1,7 +1,6 @@
 import { Elysia } from "elysia";
 import { cron } from "@elysiajs/cron";
 import staticPlugin from "@elysiajs/static";
-import oauth from "./oauth";
 import login from "./routes/login";
 import home from "./routes/home";
 import user from "./routes/user";
@@ -15,7 +14,6 @@ import pushtotalk from "./routes/pushtotalk";
 import sitemap from "./routes/sitemap";
 
 const app = new Elysia()
-  .use(oauth)
   .use(staticPlugin())
   .use(
     cron({

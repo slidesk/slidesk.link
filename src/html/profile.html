@@ -163,6 +163,10 @@
                     <input type="submit" />
                 </form>
             </article>
+            <h2>Presentations</h2>
+            <div id="presentations"></div>
+            <h2>Hosted</h2>
+            <div id="hosted"></div>
         </main>
         <footer>
             <nav class="container">
@@ -205,14 +209,90 @@
             fetch(`/profile/data?${Date.now()}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    Object.entries(data).forEach(([k, v], _) => {
+                    Object.entries(data.form).forEach(([k, v], _) => {
                         document.querySelector(`[name='${k}']`).value = v;
                     });
                     document
                         .querySelector("#gotomypage")
-                        .setAttribute("href", `/u/${data.slug}`);
+                        .setAttribute("href", `/u/${data.form.slug}`);
                     autosize();
+                    if (data.presentations.length) {
+                        document.querySelector("#presentations").innerHTML =
+                            data.presentations
+                                .map(
+                                    (p) => `
+                                      <article id="p_${p.id}">
+                                        <header>${p.title}</header>
+                                        <main>
+                                          <blockquote>${p.abstract}</blockquote>
+                                          <table class="striped">
+                                          ${[...p.Session]
+                                              .map(
+                                                  (s) => `
+                                              <tr id="s_${s.id}">
+                                                <td>${new Date(s.date).toDateString()}: ${s.location}</td>
+                                                <td><button class="secondary" onclick="window.removeSession(${s.id});">Delete Session</button></td>
+                                              </tr>
+                                          `,
+                                              )
+                                              .join("")}
+                                          </table>
+                                        </main>
+                                        <footer>
+                                          <button class="secondary" onclick="window.removePresentation(${p.id});">Delete Presentation</button>
+                                        </footer>
+                                      </article>
+                                    `,
+                                )
+                                .join("");
+                    } else {
+                        document.querySelector("#presentations").innerHTML =
+                            "No presentation found";
+                    }
+                    if (data.hosted.length) {
+                        document.querySelector("#hosted").innerHTML = `
+                          <table class="striped">
+                          ${data.hosted
+                              .map(
+                                  (h) => `
+                            <tr id="h_${h.id}">
+                              <td>${h.id}</td>
+                              <td><button class="secondary" onclick="window.removeHosted(${h.id});">Delete Hosted</button></td>
+                            </tr>
+                            `,
+                              )
+                              .join("")}
+                          </table>
+                        `;
+                    } else {
+                        document.querySelector("#hosted").innerHTML =
+                            "No hosted found";
+                    }
                 });
+
+            window.removeSession = (id) => {
+                fetch(`/profile/session/${id}`, {
+                    method: "DELETE",
+                }).then(() => {
+                    document.querySelector(`#s_${id}`).remove();
+                });
+            };
+
+            window.removePresentation = (id) => {
+                fetch(`/profile/presentation/${id}`, {
+                    method: "DELETE",
+                }).then(() => {
+                    document.querySelector(`#p_${id}`).remove();
+                });
+            };
+
+            window.removeHosted = (id) => {
+                fetch(`/profile/hosted/${id}`, {
+                    method: "DELETE",
+                }).then(() => {
+                    document.querySelector(`#h_${id}`).remove();
+                });
+            };
         </script>
     </body>
 </html>

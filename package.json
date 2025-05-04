@@ -16,12 +16,13 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@bogeychan/elysia-oauth2": "^0.1.0",
     "@elysiajs/cron": "^1.2.0",
     "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/static": "^1.2.0",
     "@prisma/client": "^6.6.0",
+    "arctic": "^3.6.0",
     "elysia": "^1.2.25",
+    "elysia-oauth2": "^2.0.0",
     "tar": "^7.4.3",
     "yaml": "^2.7.1"
   },

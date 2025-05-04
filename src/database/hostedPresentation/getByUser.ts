@@ -1,9 +1,6 @@
 import { db } from "../../db";
 
 export default async (userId: number) =>
-  await db.presentation.findMany({
+  await db.hostedPresentation.findMany({
     where: { userId: { equals: userId } },
-    include: {
-      Session: true,
-    },
   });
