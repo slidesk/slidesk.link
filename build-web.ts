@@ -63,7 +63,7 @@ await Bun.write(
       `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
     )
     .replace(
-      "<a href=/login>Login</a>",
+      "<a href=/login/ >Login</a>",
       "<a href=/profile>Profile</a></li><li><a href=/exit>Logout</a>",
     )
     .replace("#YML", hyml),
