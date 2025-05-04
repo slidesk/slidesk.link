@@ -124,7 +124,7 @@
                                 autocomplete="nickname"
                                 aria-label="your nickname"
                                 required
-                                pattern="[A-z0-9\-_]"
+                                pattern="[A-z0-9\-_]+"
                             />
                         </label>
                     </fieldset>
@@ -227,10 +227,15 @@
                                           <blockquote>${p.abstract}</blockquote>
                                           <table class="striped">
                                           ${[...p.Session]
+                                              .sort(
+                                                  (a, b) =>
+                                                      Number(a.date) -
+                                                      Number(b.date),
+                                              )
                                               .map(
                                                   (s) => `
                                               <tr id="s_${s.id}">
-                                                <td>${new Date(s.date).toDateString()}: ${s.location}</td>
+                                                <td>${new Date(s.date).toISOString().split("T")[0]}: ${s.location}</td>
                                                 <td><button class="secondary" onclick="window.removeSession(${s.id});">Delete Session</button></td>
                                               </tr>
                                           `,
