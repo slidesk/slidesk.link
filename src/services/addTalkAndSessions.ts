@@ -18,8 +18,8 @@ export default async (yml: string, user: SlideskLinkUser) => {
     });
   await deleteSessions(pres.id);
   if (parsed.sessions) {
-    [...parsed.sessions].forEach((session, _) => {
-      addSession({
+    for await (const session of [...parsed.sessions]) {
+      await addSession({
         presentationId: pres.id,
         location: session.location,
         url: session.link,
@@ -27,7 +27,7 @@ export default async (yml: string, user: SlideskLinkUser) => {
         slides: session.slides,
         date: new Date(session.date),
       });
-    });
+    }
   }
   await createUserPage(user);
 };
