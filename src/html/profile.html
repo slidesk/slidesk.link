@@ -163,10 +163,10 @@
                     <input type="submit" />
                 </form>
             </article>
-            <h2>Presentations</h2>
-            <div id="presentations"></div>
             <h2>Hosted</h2>
             <div id="hosted"></div>
+            <h2>Presentations</h2>
+            <div id="presentations"></div>
         </main>
         <footer>
             <nav class="container">
@@ -256,7 +256,7 @@
                               .map(
                                   (h) => `
                             <tr id="h_${h.id}">
-                              <td>${h.id}</td>
+                              <td><a href="https://slidesk.link/s/${h.id}" target="_blank">${h.id}</a></td>
                               <td><button class="secondary" onclick="window.removeHosted('${h.id}');">Delete Hosted</button></td>
                             </tr>
                             `,
