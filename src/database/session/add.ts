@@ -7,4 +7,5 @@ export default async (session: {
   video?: string;
   url?: string;
   slides?: string;
+  status: number;
 }) => await db.session.create({ data: session });

@@ -46,6 +46,7 @@ model Session {
   slides         String?
   url            String?
   video          String?
+  status         Int          @default(1)
   date           DateTime
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

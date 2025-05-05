@@ -19,6 +19,11 @@ export default async (yml: string, user: SlideskLinkUser) => {
   await deleteSessions(pres.id);
   if (parsed.sessions) {
     for await (const session of [...parsed.sessions]) {
+      let status = 1;
+      if (typeof session.status !== "undefined") {
+        if (session.status === "rejected") status = 0;
+        else if (session.status === "declined") status = 2;
+      }
       await addSession({
         presentationId: pres.id,
         location: session.location,
@@ -26,6 +31,7 @@ export default async (yml: string, user: SlideskLinkUser) => {
         video: session.video,
         slides: session.slides,
         date: new Date(session.date),
+        status,
       });
     }
   }

@@ -245,3 +245,19 @@ code.hljs {
         }
     }
 }
+
+.icon-status {
+    float: right;
+}
+
+.status-0 {
+    color: #d93526;
+}
+
+.status-1 {
+    color: #398712;
+}
+
+.status-2 {
+    color: #ff9500;
+}
