@@ -257,3 +257,7 @@ code.hljs {
 .status-2 {
     color: #ff9500;
 }
+
+.icon-status {
+    margin-right: 0.5rem;
+}
