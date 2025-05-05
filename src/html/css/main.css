@@ -261,3 +261,9 @@ code.hljs {
 .status-2 {
     color: #ff9500;
 }
+
+article footer div::after {
+    content: "";
+    clear: both;
+    display: block;
+}
