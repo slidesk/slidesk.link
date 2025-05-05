@@ -246,10 +246,6 @@ code.hljs {
     }
 }
 
-.icon-status {
-    float: right;
-}
-
 .status-0 {
     color: #d93526;
 }
@@ -260,10 +256,4 @@ code.hljs {
 
 .status-2 {
     color: #ff9500;
-}
-
-article footer div::after {
-    content: "";
-    clear: both;
-    display: block;
 }
