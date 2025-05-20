@@ -98,7 +98,7 @@ export default async (u: SlideskLinkUser) => {
 			.slice(0, 5)
 			.map(
 				(s) =>
-					`<li><a href="t${s.presentationId}">${new Date(s.date).toISOString().split("T")[0]}: ${s.location} | ${pres[s.presentationId]}</a></li>`,
+					`<li><a href="#t${s.presentationId}">${new Date(s.date).toISOString().split("T")[0]}: ${s.location} | ${pres[s.presentationId]}</a></li>`,
 			)
 			.join("")}</ul>`,
 	);
