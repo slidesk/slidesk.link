@@ -93,7 +93,7 @@ export default async (u: SlideskLinkUser) => {
 	html = html.replaceAll(
 		"#TOC",
 		sessions.length
-			? `<p>Last talk(s)</p><ul id="toc">${[...sessions]
+			? `<span><b>Last talk(s):</b></span><ul id="toc">${[...sessions]
 					.filter((s) => s.status === 1)
 					.sort((a, b) => Number(b.date) - Number(a.date))
 					.slice(0, 5)
