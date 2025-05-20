@@ -261,3 +261,9 @@ code.hljs {
 .icon-status {
     margin-right: 0.5rem;
 }
+
+#toc {
+    li {
+        margin-bottom: 0;
+    }
+}
