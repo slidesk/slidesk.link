@@ -92,15 +92,17 @@ export default async (u: SlideskLinkUser) => {
 	}
 	html = html.replaceAll(
 		"#TOC",
-		`<ul id="toc">${[...sessions]
-			.filter((s) => s.status === 1)
-			.sort((a, b) => Number(b.date) - Number(a.date))
-			.slice(0, 5)
-			.map(
-				(s) =>
-					`<li><a href="#t${s.presentationId}">${new Date(s.date).toISOString().split("T")[0]}: ${s.location} | ${pres[s.presentationId]}</a></li>`,
-			)
-			.join("")}</ul>`,
+		sessions.length
+			? `<p>Last talk(s)</p><ul id="toc">${[...sessions]
+					.filter((s) => s.status === 1)
+					.sort((a, b) => Number(b.date) - Number(a.date))
+					.slice(0, 5)
+					.map(
+						(s) =>
+							`<li><a href="#t${s.presentationId}">${new Date(s.date).toISOString().split("T")[0]}: ${s.location} | ${pres[s.presentationId]}</a></li>`,
+					)
+					.join("")}</ul>`
+			: "",
 	);
 
 	if (talks.length) html = html.replaceAll("#TALKS", talks.join(""));
