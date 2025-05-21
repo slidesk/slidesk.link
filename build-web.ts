@@ -29,7 +29,7 @@ sessions:
     link: https://www.your-event.tld/path/to/your/program
     slides: https://your.hosted.slides.tld
     video: https://www.your-video-provider.tld/path/to/your/video
-    status: accepted | rejected | declined
+    status: accepted | rejected | declined | pending
   - date: 2025-03-12
     location: Another nice meetup
     link: https://www.your-event.tld/path/to/your/program
