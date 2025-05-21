@@ -23,6 +23,7 @@ export default async (yml: string, user: SlideskLinkUser) => {
       if (typeof session.status !== "undefined") {
         if (session.status === "rejected") status = 0;
         else if (session.status === "declined") status = 2;
+        else if (session.status === "pending") status = 3;
       }
       await addSession({
         presentationId: pres.id,
