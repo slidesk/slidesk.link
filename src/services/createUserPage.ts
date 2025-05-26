@@ -1,6 +1,6 @@
 import markdownIt from "markdown-it";
 import { minify } from "minify";
-import type { SlideskLinkUser } from "../types";
+import type { SlideskLinkSession, SlideskLinkUser } from "../types";
 import userPage from "../html/user.html" with { type: "text" };
 import { Glob } from "bun";
 import getByUser from "../database/presentation/getByUser";
@@ -27,7 +27,14 @@ export default async (u: SlideskLinkUser) => {
       `<a href="${u.url}" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-icon lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>${u.url}</a>`,
     );
   else html = html.replaceAll("#URL", "");
-  const presentations = await getByUser(Number(u.id));
+  const getSessionDate = (session: SlideskLinkSession) =>
+    session.status === 1 ? new Date(session.date).getTime() : 0;
+  const getLastDate = (sessions: SlideskLinkSession[] | undefined) =>
+    sessions?.sort((a, b) => getSessionDate(b) - getSessionDate(a))[0].date ??
+    0;
+  const presentations = (await getByUser(Number(u.id)))?.sort((a, b) =>
+    getLastDate(a.Session) > getLastDate(b.Session) ? -1 : 1,
+  );
   const talks: string[] = [];
   const iconStatus = [
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-x-icon lucide-ticket-x"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9.5 14.5 5-5"/><path d="m9.5 9.5 5 5"/></svg>',
