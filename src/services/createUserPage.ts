@@ -67,7 +67,7 @@ export default async (u: SlideskLinkUser) => {
             <blockquote>${md.render(p.abstract ?? "")}</blockquote>
         </details>
         <footer>
-            ${p.Session.sort((a, b) => Number(a.date) - Number(b.date))
+            ${p.Session.sort((a, b) => Number(b.date) - Number(a.date))
               .map(
                 (s, _) => `
                 <div>
