@@ -12,18 +12,22 @@ datasource db {
 }
 
 model User {
-  id                 Int                  @id @default(autoincrement())
-  slug               String               @unique
-  name               String?
-  bio                String?
-  url                String?
-  avatarUrl          String?
-  token              String               @unique
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  presentations      Presentation[]
-  githubId           Int?
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  name      String?
+  bio       String?
+  url       String?
+  avatarUrl String?
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  githubId  Int?
+
+  Presentations      Presentation[]
   HostedPresentation HostedPresentation[]
+  Plugin             Plugin[]
+  Component          Component[]
+  Theme              Theme[]
 }
 
 model Presentation {
@@ -57,4 +61,25 @@ model HostedPresentation {
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime @default(now())
+}
+
+model Plugin {
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  slug   String @unique
+  tags   String
+}
+
+model Component {
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  slug   String @unique
+  tags   String
+}
+
+model Theme {
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  slug   String @unique
+  tags   String
 }

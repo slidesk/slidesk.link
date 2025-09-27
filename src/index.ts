@@ -1,17 +1,18 @@
-import { Elysia } from "elysia";
 import { cron } from "@elysiajs/cron";
 import staticPlugin from "@elysiajs/static";
-import login from "./routes/login";
-import home from "./routes/home";
-import user from "./routes/user";
-import upload from "./routes/upload";
-import cronService from "./services/cron";
-import hosted from "./routes/hosted";
+import { Elysia } from "elysia";
+import addons from "./routes/addons";
 import auth from "./routes/auth";
-import profile from "./routes/profile";
 import exit from "./routes/exit";
+import home from "./routes/home";
+import hosted from "./routes/hosted";
+import login from "./routes/login";
+import profile from "./routes/profile";
 import pushtotalk from "./routes/pushtotalk";
 import sitemap from "./routes/sitemap";
+import upload from "./routes/upload";
+import user from "./routes/user";
+import cronService from "./services/cron";
 
 const app = new Elysia()
   .use(staticPlugin())
@@ -34,6 +35,7 @@ const app = new Elysia()
   .use(exit)
   .use(pushtotalk)
   .use(sitemap)
+  .use(addons)
   .ws("/s/:uuid/ws", {
     message(ws, message) {
       ws.publish(ws.data.params.uuid, message);

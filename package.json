@@ -9,22 +9,22 @@
     "biome": "^0.3.3",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
-    "minify": "^14.0.0",
-    "prisma": "^6.7.0"
+    "minify": "^14.1.0",
+    "prisma": "^6.14.0"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@elysiajs/cron": "^1.2.0",
-    "@elysiajs/jwt": "^1.2.0",
-    "@elysiajs/static": "^1.2.0",
-    "@prisma/client": "^6.7.0",
-    "arctic": "^3.6.0",
-    "elysia": "^1.2.25",
-    "elysia-oauth2": "^2.0.0",
+    "@elysiajs/cron": "^1.3.0",
+    "@elysiajs/jwt": "^1.3.3",
+    "@elysiajs/static": "^1.3.0",
+    "@prisma/client": "^6.14.0",
+    "arctic": "^3.7.0",
+    "elysia": "^1.3.20",
+    "elysia-oauth2": "^2.1.0",
     "tar": "^7.4.3",
-    "yaml": "^2.7.1"
+    "yaml": "^2.8.1"
   },
   "scripts": {
     "dev": "bun --watch src/index.ts",
