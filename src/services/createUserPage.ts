@@ -3,7 +3,8 @@ import { minify } from "minify";
 import type { SlideskLinkSession, SlideskLinkUser } from "../types";
 import userPage from "../html/user.html" with { type: "text" };
 import { Glob } from "bun";
-import getByUser from "../database/presentation/getByUser";
+import pluginGetByUser from "../database/plugin/getByUser";
+import presentationGetByUser from "../database/presentation/getByUser";
 import { db } from "../db";
 
 const md = markdownIt({
@@ -32,8 +33,8 @@ export default async (u: SlideskLinkUser) => {
   const getLastDate = (sessions: SlideskLinkSession[] | undefined) =>
     sessions?.sort((a, b) => getSessionDate(b) - getSessionDate(a))[0].date ??
     0;
-  const presentations = (await getByUser(Number(u.id)))?.sort((a, b) =>
-    getLastDate(a.Session) > getLastDate(b.Session) ? -1 : 1,
+  const presentations = (await presentationGetByUser(Number(u.id)))?.sort(
+    (a, b) => (getLastDate(a.Session) > getLastDate(b.Session) ? -1 : 1),
   );
   const talks: string[] = [];
   const iconStatus = [
@@ -112,8 +113,65 @@ export default async (u: SlideskLinkUser) => {
       : "",
   );
 
-  if (talks.length) html = html.replaceAll("#TALKS", talks.join(""));
+  //#TALKS
+  if (talks.length)
+    html = html.replaceAll(
+      "#TALKS",
+      `
+    <section>
+      <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></svg>
+          Talks
+        </h3>
+        <p>
+          <button onclick="window.viewRejecteds()">
+              View rejected sessions
+          </button>
+        </p>
+      </div>
+      ${talks.join("")}
+    </section>
+  `,
+    );
   else html = html.replaceAll("#TALKS", "");
+
+  //#PLUGINS
+  const plugins = await pluginGetByUser(u.id!);
+  if (plugins.length) {
+    const pluginHTML = `
+<section>
+  <h3>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
+    Plugins
+  </h3>
+  ${plugins
+    .map(
+      (plugin) => `
+    <article>
+      <details>
+        <summary>
+            <h3 id="p${plugin.slug}">
+                ${plugin.slug}
+            </h3>
+        </summary>
+        <blockquote>${md.render(plugin.description ?? "")}</blockquote>
+      </details>
+      <footer>
+        <code>slidesk plugin install @${u.slug}/${plugin.slug}</code>
+      </footer>
+    </article>`,
+    )
+    .join("")}
+</section>
+    `;
+    html = html.replace("#PLUGINS", pluginHTML);
+  } else html = html.replace("#PLUGINS", "");
+
+  //#COMPONENTS
+  //<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-toy-brick-icon lucide-toy-brick"><rect width="18" height="12" x="3" y="8" rx="1"/><path d="M10 8V5c0-.6-.4-1-1-1H6a1 1 0 0 0-1 1v3"/><path d="M19 8V5c0-.6-.4-1-1-1h-3a1 1 0 0 0-1 1v3"/></svg>
+  //#THEMES
+  //<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette-icon lucide-palette"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
 
   html = await minify.html(html);
   const glob = new Glob("*.css");

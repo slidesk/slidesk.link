@@ -64,22 +64,25 @@ model HostedPresentation {
 }
 
 model Plugin {
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int
-  slug   String @unique
-  tags   String
+  user        User   @relation(fields: [userId], references: [id])
+  userId      Int
+  slug        String @unique
+  tags        String
+  description String @default("")
 }
 
 model Component {
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int
-  slug   String @unique
-  tags   String
+  user        User   @relation(fields: [userId], references: [id])
+  userId      Int
+  slug        String @unique
+  tags        String
+  description String @default("")
 }
 
 model Theme {
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int
-  slug   String @unique
-  tags   String
+  user        User   @relation(fields: [userId], references: [id])
+  userId      Int
+  slug        String @unique
+  tags        String
+  description String @default("")
 }

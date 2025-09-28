@@ -6,6 +6,7 @@ import pluginUpsert from "../database/plugin/upsert";
 import themeUpsert from "../database/theme/upsert";
 import checkToken from "../database/user/checkToken";
 import checkSlug from "../database/user/checkSlug";
+import createUserPage from "../services/createUserPage";
 
 const addons = new Elysia({
   prefix: "/addons",
@@ -30,6 +31,7 @@ const addons = new Elysia({
             body.name,
             user.id,
             (JSON.parse(body.json).tags ?? []).join("|"),
+            body.desc,
           );
           break;
         case "component":
@@ -37,6 +39,7 @@ const addons = new Elysia({
             body.name,
             user.id,
             (JSON.parse(body.json).tags ?? []).join("|"),
+            body.desc,
           );
           break;
         case "theme":
@@ -44,9 +47,11 @@ const addons = new Elysia({
             body.name,
             user.id,
             (JSON.parse(body.json).tags ?? []).join("|"),
+            body.desc,
           );
           break;
       }
+      await createUserPage(user);
       return new Response("", { status: 201 });
     },
     {
@@ -55,6 +60,7 @@ const addons = new Elysia({
         type: t.String(),
         name: t.String(),
         json: t.String(),
+        desc: t.String(),
       }),
     },
   )
