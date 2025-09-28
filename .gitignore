@@ -8,3 +8,4 @@ presentations/*
 users/*
 !users/.gitkeep
 public/*.css
+dist-html

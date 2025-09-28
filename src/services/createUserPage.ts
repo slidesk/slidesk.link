@@ -13,10 +13,10 @@ const md = markdownIt({
 });
 
 export default async (u: SlideskLinkUser) => {
-  let html = userPage
-    .replaceAll("#NAME", u.name)
+  let html = `${userPage}`
+    .replaceAll("#NAME", u.name ?? "")
     .replaceAll("#SLUG", u.slug)
-    .replaceAll("#AVATAR", u.avatarUrl);
+    .replaceAll("#AVATAR", u.avatarUrl ?? "");
   if (u.bio) html = html.replaceAll("#BIO_BRUT", u.bio);
   else html = html.replaceAll("#BIO_BRUT", "");
   if (u.bio) html = html.replaceAll("#BIO", md.render(u.bio));
@@ -70,7 +70,7 @@ export default async (u: SlideskLinkUser) => {
             ${p.Session.sort((a, b) => Number(b.date) - Number(a.date))
               .map(
                 (s, _) => `
-                <div>
+                <div style="${s.status === 0 ? "display: none" : ""}">
                   <span class="icon-status status-${s.status}" data-tooltip="${textStatus[s.status]}">${iconStatus[s.status]}</span>
                   ${iconCalendar}
                   ${new Date(s.date).toISOString().split("T")[0]}: ${s.location}
