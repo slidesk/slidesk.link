@@ -9,3 +9,9 @@ users/*
 !users/.gitkeep
 public/*.css
 dist-html
+plugins/*
+!plugins/.gitkeep
+components/*
+!components/.gitkeep
+themes/*
+!themes/.gitkeep
