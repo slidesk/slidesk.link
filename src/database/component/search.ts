@@ -1,7 +1,7 @@
 import { db } from "../../db";
 
 export default async (search: string) =>
-  await db.plugin.findMany({
+  await db.component.findMany({
     where: {
       OR: [{ slug: { contains: search } }, { tags: { contains: search } }],
     },

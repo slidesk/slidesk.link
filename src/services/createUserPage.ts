@@ -14,6 +14,16 @@ const md = markdownIt({
   typographer: true,
 });
 
+const extractHeaderComment = (source: string) => {
+  const match = source.match(/\/\*\*([\s\S]*?)\*\//);
+  if (!match) return "";
+  return match[1]
+    .split("\n")
+    .map((line) => line.replace(/^\s*\* ?/, "").trimEnd())
+    .join("\n")
+    .trim();
+};
+
 export default async (u: SlideskLinkUser) => {
   let html = `${userPage}`
     .replaceAll("#NAME", u.name ?? "")
@@ -192,6 +202,7 @@ export default async (u: SlideskLinkUser) => {
             ${component.slug}
         </h3>
       </header>
+      <div>${md.render(extractHeaderComment(component.description ?? ""))}</div>
       <footer>
         <code>slidesk component install @${u.slug}/${component.slug}</code>
         <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin component @${u.slug}/${component.slug}');return false;">

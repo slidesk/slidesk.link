@@ -1,4 +1,6 @@
 import { Elysia, t } from "elysia";
+import componentGetByUserAndSlug from "../database/component/getByUserAndSlug";
+import componentSearch from "../database/component/search";
 import componentUpsert from "../database/component/upsert";
 import pluginGetByUserAndSlug from "../database/plugin/getByUserAndSlug";
 import pluginSearch from "../database/plugin/search";
@@ -28,25 +30,31 @@ const addons = new Elysia({
       switch (body.type) {
         case "plugin":
           await pluginUpsert(
-            body.name,
+            body.name.toLowerCase(),
             user.id,
-            (JSON.parse(body.json).tags ?? []).join("|"),
+            (JSON.parse(body.json).tags ?? [])
+              .map((t: string) => t.toLowerCase())
+              .join("|"),
             body.desc,
           );
           break;
         case "component":
           await componentUpsert(
-            body.name,
+            body.name.toLowerCase(),
             user.id,
-            (JSON.parse(body.json).tags ?? []).join("|"),
+            (JSON.parse(body.json).tags ?? [])
+              .map((t: string) => t.toLowerCase())
+              .join("|"),
             body.desc,
           );
           break;
         case "theme":
           await themeUpsert(
-            body.name,
+            body.name.toLowerCase(),
             user.id,
-            (JSON.parse(body.json).tags ?? []).join("|"),
+            (JSON.parse(body.json).tags ?? [])
+              .map((t: string) => t.toLowerCase())
+              .join("|"),
             body.desc,
           );
           break;
@@ -65,6 +73,8 @@ const addons = new Elysia({
     },
   )
   .get("/search/:kind/:search", async ({ params: { kind, search } }) => {
+    if (!["plugin", "component", "theme"].includes(kind))
+      return new Response("Wrong kind of asset", { status: 403 });
     let finds: {
       user: {
         slug: string;
@@ -74,7 +84,10 @@ const addons = new Elysia({
     }[] = [];
     switch (kind) {
       case "plugin":
-        finds = await pluginSearch(search);
+        finds = await pluginSearch(search.toLowerCase());
+        break;
+      case "component":
+        finds = await componentSearch(search.toLowerCase());
         break;
     }
     if (finds.length === 0) return new Response("not found", { status: 404 });
@@ -94,9 +107,16 @@ const addons = new Elysia({
             return Bun.file(
               `${process.cwd()}/plugins/${plugin.userId}/${plugin.slug}.tgz`,
             );
-          } else {
-            return new Response("Plugin not found", { status: 404 });
           }
+          return new Response("Plugin not found", { status: 404 });
+        case "component":
+          const component = await componentGetByUserAndSlug(_user.id, name);
+          if (component) {
+            return Bun.file(
+              `${process.cwd()}/components/${component.userId}/${component.slug}.tgz`,
+            );
+          }
+          return new Response("Component not found", { status: 404 });
       }
     },
   );
