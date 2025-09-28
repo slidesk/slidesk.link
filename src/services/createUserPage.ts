@@ -70,14 +70,12 @@ export default async (u: SlideskLinkUser) => {
     pres[p.id] = p.title;
     talks.push(`
       <article>
-        <details>
-            <summary>
-                <h3 id="t${p.id}">
-                    ${p.title}
-                </h3>
-            </summary>
-            <blockquote>${md.render(p.abstract ?? "")}</blockquote>
-        </details>
+        <header>
+          <h3 id="t${p.id}">
+              ${p.title}
+          </h3>
+        </header>
+        <div>${md.render(p.abstract ?? "")}</div>
         <footer>
             ${p.Session.sort((a, b) => Number(b.date) - Number(a.date))
               .map(
