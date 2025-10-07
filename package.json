@@ -34,6 +34,7 @@
     "migrate": "bunx prisma migrate dev --name",
     "format": "bunx @biomejs/biome format ./ --write",
     "lint": "bunx @biomejs/biome lint ./ --write",
-    "web": "bun build-web.ts"
+    "web": "bun build-web.ts",
+    "apply_prod_migrations": "bunx prisma db push"
   }
 }
