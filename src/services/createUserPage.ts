@@ -183,7 +183,9 @@ export default async (u: SlideskLinkUser) => {
   } else html = html.replace("#PLUGINS", "");
 
   //#COMPONENTS
-  const components = await componentGetByUser(u.id!);
+  const components = (await componentGetByUser(u.id!)).toSorted((a, b) =>
+    a.slug.localeCompare(b.slug),
+  );
   if (components.length) {
     html = html.replace(
       "#COMPONENTS",
