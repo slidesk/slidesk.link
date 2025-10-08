@@ -134,7 +134,7 @@ export default async (u: SlideskLinkUser) => {
           Talks
         </h2>
         <p>
-          <button onclick="window.viewRejecteds()">
+          <button id="btn_viewrejecteds" onclick="window.viewRejecteds()">
               View rejected sessions
           </button>
         </p>
