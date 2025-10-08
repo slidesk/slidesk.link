@@ -167,7 +167,14 @@ export default async (u: SlideskLinkUser) => {
             ${plugin.slug}
         </h3>
       </header>
-      <div>${md.render(plugin.description ?? "")}</div>
+      <div>${md
+        .render(plugin.description ?? "")
+        .replace("<h1", "<h4")
+        .replace("</h1", "</h4")
+        .replace("<h2", "<h5")
+        .replace("</h2", "</h5")
+        .replace("<h3", "<h6")
+        .replace("</h3", "</h6")}</div>
       <footer>
         <code>slidesk plugin install @${u.slug}/${plugin.slug}</code>
         <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin install @${u.slug}/${plugin.slug}');return false;">
@@ -204,7 +211,14 @@ export default async (u: SlideskLinkUser) => {
             ${component.slug}
         </h3>
       </header>
-      <div>${md.render(extractHeaderComment(component.description ?? ""))}</div>
+      <div>${md
+        .render(extractHeaderComment(component.description ?? ""))
+        .replace("<h1", "<h4")
+        .replace("</h1", "</h4")
+        .replace("<h2", "<h5")
+        .replace("</h2", "</h5")
+        .replace("<h3", "<h6")
+        .replace("</h3", "</h6")}</div>
       <footer>
         <code>slidesk component install @${u.slug}/${component.slug}</code>
         <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin component @${u.slug}/${component.slug}');return false;">
