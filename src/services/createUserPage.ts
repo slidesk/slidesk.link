@@ -146,7 +146,9 @@ export default async (u: SlideskLinkUser) => {
   else html = html.replaceAll("#TALKS", "");
 
   //#PLUGINS
-  const plugins = await pluginGetByUser(u.id!);
+  const plugins = (await pluginGetByUser(u.id!)).toSorted((a, b) =>
+    a.slug.localeCompare(b.slug),
+  );
   if (plugins.length) {
     html = html.replace(
       "#PLUGINS",
