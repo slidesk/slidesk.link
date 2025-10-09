@@ -134,7 +134,7 @@
             <section>
                 <h2>Add your plugin to the HUB</h2>
                 <pre>
-                    <code>slidesk plugin push <NAME></code>
+                    <code>slidesk plugin push NAME</code>
                 </pre>
                 <p>WARNING: your plugin will named after your pseudo.</p>
                 <pre>
@@ -145,10 +145,13 @@
                     <code>slidesk plugin install @gouz/xterm</code>
                 </pre>
                 <p>and the folder will be rename <code>@gouz__xterm</code>.</p>
-                <p>So, to share your plugin, you have to name correctly files in <code>addScripts</code>, <code>addStyles</code>, ...</p>
+                <p>
+                    So, to share your plugin, you have to name correctly files
+                    in <code>addScripts</code>, <code>addStyles</code>, ... into
+                    your <code>plugin.json</code>:
+                </p>
                 <pre>
-                    <code>
-{
+                    <code>{
     "addScripts": [
         "plugins/@gouz__xterm/xterm.lib.js",
         "plugins/@gouz__xterm/xterm.js"
@@ -160,8 +163,7 @@
     "addWS": "plugins/@gouz__xterm/xterm.ws.mjs",
     "onSlideChange": "window.slidesk.xtemInit();",
     "tags": ["xterm", "terminal", "shell"]
-}
-                    </code>
+}</code>
                 </pre>
             </section>
         </main>
