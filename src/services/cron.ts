@@ -1,6 +1,6 @@
 import { rmSync } from "node:fs";
-import { db } from "../db";
 import deleteHostedPresentations from "../database/hostedPresentation/deletes";
+import { db } from "../db";
 
 export default async () => {
   const ids = (
@@ -10,7 +10,7 @@ export default async () => {
     })
   ).map((i) => i.id);
   ids.forEach((id, _) => {
-    rmSync(`${process.cwd()}/presentations/${id}`, {
+    rmSync(`${process.cwd()}/app/presentations/${id}`, {
       recursive: true,
       force: true,
     });

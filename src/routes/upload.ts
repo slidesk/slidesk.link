@@ -18,14 +18,16 @@ const upload = new Elysia({
     const uuid = Bun.randomUUIDv7();
     await addHostedPresentation(uuid, user.id);
     await Bun.write(
-      `${process.cwd()}/presentations/${uuid}/link.tgz`,
+      `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
       body.file,
     );
     await extract({
-      file: `${process.cwd()}/presentations/${uuid}/link.tgz`,
-      C: `${process.cwd()}/presentations/${uuid}`,
+      file: `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
+      C: `${process.cwd()}/app/presentations/${uuid}`,
     });
-    await Bun.file(`${process.cwd()}/presentations/${uuid}/link.tgz`).unlink();
+    await Bun.file(
+      `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
+    ).unlink();
     return uuid;
   },
   {

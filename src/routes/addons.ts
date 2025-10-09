@@ -6,8 +6,8 @@ import pluginGetByUserAndSlug from "../database/plugin/getByUserAndSlug";
 import pluginSearch from "../database/plugin/search";
 import pluginUpsert from "../database/plugin/upsert";
 import themeUpsert from "../database/theme/upsert";
-import checkToken from "../database/user/checkToken";
 import checkSlug from "../database/user/checkSlug";
+import checkToken from "../database/user/checkToken";
 import createUserPage from "../services/createUserPage";
 
 const addons = new Elysia({
@@ -24,7 +24,7 @@ const addons = new Elysia({
       if (!["plugin", "component", "theme"].includes(body.type))
         return new Response("err: No type allowed", { status: 403 });
       await Bun.write(
-        `${process.cwd()}/${body.type}s/${user.id}/${body.name}.tgz`,
+        `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,
         body.file,
       );
       switch (body.type) {
@@ -101,22 +101,24 @@ const addons = new Elysia({
       const _user = await checkSlug(user);
       if (!_user) return new Response("User not found", { status: 404 });
       switch (kind) {
-        case "plugin":
+        case "plugin": {
           const plugin = await pluginGetByUserAndSlug(_user.id, name);
           if (plugin) {
             return Bun.file(
-              `${process.cwd()}/plugins/${plugin.userId}/${plugin.slug}.tgz`,
+              `${process.cwd()}/app/plugins/${plugin.userId}/${plugin.slug}.tgz`,
             );
           }
           return new Response("Plugin not found", { status: 404 });
-        case "component":
+        }
+        case "component": {
           const component = await componentGetByUserAndSlug(_user.id, name);
           if (component) {
             return Bun.file(
-              `${process.cwd()}/components/${component.userId}/${component.slug}.tgz`,
+              `${process.cwd()}/app/components/${component.userId}/${component.slug}.tgz`,
             );
           }
           return new Response("Component not found", { status: 404 });
+        }
       }
     },
   );

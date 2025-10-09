@@ -1,12 +1,12 @@
+import { Glob } from "bun";
 import markdownIt from "markdown-it";
 import { minify } from "minify";
-import type { SlideskLinkSession, SlideskLinkUser } from "../types";
-import userPage from "../html/user.html" with { type: "text" };
-import { Glob } from "bun";
 import componentGetByUser from "../database/component/getByUser";
 import pluginGetByUser from "../database/plugin/getByUser";
 import presentationGetByUser from "../database/presentation/getByUser";
 import { db } from "../db";
+import userPage from "../html/user.html" with { type: "text" };
+import type { SlideskLinkSession, SlideskLinkUser } from "../types";
 
 const md = markdownIt({
   xhtmlOut: true,
@@ -146,7 +146,7 @@ export default async (u: SlideskLinkUser) => {
   else html = html.replaceAll("#TALKS", "");
 
   //#PLUGINS
-  const plugins = (await pluginGetByUser(u.id!)).toSorted((a, b) =>
+  const plugins = (await pluginGetByUser(u.id as number)).toSorted((a, b) =>
     a.slug.localeCompare(b.slug),
   );
   if (plugins.length) {
@@ -190,8 +190,8 @@ export default async (u: SlideskLinkUser) => {
   } else html = html.replace("#PLUGINS", "");
 
   //#COMPONENTS
-  const components = (await componentGetByUser(u.id!)).toSorted((a, b) =>
-    a.slug.localeCompare(b.slug),
+  const components = (await componentGetByUser(u.id as number)).toSorted(
+    (a, b) => a.slug.localeCompare(b.slug),
   );
   if (components.length) {
     html = html.replace(
@@ -247,7 +247,7 @@ export default async (u: SlideskLinkUser) => {
     "<meta charset=utf-8>",
     `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}>`,
   );
-  await Bun.write(`${process.cwd()}/users/${u.slug}.html`, html);
+  await Bun.write(`${process.cwd()}/app/users/${u.slug}.html`, html);
   await db.user.update({
     data: { updatedAt: new Date() },
     where: { id: u.id },

@@ -1,9 +1,9 @@
+import { parse } from "yaml";
 import addPresentation from "../database/presentation/add";
 import checkTitle from "../database/presentation/checkTitle";
 import addSession from "../database/session/add";
 import deleteSessions from "../database/session/deleteByPresentationId";
 import type { SlideskLinkUser } from "../types";
-import { parse } from "yaml";
 import createUserPage from "./createUserPage";
 
 export default async (yml: string, user: SlideskLinkUser) => {

@@ -1,5 +1,5 @@
-import { Elysia } from "elysia";
 import { jwt } from "@elysiajs/jwt";
+import { Elysia } from "elysia";
 
 const home = new Elysia()
   .use(
@@ -9,7 +9,7 @@ const home = new Elysia()
     }),
   )
   .get("/", async ({ jwt, cookie: { auth } }) => {
-    const profile = await jwt.verify(auth.value);
+    const profile = await jwt.verify(auth.value as string);
     return new Response(
       Bun.file(
         `${process.cwd()}/dist-html/index${profile ? "-logged" : ""}.html`,

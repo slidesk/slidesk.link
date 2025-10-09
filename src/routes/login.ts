@@ -1,6 +1,6 @@
+import { jwt } from "@elysiajs/jwt";
 import { Elysia } from "elysia";
 import { oauth2 } from "elysia-oauth2";
-import { jwt } from "@elysiajs/jwt";
 import getUser from "../services/getUser";
 
 const login = new Elysia({ prefix: "/login" })

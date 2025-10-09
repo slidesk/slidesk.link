@@ -1,5 +1,5 @@
-import Elysia from "elysia";
 import { jwt } from "@elysiajs/jwt";
+import Elysia from "elysia";
 
 const exit = new Elysia({ prefix: "/exit" })
   .use(

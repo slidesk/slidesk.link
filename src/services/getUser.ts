@@ -1,6 +1,6 @@
+import add from "../database/user/add";
 import checkGithub from "../database/user/checkGithub";
 import checkSlug from "../database/user/checkSlug";
-import add from "../database/user/add";
 
 export default async (userInfo: {
   name: string;

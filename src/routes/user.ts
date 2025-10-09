@@ -7,7 +7,7 @@ const user = new Elysia({ prefix: "/u" }).get(
   async ({ params: { user } }) => {
     const u = await checkSlug(user);
     if (!u) return new Response("User not found", { status: 404 });
-    const userPage = Bun.file(`${process.cwd()}/users/${u.slug}.html`);
+    const userPage = Bun.file(`${process.cwd()}/app/users/${u.slug}.html`);
     let page = "";
     if (await userPage.exists()) {
       page = await userPage.text();

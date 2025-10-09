@@ -6,20 +6,20 @@
     "@types/bun": "latest",
     "@types/markdown-it": "^14.1.2",
     "@types/minify": "^9.1.4",
-    "biome": "^0.3.3",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "minify": "^14.1.0",
-    "prisma": "^6.16.3"
+    "prisma": "^6.17.0"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@biomejs/biome": "^2.2.5",
     "@elysiajs/cron": "^1.4.1",
     "@elysiajs/jwt": "^1.4.0",
     "@elysiajs/static": "^1.4.0",
-    "@prisma/client": "^6.16.3",
+    "@prisma/client": "^6.17.0",
     "arctic": "^3.7.0",
     "elysia": "^1.4.9",
     "elysia-oauth2": "^2.1.0",

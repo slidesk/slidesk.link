@@ -1,5 +1,5 @@
-import Elysia from "elysia";
 import { jwt } from "@elysiajs/jwt";
+import Elysia from "elysia";
 import getToken from "../database/user/getToken";
 
 const auth = new Elysia({ prefix: "/auth" })
@@ -10,7 +10,7 @@ const auth = new Elysia({ prefix: "/auth" })
     }),
   )
   .get("/", async ({ jwt, cookie: { auth }, redirect }) => {
-    const profile = await jwt.verify(auth.value);
+    const profile = await jwt.verify(auth.value as string);
     if (!profile) return redirect("/login?back=auth");
     const token = await getToken(Number(profile.id));
     return redirect(`http://localhost:1337/auth/${token}`);
