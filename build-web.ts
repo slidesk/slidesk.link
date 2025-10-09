@@ -37,17 +37,17 @@ sessions:
     video: https://www.your-video-provider.tld/path/to/your/video`;
 
 const json = `{
-"addScripts": [
-"plugins/@gouz__xterm/xterm.lib.js",
-"plugins/@gouz__xterm/xterm.js"
-],
-"addStyles": [
-"plugins/@gouz__xterm/xterm.lib.css",
-"plugins/@gouz__xterm/xterm.css"
-],
-"addWS": "plugins/@gouz__xterm/xterm.ws.mjs",
-"onSlideChange": "window.slidesk.xtemInit();",
-"tags": ["xterm", "terminal", "shell"]
+  "addScripts": [
+    "plugins/@gouz__xterm/xterm.lib.js",
+    "plugins/@gouz__xterm/xterm.js"
+  ],
+  "addStyles": [
+    "plugins/@gouz__xterm/xterm.lib.css",
+    "plugins/@gouz__xterm/xterm.css"
+  ],
+  "addWS": "plugins/@gouz__xterm/xterm.ws.mjs",
+  "onSlideChange": "window.slidesk.xtemInit();",
+  "tags": ["xterm", "terminal", "shell"]
 }`;
 
 const hyml = hljs.highlight(yml, { language: "yaml" }).value;
