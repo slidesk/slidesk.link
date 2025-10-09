@@ -36,7 +36,22 @@ sessions:
     slides: https://your.hosted.slides.tld
     video: https://www.your-video-provider.tld/path/to/your/video`;
 
+const json = `{
+"addScripts": [
+"plugins/@gouz__xterm/xterm.lib.js",
+"plugins/@gouz__xterm/xterm.js"
+],
+"addStyles": [
+"plugins/@gouz__xterm/xterm.lib.css",
+"plugins/@gouz__xterm/xterm.css"
+],
+"addWS": "plugins/@gouz__xterm/xterm.ws.mjs",
+"onSlideChange": "window.slidesk.xtemInit();",
+"tags": ["xterm", "terminal", "shell"]
+}`;
+
 const hyml = hljs.highlight(yml, { language: "yaml" }).value;
+const hjson = hljs.highlight(json, { language: "json" }).value;
 
 await Bun.write(
   `${process.cwd()}/dist-html/index.html`,
@@ -49,7 +64,8 @@ await Bun.write(
       "<meta charset=utf-8>",
       `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
     )
-    .replace("#YML", hyml),
+    .replace("#YML", hyml)
+    .replace("#JSON", hjson),
 );
 
 await Bun.write(
@@ -67,7 +83,8 @@ await Bun.write(
       "<a href=/login/ >Login</a>",
       "<a href=/profile>Profile</a></li><li><a href=/exit>Logout</a>",
     )
-    .replace("#YML", hyml),
+    .replace("#YML", hyml)
+    .replace("#JSON", hjson),
 );
 
 await Bun.write(
