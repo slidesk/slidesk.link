@@ -128,18 +128,20 @@ export default async (u: SlideskLinkUser) => {
       "#TALKS",
       `
     <section>
-      <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-        <h2>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></svg>
-          Talks
-        </h2>
-        <p>
-          <button id="btn_viewrejecteds" onclick="window.viewRejecteds()">
-              View rejected sessions
-          </button>
-        </p>
-      </div>
-      ${talks.join("")}
+      <details open>
+        <summary style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></svg>
+            Talks
+          </h2>
+          <p>
+            <button id="btn_viewrejecteds" onclick="window.viewRejecteds()">
+                View rejected sessions
+            </button>
+          </p>
+        </summary>
+        ${talks.join("")}
+      </details>
     </section>
   `,
     );
@@ -154,36 +156,40 @@ export default async (u: SlideskLinkUser) => {
       "#PLUGINS",
       `
 <section>
-  <h2>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
-    Plugins
-  </h2>
-  ${plugins
-    .map(
-      (plugin) => `
-    <article>
-      <header>
-        <h3 id="p${plugin.slug}">
-            ${plugin.slug}
-        </h3>
-      </header>
-      <div>${md
-        .render(plugin.description ?? "")
-        .replace("<h1", "<h4")
-        .replace("</h1", "</h4")
-        .replace("<h2", "<h5")
-        .replace("</h2", "</h5")
-        .replace("<h3", "<h6")
-        .replace("</h3", "</h6")}</div>
-      <footer>
-        <code>slidesk plugin install @${u.slug}/${plugin.slug}</code>
-        <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin install @${u.slug}/${plugin.slug}');return false;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        </a>
-      </footer>
-    </article>`,
-    )
-    .join("")}
+  <details open>
+    <summary>
+      <h2>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
+        Plugins
+      </h2>
+    </summary>
+    ${plugins
+      .map(
+        (plugin) => `
+      <article>
+        <header>
+          <h3 id="p${plugin.slug}">
+              ${plugin.slug}
+          </h3>
+        </header>
+        <div>${md
+          .render(plugin.description ?? "")
+          .replace("<h1", "<h4")
+          .replace("</h1", "</h4")
+          .replace("<h2", "<h5")
+          .replace("</h2", "</h5")
+          .replace("<h3", "<h6")
+          .replace("</h3", "</h6")}</div>
+        <footer>
+          <code>slidesk plugin install @${u.slug}/${plugin.slug}</code>
+          <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin install @${u.slug}/${plugin.slug}');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </a>
+        </footer>
+      </article>`,
+      )
+      .join("")}
+  </details>
 </section>
     `,
     );
@@ -198,36 +204,40 @@ export default async (u: SlideskLinkUser) => {
       "#COMPONENTS",
       `
 <section>
-  <h2>
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-toy-brick-icon lucide-toy-brick"><rect width="18" height="12" x="3" y="8" rx="1"/><path d="M10 8V5c0-.6-.4-1-1-1H6a1 1 0 0 0-1 1v3"/><path d="M19 8V5c0-.6-.4-1-1-1h-3a1 1 0 0 0-1 1v3"/></svg>
-  Components
-  </h2>
-  ${components
-    .map(
-      (component) => `
-    <article>
-      <header>
-        <h3 id="c${component.slug}">
-            ${component.slug}
-        </h3>
-      </header>
-      <div>${md
-        .render(extractHeaderComment(component.description ?? ""))
-        .replace("<h1", "<h4")
-        .replace("</h1", "</h4")
-        .replace("<h2", "<h5")
-        .replace("</h2", "</h5")
-        .replace("<h3", "<h6")
-        .replace("</h3", "</h6")}</div>
-      <footer>
-        <code>slidesk component install @${u.slug}/${component.slug}</code>
-        <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin component @${u.slug}/${component.slug}');return false;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        </a>
-      </footer>
-    </article>`,
-    )
-    .join("")}
+  <details>
+    <summary>
+      <h2>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-toy-brick-icon lucide-toy-brick"><rect width="18" height="12" x="3" y="8" rx="1"/><path d="M10 8V5c0-.6-.4-1-1-1H6a1 1 0 0 0-1 1v3"/><path d="M19 8V5c0-.6-.4-1-1-1h-3a1 1 0 0 0-1 1v3"/></svg>
+        Components
+      </h2>
+    </summary>
+    ${components
+      .map(
+        (component) => `
+      <article>
+        <header>
+          <h3 id="c${component.slug}">
+              ${component.slug}
+          </h3>
+        </header>
+        <div>${md
+          .render(extractHeaderComment(component.description ?? ""))
+          .replace("<h1", "<h4")
+          .replace("</h1", "</h4")
+          .replace("<h2", "<h5")
+          .replace("</h2", "</h5")
+          .replace("<h3", "<h6")
+          .replace("</h3", "</h6")}</div>
+        <footer>
+          <code>slidesk component install @${u.slug}/${component.slug}</code>
+          <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin component @${u.slug}/${component.slug}');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </a>
+        </footer>
+      </article>`,
+      )
+      .join("")}
+  </details>
 </section>
     `,
     );
