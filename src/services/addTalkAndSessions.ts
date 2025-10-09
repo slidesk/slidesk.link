@@ -1,6 +1,7 @@
 import { parse } from "yaml";
 import addPresentation from "../database/presentation/add";
 import checkTitle from "../database/presentation/checkTitle";
+import update from "../database/presentation/update";
 import addSession from "../database/session/add";
 import deleteSessions from "../database/session/deleteByPresentationId";
 import type { SlideskLinkUser } from "../types";
@@ -11,6 +12,14 @@ export default async (yml: string, user: SlideskLinkUser) => {
   let pres = await checkTitle(parsed.title, Number(user.id));
   if (!pres)
     pres = await addPresentation({
+      userId: Number(user.id),
+      title: parsed.title,
+      abstract: parsed.abstract,
+      url: parsed.url,
+    });
+  else
+    await update({
+      id: pres.id,
       userId: Number(user.id),
       title: parsed.title,
       abstract: parsed.abstract,
