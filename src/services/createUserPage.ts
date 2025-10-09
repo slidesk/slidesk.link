@@ -135,7 +135,7 @@ export default async (u: SlideskLinkUser) => {
             Talks
           </h2>
         </summary>
-        <p>
+        <p style="text-align: right">
           <button id="btn_viewrejecteds" onclick="window.viewRejecteds()">
               View rejected sessions
           </button>
@@ -170,6 +170,7 @@ export default async (u: SlideskLinkUser) => {
         <header>
           <h3 id="p${plugin.slug}">
               ${plugin.slug}
+              <small><code data-tooltip="${plugin.downloaded} download(s)">${plugin.downloaded}</code></small>
           </h3>
         </header>
         <div>${md
@@ -218,6 +219,7 @@ export default async (u: SlideskLinkUser) => {
         <header>
           <h3 id="c${component.slug}">
               ${component.slug}
+              <small><code data-tooltip="${component.downloaded} download(s)">${component.downloaded}</code></small>
           </h3>
         </header>
         <div>${md

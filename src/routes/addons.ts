@@ -1,7 +1,9 @@
 import { Elysia, t } from "elysia";
+import componentAddDownload from "../database/component/addDownload";
 import componentGetByUserAndSlug from "../database/component/getByUserAndSlug";
 import componentSearch from "../database/component/search";
 import componentUpsert from "../database/component/upsert";
+import pluginAddDownload from "../database/component/addDownload";
 import pluginGetByUserAndSlug from "../database/plugin/getByUserAndSlug";
 import pluginSearch from "../database/plugin/search";
 import pluginUpsert from "../database/plugin/upsert";
@@ -104,6 +106,11 @@ const addons = new Elysia({
         case "plugin": {
           const plugin = await pluginGetByUserAndSlug(_user.id, name);
           if (plugin) {
+            await pluginAddDownload(
+              plugin.userId,
+              plugin.slug,
+              plugin.downloaded + 1,
+            );
             return Bun.file(
               `${process.cwd()}/app/plugins/${plugin.userId}/${plugin.slug}.tgz`,
             );
@@ -113,6 +120,11 @@ const addons = new Elysia({
         case "component": {
           const component = await componentGetByUserAndSlug(_user.id, name);
           if (component) {
+            await componentAddDownload(
+              component.userId,
+              component.slug,
+              component.downloaded + 1,
+            );
             return Bun.file(
               `${process.cwd()}/app/components/${component.userId}/${component.slug}.tgz`,
             );

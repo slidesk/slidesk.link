@@ -1,9 +1,9 @@
 import { Glob } from "bun";
 import hljs from "highlight.js";
 import { minify } from "minify";
+import { db } from "./src/db";
 import mainCSS from "./src/html/css/main.css" with { type: "text" };
 import picoCSS from "./src/html/css/pico.min.css" with { type: "text" };
-import { db } from "./src/db";
 import createUserPage from "./src/services/createUserPage";
 
 const css = picoCSS + mainCSS;

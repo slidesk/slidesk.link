@@ -124,7 +124,7 @@ article#speaker {
                 }
 
                 p {
-                    font-size: 1.5rem !important;
+                    font-size: 1.5rem;
                     padding-left: 1rem;
                 }
             }
@@ -143,17 +143,25 @@ article#speaker {
 summary h2,
 summary h3 {
     display: inline;
-    margin-bottom: 0;
 }
 
-pre code.hljs {
+header h3 {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+
+    small {
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+code.hljs {
     display: block;
     overflow-x: auto;
-    padding: 1em;
-}
-code.hljs {
     padding: 3px 5px;
 }
+
 .hljs {
     background: #f3f3f3;
     color: #444;

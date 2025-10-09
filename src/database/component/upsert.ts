@@ -9,5 +9,5 @@ export default async (
   await db.component.upsert({
     create: { slug, userId, tags, description },
     update: { tags, description },
-    where: { slug, userId },
+    where: { userId_slug: { userId, slug } },
   });
