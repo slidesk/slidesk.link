@@ -131,6 +131,39 @@
                 </p>
                 <pre><code>#YML</code></pre>
             </section>
+            <section>
+                <h2>Add your plugin to the HUB</h2>
+                <pre>
+                    <code>slidesk plugin push <NAME></code>
+                </pre>
+                <p>WARNING: your plugin will named after your pseudo.</p>
+                <pre>
+                    <code>slidesk plugin push xterm</code>
+                </pre>
+                <p>will be installed with</p>
+                <pre>
+                    <code>slidesk plugin install @gouz/xterm</code>
+                </pre>
+                <p>and the folder will be rename <code>@gouz__xterm</code>.</p>
+                <p>So, to share your plugin, you have to name correctly files in <code>addScripts</code>, <code>addStyles</code>, ...</p>
+                <pre>
+                    <code>
+{
+    "addScripts": [
+        "plugins/@gouz__xterm/xterm.lib.js",
+        "plugins/@gouz__xterm/xterm.js"
+    ],
+    "addStyles": [
+        "plugins/@gouz__xterm/xterm.lib.css",
+        "plugins/@gouz__xterm/xterm.css"
+    ],
+    "addWS": "plugins/@gouz__xterm/xterm.ws.mjs",
+    "onSlideChange": "window.slidesk.xtemInit();",
+    "tags": ["xterm", "terminal", "shell"]
+}
+                    </code>
+                </pre>
+            </section>
         </main>
         <footer>
             <nav class="container">
