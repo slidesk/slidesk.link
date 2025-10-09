@@ -38,16 +38,12 @@ sessions:
 
 const json = `{
   "addScripts": [
-    "plugins/@gouz__xterm/xterm.lib.js",
-    "plugins/@gouz__xterm/xterm.js"
+    "plugins/YOUR_PLUGIN/YOUR_PLUGIN.js"
   ],
   "addStyles": [
-    "plugins/@gouz__xterm/xterm.lib.css",
-    "plugins/@gouz__xterm/xterm.css"
+    "plugins/YOUR_PLUGIN/YOUR_PLUGIN.css"
   ],
-  "addWS": "plugins/@gouz__xterm/xterm.ws.mjs",
-  "onSlideChange": "window.slidesk.xtemInit();",
-  "tags": ["xterm", "terminal", "shell"]
+  "tags": ["YOUR_PLUGIN", "and", "others", "tags", "to", "find", "it"]
 }`;
 
 const hyml = hljs.highlight(yml, { language: "yaml" }).value;
