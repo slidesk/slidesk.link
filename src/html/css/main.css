@@ -143,6 +143,7 @@ article#speaker {
 summary h2,
 summary h3 {
     display: inline;
+    margin-bottom: 0;
 }
 
 pre code.hljs {

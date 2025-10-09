@@ -142,7 +142,7 @@ export default async (u: SlideskLinkUser) => {
         </p>
         ${talks.join("")}
       </details>
-    </section>
+    </section><hr/>
   `,
     );
   else html = html.replaceAll("#TALKS", "");
@@ -190,7 +190,7 @@ export default async (u: SlideskLinkUser) => {
       )
       .join("")}
   </details>
-</section>
+</section><hr/>
     `,
     );
   } else html = html.replace("#PLUGINS", "");
@@ -238,7 +238,7 @@ export default async (u: SlideskLinkUser) => {
       )
       .join("")}
   </details>
-</section>
+</section><hr/>
     `,
     );
   } else html = html.replace("#COMPONENTS", "");
