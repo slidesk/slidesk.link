@@ -19,7 +19,7 @@ const app = new Elysia()
   .use(
     cron({
       name: "clean",
-      pattern: "* */10 * * * *",
+      pattern: "*/10 * * * *",
       run() {
         cronService();
       },
