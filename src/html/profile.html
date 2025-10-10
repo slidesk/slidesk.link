@@ -163,10 +163,22 @@
                     <input type="submit" />
                 </form>
             </article>
-            <h2>Hosted</h2>
-            <div id="hosted"></div>
-            <h2>Presentations</h2>
-            <div id="presentations"></div>
+            <details>
+                <summary><h2>Hosted</h2></summary>
+                <div id="hosted"></div>
+            </details>
+            <details>
+                <summary><h2>Presentations</h2></summary>
+                <div id="presentations"></div>
+            </details>
+            <details>
+                <summary><h2>Plugins</h2></summary>
+                <div id="plugins"></div>
+            </details>
+            <details>
+                <summary><h2>Components</h2></summary>
+                <div id="components"></div>
+            </details>
         </main>
         <footer>
             <nav class="container">
@@ -179,16 +191,18 @@
                             href="https://slidesk.github.io/slidesk-doc/"
                             target="_blank"
                             rel="noopener"
-                            >Documentation</a
                         >
+                            Documentation
+                        </a>
                     </li>
                     <li>
                         <a
                             href="https://github.com/slidesk/slidesk.link"
                             target="_blank"
                             rel="noopener"
-                            >Source code</a
                         >
+                            Source code
+                        </a>
                     </li>
                     <li><a href="/mentions">Legal</a></li>
                 </ul>
@@ -277,6 +291,25 @@
                         document.querySelector("#hosted").innerHTML =
                             "No hosted found";
                     }
+                    if (data.plugins.length) {
+                        document.querySelector("#plugins").innerHTML = `
+                        <table class="striped">
+                        ${data.plugins
+                            .map(
+                                (p) => `
+                          <tr id="pl_${p.slug}">
+                            <td>${p.slug}</td>
+                            <td><button class="secondary" onclick="window.removePlugin('${p.slug}');">Delete</button></td>
+                          </tr>
+                          `,
+                            )
+                            .join("")}
+                        </table>
+                      `;
+                    } else {
+                        document.querySelector("#plugins").innerHTML =
+                            "No plugin found";
+                    }
                 });
 
             window.removeSession = (id) => {
@@ -300,6 +333,14 @@
                     method: "DELETE",
                 }).then(() => {
                     document.querySelector(`#h_${id}`).remove();
+                });
+            };
+
+            window.removePlugin = (id) => {
+                fetch(`/profile/plugin/${id}`, {
+                    method: "DELETE",
+                }).then(() => {
+                    document.querySelector(`#pl_${id}`).remove();
                 });
             };
         </script>

@@ -4,6 +4,7 @@ import Elysia, { t } from "elysia";
 import getComponentsGetByUser from "../database/component/getByUser";
 import deleteHostedById from "../database/hostedPresentation/deleteById";
 import getHostedsByUser from "../database/hostedPresentation/getByUser";
+import deletePlugin from "../database/plugin/delete";
 import getPluginsGetByUser from "../database/plugin/getByUser";
 import checkPresentationIdAndUserId from "../database/presentation/checkIdAndUserId";
 import deletePresentationById from "../database/presentation/deleteById";
@@ -128,6 +129,24 @@ const profile = new Elysia({ prefix: "/profile" })
       return new Response("OK", { status: 200 });
     }
     return new Response("Unauthorized", { status: 401 });
-  });
+  })
+  .delete(
+    "/plugin/:slug",
+    async ({ jwt, cookie: { auth }, params: { slug } }) => {
+      const profile = await jwt.verify(auth.value as string);
+      if (!profile) return new Response("Unauthorized", { status: 401 });
+      const plugins = [...(await getPluginsGetByUser(Number(profile.id)))].map(
+        (p) => p.slug,
+      );
+      if (plugins.includes(slug)) {
+        await deletePlugin(Number(profile.id), slug);
+        await Bun.file(
+          `${process.cwd()}/app/plugins/${profile.id}/${slug}.tgz`,
+        ).delete();
+        return new Response("OK", { status: 200 });
+      }
+      return new Response("Unauthorized", { status: 401 });
+    },
+  );
 
 export default profile;
