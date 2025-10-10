@@ -212,6 +212,15 @@ article footer code::before {
     content: "> ";
 }
 
+#checkboxes {
+    display: flex;
+    flex-direction: row;
+
+    label {
+        margin-right: 1rem;
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     .hljs {
         color: #ddd;
@@ -273,6 +282,14 @@ article footer code::before {
                     margin: 1rem auto 2rem;
                 }
             }
+        }
+    }
+
+    #checkboxes {
+        flex-direction: column;
+
+        label {
+            margin-right: 0;
         }
     }
 }
