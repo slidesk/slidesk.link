@@ -140,7 +140,8 @@
                           `,
                             );
                         } else html = html.replace("#COMPONENTS", "");
-                        $results.innerHTML = html;
+                        if (html.trim() === "") html = "<mark>no result</mark>";
+                        else $results.innerHTML = html;
                     }
                 });
         </script>
