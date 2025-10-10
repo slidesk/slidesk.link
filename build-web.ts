@@ -49,61 +49,80 @@ const json = `{
 const hyml = hljs.highlight(yml, { language: "yaml" }).value;
 const hjson = hljs.highlight(json, { language: "json" }).value;
 
+const footerHTML = `
+  <footer>
+      <nav class="container">
+          <ul>
+              <li>slidesk<span>.link</span></li>
+          </ul>
+          <ul>
+              <li>
+                  <a
+                      href="https://slidesk.github.io/slidesk-doc/"
+                      target="_blank"
+                      rel="noopener"
+                  >
+                      Documentation
+                  </a>
+              </li>
+              <li>
+                  <a
+                      href="https://github.com/slidesk/slidesk.link"
+                      target="_blank"
+                      rel="noopener"
+                  >
+                      Source code
+                  </a>
+              </li>
+              <li><a href="/mentions">Legal</a></li>
+          </ul>
+      </nav>
+  </footer>
+`;
+
+for (const page of ["profile", "mentions", "search"]) {
+  await Bun.write(
+    `${process.cwd()}/dist-html/${page}.html`,
+    await minify.html(
+      (await Bun.file(`${process.cwd()}/src/html/${page}.html`).text())
+        .replace(
+          '<meta charset="utf-8" />',
+          `<meta charset="utf-8" /><link rel="stylesheet" href="/public/${sha}.css" />`,
+        )
+        .replace("#FOOTER", footerHTML),
+    ),
+  );
+}
+
 await Bun.write(
   `${process.cwd()}/dist-html/index.html`,
-  (
-    await minify.html(
-      await Bun.file(`${process.cwd()}/src/html/index.html`).text(),
-    )
-  )
-    .replace(
-      "<meta charset=utf-8>",
-      `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
-    )
-    .replace("#YML", hyml)
-    .replace("#JSON", hjson),
-);
-
-await Bun.write(
-  `${process.cwd()}/dist-html/index-logged.html`,
-  (
-    await minify.html(
-      await Bun.file(`${process.cwd()}/src/html/index.html`).text(),
-    )
-  )
-    .replace(
-      "<meta charset=utf-8>",
-      `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
-    )
-    .replace(
-      "<a href=/login/ >Login</a>",
-      "<a href=/profile>Profile</a></li><li><a href=/exit>Logout</a>",
-    )
-    .replace("#YML", hyml)
-    .replace("#JSON", hjson),
-);
-
-await Bun.write(
-  `${process.cwd()}/dist-html/profile.html`,
-  (
-    await minify.html(
-      await Bun.file(`${process.cwd()}/src/html/profile.html`).text(),
-    )
-  ).replace(
-    "<meta charset=utf-8>",
-    `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
+  await minify.html(
+    (await Bun.file(`${process.cwd()}/src/html/index.html`).text())
+      .replace(
+        '<meta charset="utf-8" />',
+        `<meta charset="utf-8" /><link rel="stylesheet" href="/public/${sha}.css" />`,
+      )
+      .replace("#YML", hyml)
+      .replace("#JSON", hjson)
+      .replace("#FOOTER", footerHTML),
   ),
 );
 
 await Bun.write(
-  `${process.cwd()}/dist-html/mentions.html`,
-  (
-    await minify.html(
-      await Bun.file(`${process.cwd()}/src/html/mentions.html`).text(),
-    )
-  ).replace(
-    "<meta charset=utf-8>",
-    `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}.css>`,
+  `${process.cwd()}/dist-html/index-logged.html`,
+  await minify.html(
+    (await Bun.file(`${process.cwd()}/src/html/index.html`).text())
+      .replace(
+        '<meta charset="utf-8" />',
+        `<meta charset="utf-8" /><link rel="stylesheet" href="/public/${sha}.css" />`,
+      )
+      .replace(
+        '<a href="/login/">Login</a>',
+        '<a href="/profile">Profile</a></li><li><a href="/exit">Logout</a>',
+      )
+      .replace("#YML", hyml)
+      .replace("#JSON", hjson)
+      .replace("#FOOTER", footerHTML),
   ),
 );
 

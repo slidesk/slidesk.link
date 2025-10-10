@@ -13,6 +13,7 @@ import sitemap from "./routes/sitemap";
 import upload from "./routes/upload";
 import user from "./routes/user";
 import cronService from "./services/cron";
+import search from "./routes/search";
 
 const app = new Elysia()
   .use(staticPlugin())
@@ -36,6 +37,7 @@ const app = new Elysia()
   .use(pushtotalk)
   .use(sitemap)
   .use(addons)
+  .use(search)
   .ws("/s/:uuid/ws", {
     message(ws, message) {
       ws.publish(ws.data.params.uuid, message);

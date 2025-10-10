@@ -7,22 +7,13 @@ import presentationGetByUser from "../database/presentation/getByUser";
 import { db } from "../db";
 import userPage from "../html/user.html" with { type: "text" };
 import type { SlideskLinkSession, SlideskLinkUser } from "../types";
+import extractHeaderComment from "./extractHeaderComment";
 
 const md = markdownIt({
   xhtmlOut: true,
   linkify: true,
   typographer: true,
 });
-
-const extractHeaderComment = (source: string) => {
-  const match = source.match(/\/\*\*([\s\S]*?)\*\//);
-  if (!match) return "";
-  return match[1]
-    .split("\n")
-    .map((line) => line.replace(/^\s*\* ?/, "").trimEnd())
-    .join("\n")
-    .trim();
-};
 
 export default async (u: SlideskLinkUser) => {
   let html = `${userPage}`
