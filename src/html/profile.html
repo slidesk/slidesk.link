@@ -310,6 +310,25 @@
                         document.querySelector("#plugins").innerHTML =
                             "No plugin found";
                     }
+                    if (data.components.length) {
+                        document.querySelector("#components").innerHTML = `
+                        <table class="striped">
+                        ${data.components
+                            .map(
+                                (c) => `
+                          <tr id="c_${c.slug}">
+                            <td>${c.slug}</td>
+                            <td><button class="secondary" onclick="window.removeComponent('${c.slug}');">Delete</button></td>
+                          </tr>
+                          `,
+                            )
+                            .join("")}
+                        </table>
+                      `;
+                    } else {
+                        document.querySelector("#components").innerHTML =
+                            "No component found";
+                    }
                 });
 
             window.removeSession = (id) => {
@@ -341,6 +360,14 @@
                     method: "DELETE",
                 }).then(() => {
                     document.querySelector(`#pl_${id}`).remove();
+                });
+            };
+
+            window.removeComponent = (id) => {
+                fetch(`/profile/component/${id}`, {
+                    method: "DELETE",
+                }).then(() => {
+                    document.querySelector(`#c_${id}`).remove();
                 });
             };
         </script>

@@ -1,6 +1,7 @@
 import { rmSync } from "node:fs";
 import { jwt } from "@elysiajs/jwt";
 import Elysia, { t } from "elysia";
+import deleteComponent from "../database/component/delete";
 import getComponentsGetByUser from "../database/component/getByUser";
 import deleteHostedById from "../database/hostedPresentation/deleteById";
 import getHostedsByUser from "../database/hostedPresentation/getByUser";
@@ -142,6 +143,24 @@ const profile = new Elysia({ prefix: "/profile" })
         await deletePlugin(Number(profile.id), slug);
         await Bun.file(
           `${process.cwd()}/app/plugins/${profile.id}/${slug}.tgz`,
+        ).delete();
+        return new Response("OK", { status: 200 });
+      }
+      return new Response("Unauthorized", { status: 401 });
+    },
+  )
+  .delete(
+    "/component/:slug",
+    async ({ jwt, cookie: { auth }, params: { slug } }) => {
+      const profile = await jwt.verify(auth.value as string);
+      if (!profile) return new Response("Unauthorized", { status: 401 });
+      const components = [
+        ...(await getComponentsGetByUser(Number(profile.id))),
+      ].map((p) => p.slug);
+      if (components.includes(slug)) {
+        await deleteComponent(Number(profile.id), slug);
+        await Bun.file(
+          `${process.cwd()}/app/components/${profile.id}/${slug}.tgz`,
         ).delete();
         return new Response("OK", { status: 200 });
       }
