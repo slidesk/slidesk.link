@@ -244,7 +244,6 @@ export default async (u: SlideskLinkUser) => {
     a.slug.localeCompare(b.slug),
   );
   if (themes.length) {
-    const dec = new TextDecoder();
     html = html.replace(
       "#THEMES",
       `
@@ -276,7 +275,7 @@ export default async (u: SlideskLinkUser) => {
             .replace("<h3", "<h6")
             .replace("</h3", "</h6")}
           <div class="images">
-            ${[...(JSON.parse(theme.tags) ?? [])].map((img) => `<img src="data:image/webp;base64,${dec.decode(Bun.gunzipSync(Buffer.from(Object.values(img))))}" width="320" />`).join("")}
+            ${[...(JSON.parse(theme.tags) ?? [])].map((img) => `<img src="data:image/webp;base64,${img}" width="320" />`).join("")}
           </div>
           </div>
         <footer>

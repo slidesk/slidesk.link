@@ -90,6 +90,26 @@
                                     />
                                     Components
                                 </label>
+                                <label htmlFor="themes">
+                                    <input
+                                        type="checkbox"
+                                        value="themes"
+                                        id="themes"
+                                        name="filter"
+                                        checked
+                                    />
+                                    Themes
+                                </label>
+                                <label htmlFor="templates">
+                                    <input
+                                        type="checkbox"
+                                        value="templates"
+                                        id="templates"
+                                        name="filter"
+                                        checked
+                                    />
+                                    Templates
+                                </label>
                             </div>
                         </fieldset>
                     </footer>
@@ -106,8 +126,15 @@
                     const searchText =
                         document.querySelector("#search_text").value;
                     $results.innerHTML = "";
-                    if (searchText.length > 3) {
-                        const { plugins, components, users, talks } = await (
+                    if (searchText.length >= 3) {
+                        const {
+                            plugins,
+                            components,
+                            users,
+                            talks,
+                            themes,
+                            templates,
+                        } = await (
                             await fetch(
                                 `/search/${searchText}/${[...document.querySelectorAll('input[name="filter"]:checked')].map((e) => e.value).join(",")}`,
                                 {

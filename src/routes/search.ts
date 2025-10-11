@@ -140,14 +140,18 @@ const search = new Elysia({ prefix: "/search" })
       res.themes = [...(await themeSearch(search.toLowerCase()))].map((t) => ({
         slug: t.slug,
         downloaded: t.downloaded,
-        description: md
-          .render(t.description ?? "")
-          .replace("<h1", "<h4")
-          .replace("</h1", "</h4")
-          .replace("<h2", "<h5")
-          .replace("</h2", "</h5")
-          .replace("<h3", "<h6")
-          .replace("</h3", "</h6"),
+        description:
+          md
+            .render(t.description ?? "")
+            .replace("<h1", "<h4")
+            .replace("</h1", "</h4")
+            .replace("<h2", "<h5")
+            .replace("</h2", "</h5")
+            .replace("<h3", "<h6")
+            .replace("</h3", "</h6") +
+          `<div class="images">
+            ${[...(JSON.parse(t.tags) ?? [])].map((img) => `<img src="data:image/webp;base64,${img}" width="320" />`).join("")}
+          </div>`,
         user: t.user.slug,
       }));
 
