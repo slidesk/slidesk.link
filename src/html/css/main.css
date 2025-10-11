@@ -3,26 +3,16 @@
     --pico-font-size: 100%;
 }
 
-body {
-    padding: 8rem 0;
-}
-
 body > header {
-    position: fixed;
     width: 100vw;
-    top: 0;
     background-color: var(--pico-background-color);
     box-shadow: var(--pico-box-shadow);
-    z-index: 2;
 }
 
 body > footer {
-    position: fixed;
     width: 100vw;
-    bottom: 0;
     background-color: var(--pico-background-color);
     box-shadow: var(--pico-box-shadow);
-    z-index: 2;
     font-size: 0.75rem;
 }
 
