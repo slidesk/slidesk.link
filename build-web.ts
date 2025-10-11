@@ -5,6 +5,7 @@ import { db } from "./src/db";
 import mainCSS from "./src/html/css/main.css" with { type: "text" };
 import picoCSS from "./src/html/css/pico.min.css" with { type: "text" };
 import createUserPage from "./src/services/createUserPage";
+import footer from "./src/services/footer";
 
 const css = picoCSS + mainCSS;
 const hasher = new Bun.CryptoHasher("sha1");
@@ -49,36 +50,7 @@ const json = `{
 const hyml = hljs.highlight(yml, { language: "yaml" }).value;
 const hjson = hljs.highlight(json, { language: "json" }).value;
 
-const footerHTML = `
-  <footer>
-      <nav class="container">
-          <ul>
-              <li>slidesk<span>.link</span></li>
-          </ul>
-          <ul>
-              <li>
-                  <a
-                      href="https://slidesk.github.io/slidesk-doc/"
-                      target="_blank"
-                      rel="noopener"
-                  >
-                      Documentation
-                  </a>
-              </li>
-              <li>
-                  <a
-                      href="https://github.com/slidesk/slidesk.link"
-                      target="_blank"
-                      rel="noopener"
-                  >
-                      Source code
-                  </a>
-              </li>
-              <li><a href="/mentions">Legal</a></li>
-          </ul>
-      </nav>
-  </footer>
-`;
+const footerHTML = footer;
 
 for (const page of ["profile", "mentions", "search"]) {
   await Bun.write(

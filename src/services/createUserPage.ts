@@ -4,10 +4,13 @@ import { minify } from "minify";
 import componentGetByUser from "../database/component/getByUser";
 import pluginGetByUser from "../database/plugin/getByUser";
 import presentationGetByUser from "../database/presentation/getByUser";
+import templateGetByUser from "../database/template/getByUser";
+import themeGetByUser from "../database/theme/getByUser";
 import { db } from "../db";
 import userPage from "../html/user.html" with { type: "text" };
 import type { SlideskLinkSession, SlideskLinkUser } from "../types";
 import extractHeaderComment from "./extractHeaderComment";
+import footer from "./footer";
 
 const md = markdownIt({
   xhtmlOut: true,
@@ -223,7 +226,7 @@ export default async (u: SlideskLinkUser) => {
           .replace("</h3", "</h6")}</div>
         <footer>
           <code>slidesk component install @${u.slug}/${component.slug}</code>
-          <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin component @${u.slug}/${component.slug}');return false;">
+          <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk component install @${u.slug}/${component.slug}');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           </a>
         </footer>
@@ -237,44 +240,109 @@ export default async (u: SlideskLinkUser) => {
   } else html = html.replace("#COMPONENTS", "");
 
   //#THEMES
-  //<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette-icon lucide-palette"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
-  html = html.replace("#THEMES", "");
-
-  html = await minify.html(
-    html.replace(
-      "#FOOTER",
-      `
-    <footer>
-        <nav class="container">
-            <ul>
-                <li>slidesk<span>.link</span></li>
-            </ul>
-            <ul>
-                <li>
-                    <a
-                        href="https://slidesk.github.io/slidesk-doc/"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        Documentation
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="https://github.com/slidesk/slidesk.link"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        Source code
-                    </a>
-                </li>
-                <li><a href="/mentions">Legal</a></li>
-            </ul>
-        </nav>
-    </footer>
-  `,
-    ),
+  const themes = (await themeGetByUser(u.id as number)).toSorted((a, b) =>
+    a.slug.localeCompare(b.slug),
   );
+  if (themes.length) {
+    const dec = new TextDecoder();
+    html = html.replace(
+      "#THEMES",
+      `
+<section>
+  <details open>
+    <summary>
+      <h2>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette-icon lucide-palette"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+        Themes
+      </h2>
+    </summary>
+    ${themes
+      .map(
+        (theme) => `
+      <article>
+        <header>
+          <h3>
+              ${theme.slug}
+              <small><code data-tooltip="${theme.downloaded} download(s)">${theme.downloaded}</code></small>
+          </h3>
+        </header>
+        <div>
+          ${md
+            .render(theme.description ?? "")
+            .replace("<h1", "<h4")
+            .replace("</h1", "</h4")
+            .replace("<h2", "<h5")
+            .replace("</h2", "</h5")
+            .replace("<h3", "<h6")
+            .replace("</h3", "</h6")}
+          <div class="images">
+            ${[...(JSON.parse(theme.tags) ?? [])].map((img) => `<img src="data:image/webp;base64,${dec.decode(Bun.gunzipSync(Buffer.from(Object.values(img))))}" width="320" />`).join("")}
+          </div>
+          </div>
+        <footer>
+          <code>slidesk theme install @${u.slug}/${theme.slug}</code>
+          <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk theme install @${u.slug}/${theme.slug}');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </a>
+        </footer>
+      </article>`,
+      )
+      .join("")}
+  </details>
+</section><hr/>
+    `,
+    );
+  } else html = html.replace("#THEMES", "");
+
+  //#TEMPLATES
+  const templates = (await templateGetByUser(u.id as number)).toSorted((a, b) =>
+    a.slug.localeCompare(b.slug),
+  );
+  if (templates.length) {
+    html = html.replace(
+      "#TEMPLATES",
+      `
+<section>
+  <details open>
+    <summary>
+      <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      Templates
+      </h2>
+    </summary>
+    ${templates
+      .map(
+        (template) => `
+      <article>
+        <header>
+          <h3>
+              ${template.slug}
+              <small><code data-tooltip="${template.downloaded} download(s)">${template.downloaded}</code></small>
+          </h3>
+        </header>
+        <div>${md
+          .render(template.description ?? "")
+          .replace("<h1", "<h4")
+          .replace("</h1", "</h4")
+          .replace("<h2", "<h5")
+          .replace("</h2", "</h5")
+          .replace("<h3", "<h6")
+          .replace("</h3", "</h6")}</div>
+        <footer>
+          <code>slidesk template install @${u.slug}/${template.slug}</code>
+          <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk template install @${u.slug}/${template.slug}');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </a>
+        </footer>
+      </article>`,
+      )
+      .join("")}
+  </details>
+</section><hr/>
+    `,
+    );
+  } else html = html.replace("#TEMPLATES", "");
+  html = await minify.html(html.replace("#FOOTER", footer));
   const glob = new Glob("*.css");
   let sha = "";
   for await (const file of glob.scanSync(`${process.cwd()}/public`)) {

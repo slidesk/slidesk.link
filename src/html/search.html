@@ -116,18 +116,6 @@
                             )
                         ).json();
 
-                        const iconStatus = [
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-x-icon lucide-ticket-x"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9.5 14.5 5-5"/><path d="m9.5 9.5 5 5"/></svg>',
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-check-icon lucide-ticket-check"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9 12 2 2 4-4"/></svg>',
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-slash-icon lucide-ticket-slash"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9.5 14.5 5-5"/></svg>',
-                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-minus-icon lucide-ticket-minus"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 12h6"/></svg>',
-                        ];
-                        const textStatus = [
-                            "Rejected",
-                            "Accepted",
-                            "Declined",
-                            "Pending",
-                        ];
                         const iconCalendar =
                             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days-icon lucide-calendar-days"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>';
                         const iconLink =
@@ -137,7 +125,14 @@
                         const iconVideo =
                             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clapperboard-icon lucide-clapperboard"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"/><path d="m6.2 5.3 3.1 3.9"/><path d="m12.4 3.4 3.1 4"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>';
 
-                        let html = ["USER", "TALK", "PLUGIN", "COMPONENT"]
+                        let html = [
+                            "USER",
+                            "TALK",
+                            "PLUGIN",
+                            "COMPONENT",
+                            "THEME",
+                            "TEMPLATE",
+                        ]
                             .map((a) => `#${a}S`)
                             .join(" ");
                         if (plugins.length) {
@@ -203,7 +198,7 @@
                               <div>${component.description}</div>
                               <footer>
                                 <code>slidesk component install @${component.user}/${component.slug}</code>
-                                <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin component @${component.user}/${component.slug}');return false;">
+                                <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk component install @${component.user}/${component.slug}');return false;">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                                 </a>
                               </footer>
@@ -275,15 +270,18 @@
                                     </header>
                                     <div>${talk.abstract}</div>
                                     <footer>
-                                        ${talk.Session.sort(
-                                            (a, b) =>
-                                                Number(b.date) - Number(a.date),
-                                        )
-                                            .filter((s) => s.status !== 0)
+                                        ${talk.sessions
+                                            .sort(
+                                                (a, b) =>
+                                                    Number(b.date) -
+                                                    Number(a.date),
+                                            )
                                             .map(
                                                 (s, _) => `
                                             <div>
-                                              <span class="icon-status status-${s.status}" data-tooltip="${textStatus[s.status]}">${iconStatus[s.status]}</span>
+                                              <span class="icon-status status-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-check-icon lucide-ticket-check"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9 12 2 2 4-4"/></svg>
+                                              </span>
                                               ${iconCalendar}
                                               ${new Date(s.date).toISOString().split("T")[0]}: ${s.location}
                                               ${
@@ -314,6 +312,82 @@
                           `,
                             );
                         } else html = html.replace("#TALKS", "");
+
+                        if (themes.length) {
+                            html = html.replace(
+                                "#THEMES",
+                                `
+                      <section>
+                        <details open>
+                          <summary>
+                            <h2>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette-icon lucide-palette"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                              Themes
+                            </h2>
+                          </summary>
+                          ${themes
+                              .map(
+                                  (theme) => `
+                            <article>
+                              <header>
+                                <h3>
+                                    ${theme.slug}
+                                    <small><code data-tooltip="${theme.downloaded} download(s)">${theme.downloaded}</code></small>
+                                </h3>
+                              </header>
+                              <div>${theme.description}</div>
+                              <footer>
+                                <code>slidesk theme install @${theme.user}/${theme.slug}</code>
+                                <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin theme @${theme.user}/${theme.slug}');return false;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                </a>
+                              </footer>
+                            </article>`,
+                              )
+                              .join("")}
+                        </details>
+                      </section><hr/>
+                          `,
+                            );
+                        } else html = html.replace("#THEMES", "");
+
+                        if (templates.length) {
+                            html = html.replace(
+                                "#TEMPLATES",
+                                `
+                      <section>
+                        <details open>
+                          <summary>
+                            <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                              Templates
+                            </h2>
+                          </summary>
+                          ${templates
+                              .map(
+                                  (template) => `
+                            <article>
+                              <header>
+                                <h3>
+                                    ${template.slug}
+                                    <small><code data-tooltip="${template.downloaded} download(s)">${template.downloaded}</code></small>
+                                </h3>
+                              </header>
+                              <div>${template.description}</div>
+                              <footer>
+                                <code>slidesk template install @${template.user}/${template.slug}</code>
+                                <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin template @${template.user}/${template.slug}');return false;">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                </a>
+                              </footer>
+                            </article>`,
+                              )
+                              .join("")}
+                        </details>
+                      </section><hr/>
+                          `,
+                            );
+                        } else html = html.replace("#TEMPLATES", "");
 
                         if (html.trim() === "") html = "<mark>no result</mark>";
                         else $results.innerHTML = html;

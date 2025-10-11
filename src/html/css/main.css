@@ -221,6 +221,20 @@ article footer code::before {
     }
 }
 
+.images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.images img {
+    margin: var(--pico-block-spacing-vertical)
+        var(--pico-block-spacing-horizontal);
+    border-radius: var(--pico-border-radius);
+    background: var(--pico-card-background-color);
+    box-shadow: var(--pico-card-box-shadow);
+}
+
 @media (prefers-color-scheme: dark) {
     .hljs {
         color: #ddd;

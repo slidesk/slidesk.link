@@ -6,7 +6,7 @@ export default async (
   tags: string,
   description: string,
 ) =>
-  await db.theme.upsert({
+  await db.template.upsert({
     create: { slug, userId, tags, description },
     update: { tags, description },
     where: {
