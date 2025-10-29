@@ -443,28 +443,6 @@ canvas {
     gap: 12px;
 }
 
-.pdf-btn {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-
-.pdf-btn:hover:not(:disabled) {
-    background: #c0392b;
-}
-
-.pdf-btn:disabled {
-    background: #ddd;
-    cursor: not-allowed;
-    color: #999;
-}
-
 .pdf-page-info {
     color: #666;
     font-size: 14px;
