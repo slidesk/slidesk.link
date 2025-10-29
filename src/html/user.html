@@ -131,6 +131,127 @@
             #TALKS #PLUGINS #COMPONENTS #THEMES #TEMPLATES
         </main>
         #FOOTER
+        <div class="pdf-overlay" id="pdfOverlay">
+            <div class="pdf-popover">
+                <div class="pdf-header">
+                    <div class="pdf-title" id="pdfTitle"></div>
+                    <button class="pdf-close" id="closeBtn" aria-label="Fermer">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x"
+                        >
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="pdf-viewer" id="pdfViewer">
+                    <progress />
+                </div>
+                <div class="pdf-controls">
+                    <div class="pdf-nav">
+                        <button
+                            class="pdf-btn"
+                            id="prevBtn"
+                            aria-label="previous"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-arrow-big-left-icon lucide-arrow-big-left"
+                            >
+                                <path
+                                    d="M13 9a1 1 0 0 1-1-1V5.061a1 1 0 0 0-1.811-.75l-6.835 6.836a1.207 1.207 0 0 0 0 1.707l6.835 6.835a1 1 0 0 0 1.811-.75V16a1 1 0 0 1 1-1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1z"
+                                />
+                            </svg>
+                        </button>
+                        <span class="pdf-page-info">
+                            Page <span id="currentPage">1</span> sur
+                            <span id="totalPages">1</span>
+                        </span>
+                        <button class="pdf-btn" id="nextBtn" aria-label="next">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-arrow-big-right-icon lucide-arrow-big-right"
+                            >
+                                <path
+                                    d="M11 9a1 1 0 0 0 1-1V5.061a1 1 0 0 1 1.811-.75l6.836 6.836a1.207 1.207 0 0 1 0 1.707l-6.836 6.835a1 1 0 0 1-1.811-.75V16a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1z"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="pdf-zoom">
+                        <button
+                            class="pdf-btn"
+                            id="zoomOut"
+                            aria-label="zoom out"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-minus-icon lucide-minus"
+                            >
+                                <path d="M5 12h14" />
+                            </svg>
+                        </button>
+                        <span class="pdf-page-info">
+                            <span id="zoomLevel">100</span>%
+                        </span>
+                        <button
+                            class="pdf-btn"
+                            id="zoomIn"
+                            aria-label="zoom in"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-plus-icon lucide-plus"
+                            >
+                                <path d="M5 12h14" />
+                                <path d="M12 5v14" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             window.viewRejecteds = () => {
                 document.getElementById("btn_viewrejecteds").style.display =
@@ -139,6 +260,164 @@
                     (el, _) => (el.parentElement.style.display = "block"),
                 );
             };
+        </script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+            type="module"
+        ></script>
+        <script type="module">
+            const { pdfjsLib } = globalThis;
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+            let pdfDoc = null;
+            let currentPage = 1;
+            let scale = 1.5;
+            const overlay = document.getElementById("pdfOverlay");
+            const viewer = document.getElementById("pdfViewer");
+            const title = document.getElementById("pdfTitle");
+
+            function initPDFLinks() {
+                const links = document.querySelectorAll('a[href$=".pdf"]');
+
+                links.forEach((link) => {
+                    link.addEventListener("click", (e) => {
+                        const rect = e.target.getBoundingClientRect();
+                        const clickX = e.clientX - rect.left;
+
+                        if (clickX > rect.width - 30) {
+                            e.preventDefault();
+                            openPDFPreview(link.href, link.textContent);
+                        }
+                    });
+                });
+            }
+
+            async function openPDFPreview(url, fileName) {
+                overlay.classList.add("active");
+                title.textContent = fileName || "Document PDF";
+                viewer.innerHTML = "<progress />";
+                currentPage = 1;
+
+                try {
+                    const proxyUrl = `/api/proxy-pdf?url=${encodeURIComponent(url)}`;
+
+                    pdfDoc = await pdfjsLib.getDocument({
+                        url: proxyUrl,
+                        withCredentials: false,
+                    }).promise;
+
+                    document.getElementById("totalPages").textContent =
+                        pdfDoc.numPages;
+                    renderPage(currentPage);
+                    updateButtons();
+                } catch (error) {
+                    viewer.innerHTML = `
+                           <div class="error">
+                               <p>❌ Error while loading pdf</p>
+                               <p style="font-size: 12px; margin-top: 10px;">
+                                   <a href="${url}" target="_blank" style="color: #e74c3c; text-decoration: underline;">
+                                   Open in new tab
+                                   </a>
+                               </p>
+                           </div>
+                       `;
+                    console.error(error);
+                }
+            }
+
+            async function renderPage(pageNum) {
+                const page = await pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ scale });
+
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                viewer.innerHTML = "";
+                const container = document.createElement("div");
+                container.className = "pdf-canvas-container";
+                container.appendChild(canvas);
+                viewer.appendChild(container);
+
+                await page.render({ canvasContext: context, viewport }).promise;
+
+                document.getElementById("currentPage").textContent = pageNum;
+                updateZoomDisplay();
+            }
+
+            function updateButtons() {
+                document.getElementById("prevBtn").disabled = currentPage <= 1;
+                document.getElementById("nextBtn").disabled =
+                    currentPage >= pdfDoc.numPages;
+            }
+
+            function updateZoomDisplay() {
+                document.getElementById("zoomLevel").textContent = Math.round(
+                    (scale * 100) / 1.5,
+                );
+            }
+
+            document
+                .getElementById("closeBtn")
+                .addEventListener("click", () => {
+                    overlay.classList.remove("active");
+                    pdfDoc = null;
+                });
+
+            overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove("active");
+                    pdfDoc = null;
+                }
+            });
+
+            document.getElementById("prevBtn").addEventListener("click", () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                    updateButtons();
+                }
+            });
+
+            document.getElementById("nextBtn").addEventListener("click", () => {
+                if (currentPage < pdfDoc.numPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                    updateButtons();
+                }
+            });
+
+            document.getElementById("zoomIn").addEventListener("click", () => {
+                scale += 0.25;
+                if (scale > 3) scale = 3;
+                renderPage(currentPage);
+            });
+
+            document.getElementById("zoomOut").addEventListener("click", () => {
+                scale -= 0.25;
+                if (scale < 0.5) scale = 0.5;
+                renderPage(currentPage);
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (!overlay.classList.contains("active")) return;
+
+                if (e.key === "Escape") {
+                    overlay.classList.remove("active");
+                    pdfDoc = null;
+                } else if (e.key === "ArrowLeft" && currentPage > 1) {
+                    document.getElementById("prevBtn").click();
+                } else if (
+                    e.key === "ArrowRight" &&
+                    currentPage < pdfDoc.numPages
+                ) {
+                    document.getElementById("nextBtn").click();
+                }
+            });
+
+            initPDFLinks();
         </script>
     </body>
 </html>

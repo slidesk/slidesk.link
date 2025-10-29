@@ -38,6 +38,24 @@ const app = new Elysia()
   .use(sitemap)
   .use(addons)
   .use(search)
+  .get("/api/proxy-pdf", async ({ query, set }) => {
+    try {
+      const response = await fetch(query.url);
+      if (!response.ok) {
+        set.status = response.status;
+        return "Erreur téléchargement";
+      }
+      set.headers = {
+        "Content-Type": "application/pdf",
+        "Cache-Control": "public, max-age=3600",
+      };
+      return new Response(response.body);
+    } catch (error) {
+      console.error("Erreur:", error);
+      set.status = 500;
+      return "Erreur serveur";
+    }
+  })
   .ws("/s/:uuid/ws", {
     message(ws, message) {
       ws.publish(ws.data.params.uuid, message);
