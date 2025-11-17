@@ -6,6 +6,7 @@ import mainCSS from "./src/html/css/main.css" with { type: "text" };
 import picoCSS from "./src/html/css/pico.min.css" with { type: "text" };
 import createUserPage from "./src/services/createUserPage";
 import footer from "./src/services/footer";
+import itemHTML from "./src/html/item.html" with { type: "text" };
 
 const css = picoCSS + mainCSS;
 const hasher = new Bun.CryptoHasher("sha1");
@@ -62,6 +63,21 @@ for (const page of ["profile", "mentions", "search"]) {
           `<meta charset="utf-8" /><link rel="stylesheet" href="/public/${sha}.css" />`,
         )
         .replace("#FOOTER", footerHTML),
+    ),
+  );
+}
+
+for (const page of ["components", "plugins", "templates", "themes"]) {
+  await Bun.write(
+    `${process.cwd()}/dist-html/${page}.html`,
+    await minify.html(
+      String(itemHTML)
+        .replace(
+          '<meta charset="utf-8" />',
+          `<meta charset="utf-8" /><link rel="stylesheet" href="/public/${sha}.css" />`,
+        )
+        .replace("#FOOTER", footerHTML)
+        .replaceAll("#TYPE", page),
     ),
   );
 }

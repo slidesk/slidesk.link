@@ -23,6 +23,29 @@ const home = new Elysia()
     return new Response(Bun.file(`${process.cwd()}/dist-html/mentions.html`), {
       headers: { "Content-Type": "text/html" },
     });
+  })
+  .get("/components/", () => {
+    return new Response(
+      Bun.file(`${process.cwd()}/dist-html/components.html`),
+      {
+        headers: { "Content-Type": "text/html" },
+      },
+    );
+  })
+  .get("/plugins/", () => {
+    return new Response(Bun.file(`${process.cwd()}/dist-html/plugins.html`), {
+      headers: { "Content-Type": "text/html" },
+    });
+  })
+  .get("/templates/", () => {
+    return new Response(Bun.file(`${process.cwd()}/dist-html/templates.html`), {
+      headers: { "Content-Type": "text/html" },
+    });
+  })
+  .get("/themes/", () => {
+    return new Response(Bun.file(`${process.cwd()}/dist-html/themes.html`), {
+      headers: { "Content-Type": "text/html" },
+    });
   });
 
 export default home;

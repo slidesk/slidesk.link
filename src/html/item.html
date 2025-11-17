@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+        <title>SliDesk.link | #TYPE</title>
+        <link rel="icon" href="/public/slidesk.svg" type="image/svg+xml" />
+        <link rel="icon" href="/public/slidesk.ico" type="image/x-icon" />
+        <link
+            rel="icon"
+            href="/public/slidesk-32x32.png"
+            type="image/png"
+            sizes="32x32"
+        />
+        <link
+            rel="apple-touch-icon"
+            href="/public/slidesk-180x180.png"
+            type="image/png"
+            sizes="180x180"
+        />
+    </head>
+    <body>
+        <header>
+            <nav class="container">
+                <ul>
+                    <li>
+                        <a href="/" id="backhome">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                xml:space="preserve"
+                                viewBox="0 0 256 256"
+                            >
+                                <defs>
+                                    <style>
+                                        .color {
+                                            stroke: black;
+                                            color-scheme: light dark;
+                                        }
+                                        @media (prefers-color-scheme: dark) {
+                                            .color {
+                                                stroke: white;
+                                            }
+                                        }
+                                    </style>
+                                </defs>
+                                <circle
+                                    cx="149.95"
+                                    cy="72.23"
+                                    r="36.22"
+                                    fill="none"
+                                    stroke="#999"
+                                    stroke-width="14"
+                                />
+                                <ellipse
+                                    cx="128"
+                                    cy="163.51"
+                                    fill="none"
+                                    stroke="#999"
+                                    stroke-width="14"
+                                    rx="88.25"
+                                    ry="56.48"
+                                />
+                                <path
+                                    fill="none"
+                                    class="color"
+                                    stroke-width="14"
+                                    d="M128 107.03c48.74 0 88.25 25.29 88.25 56.48s-39.51 56.48-88.25 56.48c-33.72 0-63.02-12.1-77.88-29.89"
+                                />
+                                <path
+                                    fill="none"
+                                    class="color"
+                                    stroke-linecap="round"
+                                    stroke-width="14"
+                                    d="M144.11 107.98c-41.53-4.76-66.08 8.98-68.24 18.96-3.77 17.45 18.76 23.4 37.85 30.11 26.5 9.31 28.48 26.57 20.95 39.79-11.45 20.11-65.69 20.6-87.92-11.22"
+                                />
+                                <ellipse
+                                    cx="155.7"
+                                    cy="66.47"
+                                    fill="#999"
+                                    stroke="#999"
+                                    stroke-miterlimit="10"
+                                    rx="5.29"
+                                    ry="5.76"
+                                />
+                                <path
+                                    fill="#999"
+                                    stroke="#999"
+                                    stroke-miterlimit="10"
+                                    d="M186.17 69.62s15.38-1.47 17.28 1.35c1.35 6.92-12.66 13.48-18.25 13.48"
+                                />
+                            </svg>
+                            <h1>SliDesk<span>.link</span></h1>
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <details class="dropdown">
+                            <summary>See all</summary>
+                            <ul dir="rtl">
+                                <li><a href="/components/">Components</a></li>
+                                <li><a href="/plugins/">Plugins</a></li>
+                                <li><a href="/templates/">Templates</a></li>
+                                <li><a href="/themes/">Themes</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li><a href="/search/">Search</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main class="container">
+            <div id="results"></div>
+        </main>
+        #FOOTER
+        <script>
+            window.addEventListener("DOMContentLoaded", async () => {
+                const $results = document.querySelector("#results");
+
+                const result = await fetch("/search/*/#TYPE", {
+                    method: "POST",
+                });
+                const { plugins, components, themes, templates } =
+                    await result.json();
+
+                let html = "";
+
+                if (plugins.length)
+                    html = `
+              <section>
+                <details open>
+                  <summary>
+                    <h2>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
+                      Plugins
+                    </h2>
+                  </summary>
+                  ${plugins
+                      .map(
+                          (plugin) => `
+                    <article>
+                      <header>
+                        <h3>
+                            ${plugin.slug}
+                            <small><code data-tooltip="${plugin.downloaded} download(s)">${plugin.downloaded}</code></small>
+                        </h3>
+                      </header>
+                      <div>${plugin.description}</div>
+                      <footer>
+                        <code>slidesk plugin install @${plugin.user}/${plugin.slug}</code>
+                        <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin install @${plugin.user}/${plugin.slug}');return false;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        </a>
+                      </footer>
+                    </article>`,
+                      )
+                      .join("")}
+                </details>
+              </section><hr/>
+                  `;
+
+                if (components.length)
+                    html = `
+              <section>
+                <details open>
+                  <summary>
+                    <h2>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-toy-brick-icon lucide-toy-brick"><rect width="18" height="12" x="3" y="8" rx="1"/><path d="M10 8V5c0-.6-.4-1-1-1H6a1 1 0 0 0-1 1v3"/><path d="M19 8V5c0-.6-.4-1-1-1h-3a1 1 0 0 0-1 1v3"/></svg>
+                      Components
+                    </h2>
+                  </summary>
+                  ${components
+                      .map(
+                          (component) => `
+                    <article>
+                      <header>
+                        <h3>
+                            ${component.slug}
+                            <small><code data-tooltip="${component.downloaded} download(s)">${component.downloaded}</code></small>
+                        </h3>
+                      </header>
+                      <div>${component.description}</div>
+                      <footer>
+                        <code>slidesk component install @${component.user}/${component.slug}</code>
+                        <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk component install @${component.user}/${component.slug}');return false;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        </a>
+                      </footer>
+                    </article>`,
+                      )
+                      .join("")}
+                </details>
+              </section><hr/>
+                  `;
+
+                if (themes.length)
+                    html = `
+              <section>
+                <details open>
+                  <summary>
+                    <h2>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette-icon lucide-palette"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+                      Themes
+                    </h2>
+                  </summary>
+                  ${themes
+                      .map(
+                          (theme) => `
+                    <article>
+                      <header>
+                        <h3>
+                            ${theme.slug}
+                            <small><code data-tooltip="${theme.downloaded} download(s)">${theme.downloaded}</code></small>
+                        </h3>
+                      </header>
+                      <div>${theme.description}</div>
+                      <footer>
+                        <code>slidesk theme install @${theme.user}/${theme.slug}</code>
+                        <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin theme @${theme.user}/${theme.slug}');return false;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        </a>
+                      </footer>
+                    </article>`,
+                      )
+                      .join("")}
+                </details>
+              </section><hr/>
+                  `;
+
+                if (templates.length)
+                    html = `
+              <section>
+                <details open>
+                  <summary>
+                    <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                      Templates
+                    </h2>
+                  </summary>
+                  ${templates
+                      .map(
+                          (template) => `
+                    <article>
+                      <header>
+                        <h3>
+                            ${template.slug}
+                            <small><code data-tooltip="${template.downloaded} download(s)">${template.downloaded}</code></small>
+                        </h3>
+                      </header>
+                      <div>${template.description}</div>
+                      <footer>
+                        <code>slidesk template install @${template.user}/${template.slug}</code>
+                        <a href="#" data-tooltip="copy command" onclick="navigator.clipboard.writeText('slidesk plugin template @${template.user}/${template.slug}');return false;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        </a>
+                      </footer>
+                    </article>`,
+                      )
+                      .join("")}
+                </details>
+              </section><hr/>
+                  `;
+
+                if (html.trim() === "") html = "<mark>no result</mark>";
+                else $results.innerHTML = html;
+            });
+        </script>
+    </body>
+</html>

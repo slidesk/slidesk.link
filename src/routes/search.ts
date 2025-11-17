@@ -67,6 +67,7 @@ const search = new Elysia({ prefix: "/search" })
       themes: [],
     };
     const sections = kinds.split(",");
+    if (search === "*") search = "";
     if (sections.includes("plugins"))
       res.plugins = [...(await pluginSearch(search.toLowerCase()))].map(
         (p) => ({
