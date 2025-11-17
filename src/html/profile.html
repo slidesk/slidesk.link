@@ -164,6 +164,16 @@
                     <input type="submit" />
                 </form>
             </article>
+            <article>
+                <p>Of course, you can delete your account.</p>
+                <p>
+                    All your plugins, presentations, templates, components,
+                    themes, ... will be deleted.
+                </p>
+                <button onclick="window.deleteUser()" class="contrast">
+                    Delete my account
+                </button>
+            </article>
             <details>
                 <summary><h2>Hosted</h2></summary>
                 <div id="hosted"></div>
@@ -179,6 +189,14 @@
             <details>
                 <summary><h2>Components</h2></summary>
                 <div id="components"></div>
+            </details>
+            <details>
+                <summary><h2>Templates</h2></summary>
+                <div id="templates"></div>
+            </details>
+            <details>
+                <summary><h2>Themes</h2></summary>
+                <div id="themes"></div>
             </details>
         </main>
         #FOOTER
@@ -224,7 +242,7 @@
                                                   (s) => `
                                               <tr id="s_${s.id}">
                                                 <td>${new Date(s.date).toISOString().split("T")[0]}: ${s.location}</td>
-                                                <td><button class="secondary" onclick="window.removeSession(${s.id});">Delete Session</button></td>
+                                                <td><button class="secondary" onclick="window.removeItem('session', 's', '${s.id}');">Delete Session</button></td>
                                               </tr>
                                           `,
                                               )
@@ -232,7 +250,7 @@
                                           </table>
                                         </main>
                                         <footer>
-                                          <button class="secondary" onclick="window.removePresentation(${p.id});">Delete Presentation</button>
+                                          <button class="secondary" onclick="window.removeItem('presentation', 'p', '${p.id}');">Delete Presentation</button>
                                         </footer>
                                       </article>
                                     `,
@@ -254,7 +272,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                 ${new Date(h.createdAt).toISOString()}
                               </td>
-                              <td><button class="secondary" onclick="window.removeHosted('${h.id}');">Delete Hosted</button></td>
+                              <td><button class="secondary" onclick="window.removeItem('hosted', 'h', '${h.id}');">Delete Hosted</button></td>
                             </tr>
                             `,
                               )
@@ -273,7 +291,7 @@
                                 (p) => `
                           <tr id="pl_${p.slug}">
                             <td>${p.slug}</td>
-                            <td><button class="secondary" onclick="window.removePlugin('${p.slug}');">Delete</button></td>
+                            <td><button class="secondary" onclick="window.removeItem('plugin', 'pl', '${p.slug}');">Delete</button></td>
                           </tr>
                           `,
                             )
@@ -292,7 +310,7 @@
                                 (c) => `
                           <tr id="c_${c.slug}">
                             <td>${c.slug}</td>
-                            <td><button class="secondary" onclick="window.removeComponent('${c.slug}');">Delete</button></td>
+                            <td><button class="secondary" onclick="window.removeItem('component', 'c', '${c.slug}');">Delete</button></td>
                           </tr>
                           `,
                             )
@@ -303,46 +321,81 @@
                         document.querySelector("#components").innerHTML =
                             "No component found";
                     }
+                    if (data.templates.length) {
+                        document.querySelector("#templates").innerHTML = `
+                        <table class="striped">
+                        ${data.templates
+                            .map(
+                                (c) => `
+                          <tr id="tpl_${c.slug}">
+                            <td>${c.slug}</td>
+                            <td><button class="secondary" onclick="window.removeItem('template', 'tpl', '${c.slug}');">Delete</button></td>
+                          </tr>
+                          `,
+                            )
+                            .join("")}
+                        </table>
+                      `;
+                    } else {
+                        document.querySelector("#templates").innerHTML =
+                            "No template found";
+                    }
+                    if (data.themes.length) {
+                        document.querySelector("#themes").innerHTML = `
+                        <table class="striped">
+                        ${data.themes
+                            .map(
+                                (c) => `
+                          <tr id="t_${c.slug}">
+                            <td>${c.slug}</td>
+                            <td><button class="secondary" onclick="window.removeItem('theme', 't', '${c.slug}');">Delete</button></td>
+                          </tr>
+                          `,
+                            )
+                            .join("")}
+                        </table>
+                      `;
+                    } else {
+                        document.querySelector("#themes").innerHTML =
+                            "No theme found";
+                    }
                 });
 
-            window.removeSession = (id) => {
-                fetch(`/profile/session/${id}`, {
+            window.removeItem = async (type, slug, id) => {
+                await fetch(`/profile/${type}/${id}`, {
                     method: "DELETE",
-                }).then(() => {
-                    document.querySelector(`#s_${id}`).remove();
                 });
+                document.querySelector(`#${slug}_${id}`).remove();
             };
 
-            window.removePresentation = (id) => {
-                fetch(`/profile/presentation/${id}`, {
-                    method: "DELETE",
-                }).then(() => {
-                    document.querySelector(`#p_${id}`).remove();
-                });
-            };
-
-            window.removeHosted = (id) => {
-                fetch(`/profile/hosted/${id}`, {
-                    method: "DELETE",
-                }).then(() => {
-                    document.querySelector(`#h_${id}`).remove();
-                });
-            };
-
-            window.removePlugin = (id) => {
-                fetch(`/profile/plugin/${id}`, {
-                    method: "DELETE",
-                }).then(() => {
-                    document.querySelector(`#pl_${id}`).remove();
-                });
-            };
-
-            window.removeComponent = (id) => {
-                fetch(`/profile/component/${id}`, {
-                    method: "DELETE",
-                }).then(() => {
-                    document.querySelector(`#c_${id}`).remove();
-                });
+            window.deleteUser = async () => {
+                if (confirm("Are you sure?")) {
+                    const ts = [
+                        { type: "session", slug: "s" },
+                        { type: "presentation", slug: "p" },
+                        { type: "hosted", slug: "h" },
+                        { type: "plugin", slug: "pl" },
+                        { type: "component", slug: "c" },
+                        { type: "template", slug: "tpl" },
+                        { type: "theme", slug: "t" },
+                    ];
+                    for await (const { type, slug } of ts) {
+                        const elements = [
+                            ...document.querySelectorAll(`[id^='${slug}_']`),
+                        ];
+                        for await (const { id } of elements) {
+                            await window.removeItem(
+                                type,
+                                slug,
+                                id.replace(`${slug}_`, ""),
+                            );
+                        }
+                    }
+                    await fetch(`/profile/user`, {
+                        method: "DELETE",
+                    });
+                    window.location = "/exit";
+                }
             };
         </script>
     </body>

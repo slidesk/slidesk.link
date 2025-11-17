@@ -9,11 +9,11 @@ import hosted from "./routes/hosted";
 import login from "./routes/login";
 import profile from "./routes/profile";
 import pushtotalk from "./routes/pushtotalk";
+import search from "./routes/search";
 import sitemap from "./routes/sitemap";
 import upload from "./routes/upload";
 import user from "./routes/user";
 import cronService from "./services/cron";
-import search from "./routes/search";
 
 const app = new Elysia()
   .use(staticPlugin())
