@@ -9,4 +9,5 @@ export default async (search: string) =>
       ],
     },
     include: { user: true },
+    orderBy: { slug: "asc" },
   });

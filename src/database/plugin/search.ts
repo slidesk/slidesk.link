@@ -6,4 +6,5 @@ export default async (search: string) =>
       OR: [{ slug: { contains: search } }, { tags: { contains: search } }],
     },
     include: { user: true },
+    orderBy: { slug: "asc" },
   });

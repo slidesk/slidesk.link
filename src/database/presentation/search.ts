@@ -6,4 +6,5 @@ export default async (search: string) =>
       OR: [{ title: { contains: search } }, { abstract: { contains: search } }],
     },
     include: { user: true, Session: true },
+    orderBy: { title: "asc" },
   });
