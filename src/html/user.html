@@ -256,9 +256,9 @@
             window.viewRejecteds = () => {
                 document.getElementById("btn_viewrejecteds").style.display =
                     "none";
-                [...document.querySelectorAll(".status-0")].forEach(
-                    (el, _) => (el.parentElement.style.display = "block"),
-                );
+                [...document.querySelectorAll(".status-0")].forEach((el, _) => {
+                    el.parentElement.style.display = "block";
+                });
             };
         </script>
         <script

@@ -460,3 +460,7 @@ canvas {
     padding: 40px;
     color: #e74c3c;
 }
+
+.align-right {
+    text-align: right;
+}

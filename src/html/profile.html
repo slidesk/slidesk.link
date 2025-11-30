@@ -234,7 +234,29 @@
                         .setAttribute("href", `/u/${data.form.slug}`);
                     autosize();
                     if (data.presentations.length) {
+                        const iconStatus = [
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-x-icon lucide-ticket-x"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9.5 14.5 5-5"/><path d="m9.5 9.5 5 5"/></svg>',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-check-icon lucide-ticket-check"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9 12 2 2 4-4"/></svg>',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-slash-icon lucide-ticket-slash"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9.5 14.5 5-5"/></svg>',
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-minus-icon lucide-ticket-minus"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M9 12h6"/></svg>',
+                        ];
+                        const textStatus = [
+                            "Rejected",
+                            "Accepted",
+                            "Declined",
+                            "Pending",
+                        ];
+                        let nbOk = 0;
+                        let nbTot = 0;
+                        data.presentations.forEach((p, _) => {
+                            nbTot += [...p.Session].length;
+                            nbOk += [...p.Session].reduce(
+                                (acc, val) => acc + (val.status !== 0 ? 1 : 0),
+                                0,
+                            );
+                        });
                         document.querySelector("#presentations").innerHTML =
+                            `<h3 class="align-right">${nbOk} / ${nbTot} => ${((nbOk / nbTot) * 100).toFixed(2)}%</h3>` +
                             data.presentations
                                 .map(
                                     (p) => `
@@ -252,8 +274,8 @@
                                               .map(
                                                   (s) => `
                                               <tr id="s_${s.id}">
-                                                <td>${new Date(s.date).toISOString().split("T")[0]}: ${s.location}</td>
-                                                <td><button class="secondary" onclick="window.removeItem('session', 's', '${s.id}');">Delete Session</button></td>
+                                                <td><span class="icon-status status-${s.status}" data-tooltip="${textStatus[s.status]}">${iconStatus[s.status]}</span>${new Date(s.date).toISOString().split("T")[0]}: ${s.location}</td>
+                                                <td class="align-right"><button class="secondary" onclick="window.removeItem('session', 's', '${s.id}');">Delete Session</button></td>
                                               </tr>
                                           `,
                                               )
@@ -261,6 +283,7 @@
                                           </table>
                                         </main>
                                         <footer>
+                                          ${[...p.Session].reduce((acc, val) => acc + (val.status !== 0 ? 1 : 0), 0)}/${[...p.Session].length} = ${((100 * [...p.Session].reduce((acc, val) => acc + (val.status !== 0 ? 1 : 0), 0)) / [...p.Session].length).toFixed(2)}%
                                           <button class="secondary" onclick="window.removeItem('presentation', 'p', '${p.id}');">Delete Presentation</button>
                                         </footer>
                                       </article>

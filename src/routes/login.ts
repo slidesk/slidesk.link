@@ -5,13 +5,20 @@ import getUser from "../services/getUser";
 
 const login = new Elysia({ prefix: "/login" })
   .use(
-    oauth2({
-      GitHub: [
-        Bun.env.GITHUB_OAUTH_CLIENT_ID ?? "",
-        Bun.env.GITHUB_OAUTH_CLIENT_SECRET ?? "",
-        `${Bun.env.HOST}/login/github/authorized`,
-      ],
-    }),
+    oauth2(
+      {
+        GitHub: [
+          Bun.env.GITHUB_OAUTH_CLIENT_ID ?? "",
+          Bun.env.GITHUB_OAUTH_CLIENT_SECRET ?? "",
+          `${Bun.env.HOST}/login/github/authorized`,
+        ],
+      },
+      {
+        cookie: {
+          secure: Bun.env.HOST !== "http://localhost:3000",
+        },
+      },
+    ),
   )
   .use(
     jwt({
