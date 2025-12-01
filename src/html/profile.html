@@ -251,7 +251,11 @@
                         data.presentations.forEach((p, _) => {
                             nbTot += [...p.Session].length;
                             nbOk += [...p.Session].reduce(
-                                (acc, val) => acc + (val.status !== 0 ? 1 : 0),
+                                (acc, val) =>
+                                    acc +
+                                    (val.status !== 0 && val.status !== 3
+                                        ? 1
+                                        : 0),
                                 0,
                             );
                         });
@@ -283,7 +287,7 @@
                                           </table>
                                         </main>
                                         <footer>
-                                          ${[...p.Session].reduce((acc, val) => acc + (val.status !== 0 ? 1 : 0), 0)}/${[...p.Session].length} = ${((100 * [...p.Session].reduce((acc, val) => acc + (val.status !== 0 ? 1 : 0), 0)) / [...p.Session].length).toFixed(2)}%
+                                          ${[...p.Session].reduce((acc, val) => acc + (val.status !== 0 && val.status !== 3 ? 1 : 0), 0)}/${[...p.Session].length} = ${((100 * [...p.Session].reduce((acc, val) => acc + (val.status !== 0 && val.status !== 3 ? 1 : 0), 0)) / [...p.Session].length).toFixed(2)}%
                                           <button class="secondary" onclick="window.removeItem('presentation', 'p', '${p.id}');">Delete Presentation</button>
                                         </footer>
                                       </article>
