@@ -185,6 +185,9 @@
                     Delete my account
                 </button>
             </article>
+            <article>
+                <p>Token to past in <code>~/.slidesk</code> if you can't use <code>slidesk link login</code>: <pre id="token"></pre></p>
+            </article>
             <details>
                 <summary><h2>Hosted</h2></summary>
                 <div id="hosted"></div>
@@ -226,6 +229,7 @@
             fetch(`/profile/data?${Date.now()}`)
                 .then((response) => response.json())
                 .then((data) => {
+                    document.querySelector("#token").innerHTML = data.token;
                     Object.entries(data.form).forEach(([k, v], _) => {
                         document.querySelector(`[name='${k}']`).value = v;
                     });

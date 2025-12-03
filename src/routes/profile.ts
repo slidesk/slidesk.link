@@ -21,6 +21,7 @@ import checkId from "../database/user/checkId";
 import deleteUser from "../database/user/delete";
 import update from "../database/user/update";
 import createUserPage from "../services/createUserPage";
+import getToken from "../database/user/getToken";
 
 const profile = new Elysia({ prefix: "/profile" })
   .use(
@@ -59,6 +60,7 @@ const profile = new Elysia({ prefix: "/profile" })
         components: await getComponentsByUser(Number(profile.id)),
         templates: await getTemplatesByUser(Number(profile.id)),
         themes: await getThemesByUser(Number(profile.id)),
+        token: await getToken(Number(profile.id)),
       }),
       {
         headers: { "Content-Type": "application/json" },
