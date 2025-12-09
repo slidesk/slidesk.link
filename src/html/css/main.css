@@ -464,3 +464,14 @@ canvas {
 .align-right {
     text-align: right;
 }
+
+#token {
+    text-align: center;
+    padding: 5px;
+    filter: blur(0.5rem);
+    transition: filter 0.8s;
+
+    &:hover {
+        filter: blur(0);
+    }
+}
