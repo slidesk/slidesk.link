@@ -67,6 +67,7 @@ export default async (u: SlideskLinkUser) => {
         <header>
           <h3 id="t${p.id}">
               ${p.title}
+              <a href="#t${p.id}" data-tooltip="copy link to">#</a>
           </h3>
         </header>
         <div>${md.render(p.abstract ?? "")}</div>
@@ -165,6 +166,7 @@ export default async (u: SlideskLinkUser) => {
           <h3 id="p${plugin.slug}">
               ${plugin.slug}
               <small><code data-tooltip="${plugin.downloaded} download(s)">${plugin.downloaded}</code></small>
+              <a href="#p${plugin.slug}" data-tooltip="copy link to">#</a>
           </h3>
         </header>
         <div>${md
@@ -214,6 +216,7 @@ export default async (u: SlideskLinkUser) => {
           <h3 id="c${component.slug}">
               ${component.slug}
               <small><code data-tooltip="${component.downloaded} download(s)">${component.downloaded}</code></small>
+              <a href="#c${component.slug}" data-tooltip="copy link to">#</a>
           </h3>
         </header>
         <div>${md
@@ -260,9 +263,10 @@ export default async (u: SlideskLinkUser) => {
         (theme) => `
       <article>
         <header>
-          <h3>
+          <h3 id="th${theme.slug}">
               ${theme.slug}
               <small><code data-tooltip="${theme.downloaded} download(s)">${theme.downloaded}</code></small>
+              <a href="#th${theme.slug}" data-tooltip="copy link to">#</a>
           </h3>
         </header>
         <div>
@@ -314,9 +318,10 @@ export default async (u: SlideskLinkUser) => {
         (template) => `
       <article>
         <header>
-          <h3>
+          <h3 id="tp${template.slug}">
               ${template.slug}
               <small><code data-tooltip="${template.downloaded} download(s)">${template.downloaded}</code></small>
+              <a href="#tp${template.slug}" data-tooltip="copy link to">#</a>
           </h3>
         </header>
         <div>${md

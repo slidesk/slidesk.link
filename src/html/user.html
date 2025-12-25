@@ -260,6 +260,16 @@
                     el.parentElement.style.display = "block";
                 });
             };
+
+            window.addEventListener("load", () => {
+                document.querySelectorAll("h3 a").forEach((el) => {
+                    el.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(el.href);
+                        alert("Link copied to clipboard!");
+                    });
+                });
+            });
         </script>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
