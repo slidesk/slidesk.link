@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { telegram } from "../api/telegram";
 import componentAddDownload from "../database/component/addDownload";
 import componentGetByUserAndSlug from "../database/component/getByUserAndSlug";
 import componentSearch from "../database/component/search";
@@ -34,6 +35,14 @@ const addons = new Elysia({
       if (!user) return new Response("err: No user found", { status: 403 });
       if (!authorizedKinds.includes(body.type))
         return new Response("err: No type allowed", { status: 403 });
+      await telegram(
+        JSON.stringify({
+          action: "push",
+          user: user.slug,
+          type: body.type,
+          name: body.name,
+        }),
+      );
       await Bun.write(
         `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,
         body.file,

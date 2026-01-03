@@ -1,8 +1,9 @@
 import { Elysia, t } from "elysia";
 import { extract } from "tar";
+import { telegram } from "../api/telegram";
 import addHostedPresentation from "../database/hostedPresentation/add";
-import checkToken from "../database/user/checkToken";
 import countByUser from "../database/hostedPresentation/countByUser";
+import checkToken from "../database/user/checkToken";
 
 const upload = new Elysia({
   prefix: "/upload",
@@ -20,6 +21,12 @@ const upload = new Elysia({
     await Bun.write(
       `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
       body.file,
+    );
+    await telegram(
+      JSON.stringify({
+        action: "host",
+        user: user.slug,
+      }),
     );
     await extract({
       file: `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
