@@ -132,6 +132,14 @@ const addons = new Elysia({
         return new Response("Wrong kind of asset", { status: 403 });
       const _user = await checkSlug(user);
       if (!_user) return new Response("User not found", { status: 404 });
+      await telegram(
+        JSON.stringify({
+          action: "download",
+          type: kind,
+          user,
+          name,
+        }),
+      );
       switch (kind) {
         case "plugin": {
           const plugin = await pluginGetByUserAndSlug(_user.id, name);
