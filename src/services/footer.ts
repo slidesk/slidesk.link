@@ -7,7 +7,7 @@ export default `
       <ul>
           <li>
               <a
-                  href="https://slidesk.github.io/slidesk-doc/"
+                  href="https://slidesk.github.io/slidesk/"
                   target="_blank"
                   rel="noopener"
               >
