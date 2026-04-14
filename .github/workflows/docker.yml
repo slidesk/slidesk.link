@@ -22,7 +22,6 @@ jobs:
     name: Push on Docker Hub
     runs-on: ubuntu-latest
     environment: build
-    needs: build_release
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
