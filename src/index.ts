@@ -14,6 +14,7 @@ import sitemap from "./routes/sitemap";
 import upload from "./routes/upload";
 import user from "./routes/user";
 import cronService from "./services/cron";
+import { buildWeb } from "./services/build-web";
 
 const app = new Elysia()
   .use(staticPlugin())
@@ -38,6 +39,11 @@ const app = new Elysia()
   .use(sitemap)
   .use(addons)
   .use(search)
+  .get("/css/:id", async ({ params: { id } }) => {
+    const file = Bun.file(`${process.cwd()}/dist-html/${id}.css`);
+    if (await file.exists()) return file;
+    return "";
+  })
   .get("/api/proxy-pdf", async ({ query, set }) => {
     try {
       const response = await fetch(query.url);
@@ -68,6 +74,8 @@ const app = new Elysia()
     },
   })
   .listen(3000);
+
+await buildWeb();
 
 console.log(
   `🦊 Slidesk.link is running at http://${app.server?.hostname}:${app.server?.port}`,
