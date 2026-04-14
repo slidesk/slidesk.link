@@ -39,6 +39,7 @@ const app = new Elysia()
   .use(sitemap)
   .use(addons)
   .use(search)
+  .get("/health", () => ({ success: true, message: "healthy" }))
   .get("/css/:id", async ({ params: { id } }) => {
     const file = Bun.file(`${process.cwd()}/dist-html/${id}.css`);
     if (await file.exists()) return file;
