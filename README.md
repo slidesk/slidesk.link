@@ -25,6 +25,7 @@ DATABASE_URL="file:../YOUR_DB.db"
 
 ```bash
 bun install
-bunx prisma db push
+bunx prisma generate
+bunx prisma migrate deploy
 bun web
 ```

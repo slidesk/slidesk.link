@@ -1,5 +1,7 @@
 import { PrismaClient } from "./generated/prisma/client";
+import { PrismaBunSqlite } from "prisma-adapter-bun-sqlite";
 
-export const db = new PrismaClient({
-  log: ["error"],
+const adapter = new PrismaBunSqlite({
+  url: Bun.env.DATABASE_URL ?? "",
 });
+export const db = new PrismaClient({ adapter });
