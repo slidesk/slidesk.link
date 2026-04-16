@@ -349,12 +349,12 @@ export default async (u: SlideskLinkUser) => {
   html = await minify.html(html.replace("#FOOTER", footer));
   const glob = new Glob("*.css");
   let sha = "";
-  for await (const file of glob.scanSync(`${process.cwd()}/public`)) {
+  for await (const file of glob.scanSync(`${process.cwd()}/dist-html`)) {
     sha = file;
   }
   html = html.replace(
     "<meta charset=utf-8>",
-    `<meta charset=utf-8><link rel=stylesheet href=/public/${sha}>`,
+    `<meta charset=utf-8><link rel=stylesheet href=/css/${sha.replace(".css", "")}>`,
   );
   await Bun.write(`${process.cwd()}/app/users/${u.slug}.html`, html);
   await db.user.update({

@@ -15,8 +15,8 @@ export const buildWeb = async () => {
   const sha = hasher.digest("hex");
 
   const glob = new Glob("*.css");
-  for await (const file of glob.scanSync(`${process.cwd()}/public`)) {
-    const f = Bun.file(`${process.cwd()}/public/${file}`);
+  for await (const file of glob.scanSync(`${process.cwd()}/dist-html`)) {
+    const f = Bun.file(`${process.cwd()}/dist-html/${file}`);
     await f.delete();
   }
 
