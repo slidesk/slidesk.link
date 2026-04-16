@@ -18,7 +18,6 @@ COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app .
 RUN bunx prisma generate
 RUN bunx prisma db push
-RUN apt install curl
 
 # run the app
 USER bun
