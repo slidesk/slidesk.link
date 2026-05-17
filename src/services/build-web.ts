@@ -2,14 +2,16 @@ import { Glob } from "bun";
 import hljs from "highlight.js";
 import { minify } from "minify";
 import { db } from "../db";
+import { homePage } from "../html/pages/home";
+import { itemPage } from "../html/pages/item";
+import { mentionsPage } from "../html/pages/mentions";
+import { profilePage } from "../html/pages/profile";
+import { searchPage } from "../html/pages/search";
 import mainCSS from "../html/css/main.css" with { type: "text" };
-import picoCSS from "../html/css/pico.min.css" with { type: "text" };
-import itemHTML from "../html/item.html" with { type: "text" };
 import createUserPage from "./createUserPage";
-import footer from "./footer";
 
 export const buildWeb = async () => {
-  const css = picoCSS + mainCSS;
+  const css = mainCSS;
   const hasher = new Bun.CryptoHasher("sha1");
   hasher.update(css);
   const sha = hasher.digest("hex");
@@ -24,6 +26,8 @@ export const buildWeb = async () => {
     `${process.cwd()}/dist-html/${sha}.css`,
     await minify.css(css),
   );
+
+  const cssPath = `/css/${sha}`;
 
   const yml = `title: Your title
   abstract: |
@@ -55,68 +59,30 @@ export const buildWeb = async () => {
   const hyml = hljs.highlight(yml, { language: "yaml" }).value;
   const hjson = hljs.highlight(json, { language: "json" }).value;
 
-  const footerHTML = footer;
+  const injectCSS = (html: string) =>
+    html.replace(
+      "</head>",
+      `<link rel="stylesheet" href="${cssPath}" /></head>`,
+    );
 
-  for (const page of ["profile", "mentions", "search"]) {
+  const pages: [string, string][] = [
+    ["index", injectCSS(homePage(hyml, hjson, false))],
+    ["index-logged", injectCSS(homePage(hyml, hjson, true))],
+    ["mentions", injectCSS(mentionsPage())],
+    ["profile", injectCSS(profilePage())],
+    ["search", injectCSS(searchPage())],
+    ["components", injectCSS(itemPage("components"))],
+    ["plugins", injectCSS(itemPage("plugins"))],
+    ["templates", injectCSS(itemPage("templates"))],
+    ["themes", injectCSS(itemPage("themes"))],
+  ];
+
+  for (const [name, html] of pages) {
     await Bun.write(
-      `${process.cwd()}/dist-html/${page}.html`,
-      await minify.html(
-        (await Bun.file(`${process.cwd()}/src/html/${page}.html`).text())
-          .replace(
-            '<meta charset="utf-8" />',
-            `<meta charset="utf-8" /><link rel="stylesheet" href="/css/${sha}" />`,
-          )
-          .replace("#FOOTER", footerHTML),
-      ),
+      `${process.cwd()}/dist-html/${name}.html`,
+      await minify.html(html),
     );
   }
-
-  for (const page of ["components", "plugins", "templates", "themes"]) {
-    await Bun.write(
-      `${process.cwd()}/dist-html/${page}.html`,
-      await minify.html(
-        String(itemHTML)
-          .replace(
-            '<meta charset="utf-8" />',
-            `<meta charset="utf-8" /><link rel="stylesheet" href="/css/${sha}" />`,
-          )
-          .replace("#FOOTER", footerHTML)
-          .replaceAll("#TYPE", page),
-      ),
-    );
-  }
-
-  await Bun.write(
-    `${process.cwd()}/dist-html/index.html`,
-    await minify.html(
-      (await Bun.file(`${process.cwd()}/src/html/index.html`).text())
-        .replace(
-          '<meta charset="utf-8" />',
-          `<meta charset="utf-8" /><link rel="stylesheet" href="/css/${sha}" />`,
-        )
-        .replace("#YML", hyml)
-        .replace("#JSON", hjson)
-        .replace("#FOOTER", footerHTML),
-    ),
-  );
-
-  await Bun.write(
-    `${process.cwd()}/dist-html/index-logged.html`,
-    await minify.html(
-      (await Bun.file(`${process.cwd()}/src/html/index.html`).text())
-        .replace(
-          '<meta charset="utf-8" />',
-          `<meta charset="utf-8" /><link rel="stylesheet" href="/css/${sha}" />`,
-        )
-        .replace(
-          '<a href="/login/">Login</a>',
-          '<a href="/profile">Profile</a></li><li><a href="/exit">Logout</a>',
-        )
-        .replace("#YML", hyml)
-        .replace("#JSON", hjson)
-        .replace("#FOOTER", footerHTML),
-    ),
-  );
 
   const users = await db.user.findMany();
   for await (const u of users) {
