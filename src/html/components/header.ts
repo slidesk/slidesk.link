@@ -59,3 +59,23 @@ export const profileHeader = () =>
     { html: `<a href="#" id="gotomypage">My page</a>` },
     { html: `<a href="/exit">Logout</a>` },
   ]);
+
+const sidebarBase = (extra: string, logout: string) => `<aside class="profile-sidebar">
+  <a href="/" class="brand">${logoSvg}<span>SliDesk.link</span></a>
+  <nav>
+    ${extra}
+    <a href="/search/">Search</a>
+    ${dropdownLinks}
+  </nav>
+  ${logout}
+</aside>`;
+
+export const profileSidebar = () =>
+  sidebarBase(
+    `<a href="#" id="gotomypage">My page</a>`,
+    `<div class="spacer"></div>
+    <a href="/exit" class="logout">Logout</a>`,
+  );
+
+export const userSidebar = () =>
+  sidebarBase("", "");
