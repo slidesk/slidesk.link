@@ -19,12 +19,12 @@ const md = markdownIt({
 
 export default async (u: SlideskLinkUser) => {
   const getSessionDate = (session: SlideskLinkSession) =>
-    session.status === 1 ? new Date(session.date).getTime() : 0;
-  const getLastDate = (sessions: SlideskLinkSession[] | undefined) =>
-    sessions?.sort((a, b) => getSessionDate(b) - getSessionDate(a))[0]?.date ??
+    session.status === 1 ? new Date(session.date).getTime() : Infinity;
+  const getFirstDate = (sessions: SlideskLinkSession[] | undefined) =>
+    sessions?.sort((a, b) => getSessionDate(a) - getSessionDate(b))[0]?.date ??
     0;
   const presentations = (await presentationGetByUser(Number(u.id)))?.sort(
-    (a, b) => (getLastDate(a.Session) > getLastDate(b.Session) ? -1 : 1),
+    (a, b) => (getFirstDate(a.Session) > getFirstDate(b.Session) ? -1 : 1),
   );
 
   const talks = [];
