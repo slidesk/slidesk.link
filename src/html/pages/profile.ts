@@ -1,12 +1,11 @@
 import { page } from "../components/layout";
-import { profileSidebar } from "../components/header";
+import { profileHeader } from "../components/header";
 
 export const profilePage = () =>
   page(
     { title: "SliDesk.link | Profile" },
-    `<div class="profile-layout">
-      ${profileSidebar()}
-      <main class="container">
+    `${profileHeader()}
+      <main class="container" style="margin-top: 2rem;">
       <article>
         <header><h2>Edit your profile</h2></header>
         <form method="post">
@@ -48,7 +47,6 @@ export const profilePage = () =>
         <button onclick="window.deleteUser()" class="secondary" style="border-color: #ef4444; color: #ef4444;">Delete my account</button>
       </article>
     </main>
-    </div>
     <script>
       const autosize = () => {
         const resize = ($text) => { $text.style.height = "auto"; $text.style.height = $text.scrollHeight + "px"; };
