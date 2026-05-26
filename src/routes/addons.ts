@@ -1,4 +1,5 @@
 import { Elysia, t } from "elysia";
+import { bksy } from "../api/bsky";
 import { telegram } from "../api/telegram";
 import componentAddDownload from "../database/component/addDownload";
 import componentGetByUserAndSlug from "../database/component/getByUserAndSlug";
@@ -42,6 +43,9 @@ const addons = new Elysia({
           type: body.type,
           name: body.name,
         }),
+      );
+      await bksy(
+        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}/#${user.slug}__${body.name}`,
       );
       await Bun.write(
         `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,
