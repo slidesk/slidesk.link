@@ -34,8 +34,8 @@ export const itemPage = (type: string) =>
           <section>
             <h2>\${icon} \${title}</h2>
             <div class="addon-grid">\${items.map(i => \`
-              <article>
-                <header><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
+              <article id="\${i.user}__\${i.slug}">
+                <header><a href="#\${i.user}__\${i.slug}" class="copy-link-btn" data-tooltip="copy link to">#</a><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
                 <div>\${i.description}</div>
                 <footer>
                   <code>slidesk \${kind} install @\${i.user}/\${i.slug}</code>
@@ -62,6 +62,17 @@ export const itemPage = (type: string) =>
               if (cmd) { navigator.clipboard.writeText(cmd); showToast("Command copied!"); }
             });
           });
+          document.querySelectorAll(".copy-link-btn").forEach(el => {
+            el.addEventListener("click", e => {
+              e.preventDefault();
+              navigator.clipboard.writeText(el.href);
+              showToast("Link copied!");
+            });
+          });
+          if (location.hash) {
+            const target = document.getElementById(location.hash.slice(1));
+            if (target) target.scrollIntoView({ behavior: "smooth" });
+          }
         }
       });
     </script>`,

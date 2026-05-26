@@ -66,8 +66,8 @@ export const searchPage = () =>
                 <section>
                   <h2>\${icon} \${title}</h2>
                   <div class="addon-grid">\${items.map(i => \`
-                    <article>
-                      <header><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
+                    <article id="\${i.user}__\${i.slug}">
+                      <header><a href="/\${fn.toLowerCase()}/" class="copy-link-btn" data-tooltip="copy link to">#</a><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
                       <div>\${i.description}</div>
                       <footer>
                         <code>slidesk \${fn.toLowerCase().slice(0,-1)} install @\${i.user}/\${i.slug}</code>
@@ -124,6 +124,18 @@ export const searchPage = () =>
                 if (cmd) { navigator.clipboard.writeText(cmd); showToast("Command copied!"); }
               });
             });
+            document.querySelectorAll(".copy-link-btn").forEach(el => {
+              el.addEventListener("click", e => {
+                e.preventDefault();
+                const id = el.closest("article").id;
+                navigator.clipboard.writeText(location.origin + el.getAttribute("href") + "#" + id);
+                showToast("Link copied!");
+              });
+            });
+            if (location.hash) {
+              const target = document.getElementById(location.hash.slice(1));
+              if (target) target.scrollIntoView({ behavior: "smooth" });
+            }
           }
         }
       });

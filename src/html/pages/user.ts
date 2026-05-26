@@ -58,9 +58,10 @@ type UserPageData = {
 };
 
 const cardHtml = (item: AddonItem, slug: string, command: string) =>
-  `<article class="addon-card">
+  `<article class="addon-card" id="${slug}__${item.slug}">
     <div class="addon-card-body">
-      <h3 id="${slug}${item.slug}" class="addon-card-title">
+      <h3 class="addon-card-title">
+        <a href="#${slug}__${item.slug}" class="copy-link-btn" data-tooltip="copy link to">#</a>
         <span>${item.slug}</span>
         <span class="download-badge" data-tooltip="${item.downloaded} download(s)">${item.downloaded}</span>
       </h3>
@@ -71,7 +72,6 @@ const cardHtml = (item: AddonItem, slug: string, command: string) =>
       <button class="copy-btn" data-cmd="slidesk ${command} install @${slug}/${item.slug}" aria-label="copy command">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
       </button>
-      <a href="#${slug}${item.slug}" class="copy-link-btn" data-tooltip="copy link to">#</a>
     </div>
   </article>`;
 

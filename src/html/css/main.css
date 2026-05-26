@@ -5388,6 +5388,27 @@ header > nav > ul:first-child a {
   gap: 1rem;
 }
 
+.addon-grid > article,
+.addon-card {
+  scroll-margin-top: 8rem;
+}
+
+.addon-grid > article:target {
+  background: var(--gradient-glass-hover);
+  border-radius: 16px;
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.3);
+}
+
+.addon-grid article header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addon-grid article header h3 {
+  margin: 0;
+}
+
 .addon-card {
   border-radius: 16px;
   display: flex;
