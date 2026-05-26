@@ -30,35 +30,20 @@ export const itemPage = (type: string) =>
 
         const section = (items, icon, title, kind, installCmd) => {
           if (!items.length) return "";
-          const cols = [[], []];
-          items.forEach((item, i) => cols[i % 2].push(item));
           return \`
           <section>
             <h2>\${icon} \${title}</h2>
-            <div class="addon-grid">
-              <div class="col">\${cols[0].map(i => \`
-                <article>
-                  <header><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
-                  <div>\${i.description}</div>
-                  <footer>
-                    <code>slidesk \${kind} install @\${i.user}/\${i.slug}</code>
-                    <button class="copy-btn" data-cmd="slidesk \${installCmd} @\${i.user}/\${i.slug}" aria-label="copy command">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                    </button>
-                  </footer>
-                </article>\`).join("")}</div>
-              <div class="col">\${cols[1].map(i => \`
-                <article>
-                  <header><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
-                  <div>\${i.description}</div>
-                  <footer>
-                    <code>slidesk \${kind} install @\${i.user}/\${i.slug}</code>
-                    <button class="copy-btn" data-cmd="slidesk \${installCmd} @\${i.user}/\${i.slug}" aria-label="copy command">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                    </button>
-                  </footer>
-                </article>\`).join("")}</div>
-            </div>
+            <div class="addon-grid">\${items.map(i => \`
+              <article>
+                <header><h3>\${i.slug} <span class="download-badge" data-tooltip="\${i.downloaded} download(s)">\${i.downloaded}</span></h3></header>
+                <div>\${i.description}</div>
+                <footer>
+                  <code>slidesk \${kind} install @\${i.user}/\${i.slug}</code>
+                  <button class="copy-btn" data-cmd="slidesk \${installCmd} @\${i.user}/\${i.slug}" aria-label="copy command">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  </button>
+                </footer>
+              </article>\`).join("")}</div>
           </section><hr/>\`;
         };
 

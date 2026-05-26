@@ -3678,40 +3678,6 @@ article footer code::before {
   content: "> ";
 }
 
-.addon-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  align-items: start;
-}
-
-.addon-grid .col {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-@media (max-width: 720px) {
-  .addon-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.addon-grid .col {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  overflow: hidden;
-}
-
-@media (max-width: 720px) {
-  .addon-grid {
-    flex-direction: column;
-  }
-}
 
 .download-badge {
   display: inline-flex;
@@ -5417,20 +5383,9 @@ header > nav > ul:first-child a {
 }
 
 .addon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-}
-
-.profile-content .addon-grid {
-  display: block;
-  column-count: 2;
-  column-gap: 1rem;
-}
-
-.profile-content .addon-card {
-  break-inside: avoid;
-  margin-bottom: 1rem;
 }
 
 .addon-card {
@@ -5606,14 +5561,6 @@ header > nav > ul:first-child a {
 
   .session-status {
     order: 0;
-  }
-
-  .profile-content .addon-grid {
-    column-count: 1;
-  }
-
-  .addon-grid {
-    grid-template-columns: 1fr;
   }
 
   .addon-card-actions {

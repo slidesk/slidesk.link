@@ -85,7 +85,7 @@ const addonSection = (
   if (!items.length) return "";
   return `<section class="addons-section">
   <h2 class="addons-title">${icon} ${title}</h2>
-  <div class="addon-grid">${items.map((item) => cardHtml(item, slug, command)).join("")}</div>
+  ${items.map((item) => cardHtml(item, slug, command)).join("")}
 </section>`;
 };
 
