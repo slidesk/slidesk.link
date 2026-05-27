@@ -5,6 +5,7 @@ const addonLinks = `
   <a href="/components/">Components</a>
   <a href="/templates/">Templates</a>
   <a href="/themes/">Themes</a>
+  <a href="https://slidesk.github.io/slidesk/" target="_blank" rel="noopener">Documentation</a>
 `;
 
 const header = (extra: string, big?: boolean) => {

@@ -162,7 +162,7 @@ export const userPageHtml = (data: UserPageData) => {
     }
     all.sort(
       (a, b) =>
-        a.date.localeCompare(b.date) ||
+        b.date.localeCompare(a.date) ||
         Number(b.session.date) - Number(a.session.date),
     );
     const groups: {
