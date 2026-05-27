@@ -45,7 +45,7 @@ const addons = new Elysia({
         }),
       );
       await bksy(
-        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
+        `New ${body.type}! Go to ${Bun.env.HOST}/a/${body.type}/${user.slug}/${body.name}`,
       );
       await Bun.write(
         `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,

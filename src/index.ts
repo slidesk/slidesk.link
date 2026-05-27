@@ -1,6 +1,7 @@
 import { cron } from "@elysiajs/cron";
 import staticPlugin from "@elysiajs/static";
 import { Elysia } from "elysia";
+import addonPage from "./routes/addon-page";
 import addons from "./routes/addons";
 import auth from "./routes/auth";
 import exit from "./routes/exit";
@@ -37,6 +38,7 @@ const app = new Elysia()
   .use(exit)
   .use(pushtotalk)
   .use(sitemap)
+  .use(addonPage)
   .use(addons)
   .use(search)
   .get("/health", () => ({ success: true, message: "healthy" }))
