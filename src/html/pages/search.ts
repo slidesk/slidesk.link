@@ -6,6 +6,10 @@ export const searchPage = () =>
     { title: "SliDesk.link | Search" },
     `${internalHeader()}
     <main class="container">
+      <style>
+        main.container > form > article { padding: 1rem 1.5rem; }
+        main.container > form > article > header { padding-left: 0; padding-right: 0; }
+      </style>
       <form>
         <article>
           <header><h2>Search the Hub</h2></header>

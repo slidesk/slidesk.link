@@ -6,6 +6,16 @@ export const profilePage = () =>
     { title: "SliDesk.link | Profile" },
     `${profileHeader()}
       <main class="container" style="margin-top: 2rem;">
+      <style>
+        main.container > article,
+        main.container > details { margin-bottom: 1.5rem; }
+        main.container > article { padding: 1rem 1.5rem; }
+        main.container > article > header,
+        main.container > article > footer,
+        main.container > article > div { padding-left: 0; padding-right: 0; }
+        #token { filter: blur(6px); transition: filter 0.2s ease; cursor: pointer; user-select: all; }
+        #token:hover { filter: blur(0); }
+      </style>
       <article>
         <header><h2>Edit your profile</h2></header>
         <form method="post">
