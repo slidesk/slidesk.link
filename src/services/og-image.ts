@@ -42,8 +42,8 @@ export function ogSvg(
   if (displayName.length > 28) fontSize = 36;
 
   const avatarCircle = avatarUrl
-    ? `<image href="${avatarUrl.replace(/&/g, "&amp;")}" x="-50" y="-50" width="100" height="100" clip-path="url(#avatarClip)"/>`
-    : `<circle cx="0" cy="0" r="50" fill="#333"/><text x="0" y="18" text-anchor="middle" fill="#999" font-family="sans-serif" font-size="40">${userName.charAt(0).toUpperCase()}</text>`;
+    ? `<image href="${avatarUrl.replace(/&/g, "&amp;")}" x="-120" y="-120" width="240" height="240" clip-path="url(#avatarClip)"/>`
+    : `<circle cx="0" cy="0" r="120" fill="#333"/><text x="0" y="45" text-anchor="middle" fill="#999" font-family="sans-serif" font-size="90">${userName.charAt(0).toUpperCase()}</text>`;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
@@ -56,7 +56,7 @@ export function ogSvg(
       <stop offset="100%" stop-color="${color}cc"/>
     </linearGradient>
     <clipPath id="avatarClip">
-      <circle cx="0" cy="0" r="50"/>
+      <circle cx="0" cy="0" r="120"/>
     </clipPath>
   </defs>
 
@@ -81,7 +81,7 @@ export function ogSvg(
 
   <text x="80" y="520" fill="#aaa" font-family="sans-serif" font-size="28">@${userName}</text>
 
-  <g transform="translate(1080, 510)">
+  <g transform="translate(1020, 315)">
     ${avatarCircle}
   </g>
 
