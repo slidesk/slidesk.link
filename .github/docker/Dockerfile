@@ -16,6 +16,10 @@ COPY . .
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app .
+
+# install fonts for resvg SVG-to-PNG text rendering
+RUN apk add --no-cache fontconfig font-noto-sans
+
 RUN bunx prisma generate
 RUN bunx prisma db push
 
