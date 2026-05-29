@@ -45,7 +45,13 @@ const addons = new Elysia({
         }),
       );
       await bksy(
-        `New ${body.type}! Go to ${Bun.env.HOST}/a/${body.type}/${user.slug}/${body.name}`,
+        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
+        {
+          uri: `${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
+          title: `New ${body.type}: ${body.name}`,
+          description: body.desc ?? "",
+          ogImageUrl: `${Bun.env.HOST}/a/${body.type}/${user.slug}/${body.name}/og`,
+        },
       );
       await Bun.write(
         `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,
