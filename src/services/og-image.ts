@@ -8,10 +8,10 @@ const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" 
 </svg>`;
 
 const typeColors: Record<string, string> = {
-  plugin: "#e94560",
-  component: "#0f3460",
-  theme: "#533483",
-  template: "#1a8a5c",
+  plugin: "#2dd4bf",
+  component: "#2dd4bf",
+  theme: "#2dd4bf",
+  template: "#2dd4bf",
 };
 
 const typeIcons: Record<string, string> = {
@@ -58,10 +58,6 @@ export function ogSvg(
     <clipPath id="avatarClip">
       <circle cx="0" cy="0" r="40"/>
     </clipPath>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
   </defs>
 
   <rect width="1200" height="630" fill="url(#bg)" rx="24"/>
@@ -79,7 +75,7 @@ export function ogSvg(
     <text x="48" y="30" fill="white" font-family="sans-serif" font-size="20" font-weight="bold">${typeLabel}</text>
   </g>
 
-  <text x="80" y="340" fill="white" font-family="sans-serif" font-size="${fontSize}" font-weight="bold" filter="url(#glow)">${displayName}</text>
+  <text x="80" y="340" fill="white" font-family="sans-serif" font-size="${fontSize}" font-weight="bold">${displayName}</text>
 
   <line x1="80" y1="390" x2="300" y2="390" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
 
