@@ -44,15 +44,6 @@ const addons = new Elysia({
           name: body.name,
         }),
       );
-      await bksy(
-        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
-        {
-          uri: `${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
-          title: `New ${body.type}: ${body.name}`,
-          description: body.desc ?? "",
-          ogImageUrl: `${Bun.env.HOST}/a/${body.type}/${user.slug}/${body.name}/og`,
-        },
-      );
       await Bun.write(
         `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,
         body.file,
@@ -96,6 +87,15 @@ const addons = new Elysia({
           break;
       }
       await createUserPage(user);
+      await bksy(
+        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
+        {
+          uri: `${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
+          title: `New ${body.type}: ${body.name}`,
+          description: body.desc ?? "",
+          ogImageUrl: `${Bun.env.HOST}/a/${body.type}/${user.slug}/${body.name}/og`,
+        },
+      );
       return new Response("", { status: 201 });
     },
     {

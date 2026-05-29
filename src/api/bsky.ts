@@ -108,7 +108,11 @@ const createPost = async (
     };
 
     if (embed.ogImageUrl) {
-      external.thumb = await uploadBlob(accessJwt, embed.ogImageUrl);
+      try {
+        external.thumb = await uploadBlob(accessJwt, embed.ogImageUrl);
+      } catch {
+        console.error("Failed to upload OG image to Bluesky");
+      }
     }
 
     record.embed = {
