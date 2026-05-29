@@ -2,7 +2,7 @@
   "name": "slidesk.link",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "devDependencies": {
     "@types/bun": "latest",
     "@types/markdown-it": "^14.1.2",
@@ -21,6 +21,7 @@
     "@elysiajs/jwt": "^1.4.0",
     "@elysiajs/static": "^1.4.7",
     "@prisma/client": "^7.2.0",
+    "@resvg/resvg-js": "^2.6.2",
     "arctic": "^3.7.0",
     "elysia": "^1.4.19",
     "elysia-oauth2": "^2.1.0",
