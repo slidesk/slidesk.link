@@ -77,7 +77,21 @@ const addonPage = new Elysia({ prefix: "/a" })
         return "Not found";
       }
 
-      const svg = ogSvg(kind, data.slug, data.userSlug, data.avatarUrl);
+      let avatarDataUri: string | null = null;
+      if (data.avatarUrl) {
+        try {
+          const avatarRes = await fetch(data.avatarUrl);
+          if (avatarRes.ok) {
+            const avatarBuf = await avatarRes.arrayBuffer();
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(avatarBuf)));
+            avatarDataUri = `data:${avatarRes.headers.get("content-type") || "image/png"};base64,${base64}`;
+          }
+        } catch {
+          console.error("Failed to fetch avatar for OG image");
+        }
+      }
+
+      const svg = ogSvg(kind, data.slug, data.userSlug, avatarDataUri);
       const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } });
       const png = resvg.render().asPng();
 
