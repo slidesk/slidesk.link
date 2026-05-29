@@ -92,7 +92,14 @@ const addonPage = new Elysia({ prefix: "/a" })
       }
 
       const svg = ogSvg(kind, data.slug, data.userSlug, avatarDataUri);
-      const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } });
+      const resvg = new Resvg(svg, {
+        fitTo: { mode: "width", value: 1200 },
+        font: {
+          loadSystemFonts: true,
+          defaultFontFamily: "sans-serif",
+          sansSerifFamily: "sans-serif",
+        },
+      });
       const png = resvg.render().asPng();
 
       set.headers = {

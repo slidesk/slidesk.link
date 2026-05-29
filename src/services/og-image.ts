@@ -43,7 +43,7 @@ export function ogSvg(
 
   const avatarCircle = avatarUrl
     ? `<image href="${avatarUrl.replace(/&/g, "&amp;")}" x="-120" y="-120" width="240" height="240" clip-path="url(#avatarClip)"/>`
-    : `<circle cx="0" cy="0" r="120" fill="#333"/><text x="0" y="45" text-anchor="middle" fill="#ffffff" font-family="Noto Sans, sans-serif" font-size="90">${userName.charAt(0).toUpperCase()}</text>`;
+    : `<circle cx="0" cy="0" r="120" fill="#333"/><text x="0" y="45" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="90">${userName.charAt(0).toUpperCase()}</text>`;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
@@ -66,25 +66,25 @@ export function ogSvg(
 
   <g transform="translate(60, 55)">
     ${logoSvg}
-    <text x="62" y="38" fill="#ffffff" font-family="Noto Sans, sans-serif" font-size="28" font-weight="bold">SliDesk<text fill="#ffffff" font-weight="normal">.link</text></text>
+    <text x="62" y="38" fill="#ffffff" font-family="sans-serif" font-size="28" font-weight="bold">SliDesk<text fill="#ffffff" font-weight="normal">.link</text></text>
   </g>
 
   <g transform="translate(60, 160)">
     <rect x="0" y="0" width="180" height="48" rx="24" fill="${color}"/>
     <g transform="translate(14, 12)">${typeIcon}</g>
-    <text x="48" y="30" fill="#ffffff" font-family="Noto Sans, sans-serif" font-size="20" font-weight="bold">${typeLabel}</text>
+    <text x="48" y="30" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold">${typeLabel}</text>
   </g>
 
-  <text x="80" y="340" fill="#ffffff" font-family="Noto Sans, sans-serif" font-size="${fontSize}" font-weight="bold">${displayName}</text>
+  <text x="80" y="340" fill="#ffffff" font-family="sans-serif" font-size="${fontSize}" font-weight="bold">${displayName}</text>
 
   <line x1="80" y1="390" x2="300" y2="390" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
 
-  <text x="80" y="520" fill="#ffffff" font-family="Noto Sans, sans-serif" font-size="28">@${userName}</text>
+  <text x="80" y="520" fill="#ffffff" font-family="sans-serif" font-size="28">@${userName}</text>
 
   <g transform="translate(1020, 315)">
     ${avatarCircle}
   </g>
 
-  <text x="1120" y="580" text-anchor="end" fill="#ffffff" font-family="Noto Sans, sans-serif" font-size="16">slidesk.link</text>
+  <text x="1120" y="580" text-anchor="end" fill="#ffffff" font-family="sans-serif" font-size="16">slidesk.link</text>
 </svg>`;
 }

@@ -18,7 +18,7 @@ COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app .
 
 # install fonts for resvg SVG-to-PNG text rendering
-RUN apt-get update && apt-get install -y fonts-noto && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install --no-install-recommends -y fonts-dejavu-core fontconfig && rm -rf /var/lib/apt/lists/* && fc-cache -f
 
 RUN bunx prisma generate
 RUN bunx prisma db push
