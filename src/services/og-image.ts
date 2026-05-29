@@ -60,7 +60,7 @@ export function ogSvg(
     </clipPath>
   </defs>
 
-  <rect width="1200" height="630" fill="url(#bg)" rx="24"/>
+  <rect width="1200" height="630" fill="url(#bg)"/>
 
   <rect x="0" y="0" width="1200" height="4" fill="url(#accent)"/>
 
@@ -69,21 +69,21 @@ export function ogSvg(
     <text x="62" y="38" fill="white" font-family="sans-serif" font-size="28" font-weight="bold">SliDesk<text fill="#999" font-weight="normal">.link</text></text>
   </g>
 
-  <g transform="translate(60, 160)">
+  <g transform="translate(510, 160)">
     <rect x="0" y="0" width="180" height="48" rx="24" fill="${color}"/>
     <g transform="translate(14, 12)">${typeIcon}</g>
     <text x="48" y="30" fill="white" font-family="sans-serif" font-size="20" font-weight="bold">${typeLabel}</text>
   </g>
 
-  <text x="80" y="340" fill="white" font-family="sans-serif" font-size="${fontSize}" font-weight="bold">${displayName}</text>
+  <text x="600" y="340" fill="white" font-family="sans-serif" font-size="${fontSize}" font-weight="bold" text-anchor="middle">${displayName}</text>
 
-  <line x1="80" y1="390" x2="300" y2="390" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+  <line x1="400" y1="390" x2="800" y2="390" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
 
-  <g transform="translate(80, 500)">
-    <g transform="translate(0, 0)">${avatarCircle}</g>
-    <text x="60" y="12" fill="#aaa" font-family="sans-serif" font-size="28">@${userName}</text>
+  <g transform="translate(600, 520)">
+    ${avatarCircle}
+    <text x="0" y="50" fill="#aaa" font-family="sans-serif" font-size="28" text-anchor="middle">@${userName}</text>
   </g>
 
-  <text x="1120" y="580" text-anchor="end" fill="#555" font-family="sans-serif" font-size="16">slidesk.link</text>
+  <text x="1140" y="580" text-anchor="end" fill="#555" font-family="sans-serif" font-size="16">slidesk.link</text>
 </svg>`;
 }
