@@ -36,22 +36,24 @@ const addons = new Elysia({
       if (!user) return new Response("err: No user found", { status: 403 });
       if (!authorizedKinds.includes(body.type))
         return new Response("err: No type allowed", { status: 403 });
+      const slug = body.name.toLowerCase().replace(/[^a-z]/g, "");
+      if (!slug) return new Response("err: Name must contain at least one letter", { status: 400 });
       await telegram(
         JSON.stringify({
           action: "push",
           user: user.slug,
           type: body.type,
-          name: body.name,
+          name: slug,
         }),
       );
       await Bun.write(
-        `${process.cwd()}/app/${body.type}s/${user.id}/${body.name}.tgz`,
+        `${process.cwd()}/app/${body.type}s/${user.id}/${slug}.tgz`,
         body.file,
       );
       switch (body.type) {
         case "plugin":
           await pluginUpsert(
-            body.name.toLowerCase(),
+            slug,
             user.id,
             (JSON.parse(body.json).tags ?? [])
               .map((t: string) => t.toLowerCase())
@@ -61,7 +63,7 @@ const addons = new Elysia({
           break;
         case "component":
           await componentUpsert(
-            body.name.toLowerCase(),
+            slug,
             user.id,
             (JSON.parse(body.json).tags ?? [])
               .map((t: string) => t.toLowerCase())
@@ -71,7 +73,7 @@ const addons = new Elysia({
           break;
         case "theme":
           await themeUpsert(
-            body.name.toLowerCase(),
+            slug,
             user.id,
             body.json,
             body.desc,
@@ -79,7 +81,7 @@ const addons = new Elysia({
           break;
         case "template":
           await templateUpsert(
-            body.name.toLowerCase(),
+            slug,
             user.id,
             body.json,
             body.desc,
@@ -88,12 +90,12 @@ const addons = new Elysia({
       }
       await createUserPage(user);
       await bksy(
-        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
+        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${slug}`,
         {
-          uri: `${Bun.env.HOST}/${body.type}s/#${user.slug}__${body.name}`,
-          title: `New ${body.type}: ${body.name}`,
+          uri: `${Bun.env.HOST}/${body.type}s/#${user.slug}__${slug}`,
+          title: `New ${body.type}: ${slug}`,
           description: body.desc ?? "",
-          ogImageUrl: `${Bun.env.HOST}/a/${body.type}/${user.slug}/${body.name}/og`,
+          ogImageUrl: `${Bun.env.HOST}/a/${body.type}/${user.slug}/${slug}/og`,
         },
       );
       return new Response("", { status: 201 });
