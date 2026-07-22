@@ -15,6 +15,12 @@
         "noUnusedImports": "error",
         "noUnusedVariables": "error",
         "useExhaustiveDependencies": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "suspicious": {
+        "noUnknownAtRules": "off"
       }
     }
   },
@@ -24,6 +30,10 @@
     "indentWidth": 2
   },
   "files": {
-    "includes": ["**", "!**/sites/**/*"]
+    "includes": [
+      "**",
+      "!**/sites/**/*",
+      "!client/src/styles/globals.css"
+    ]
   }
 }

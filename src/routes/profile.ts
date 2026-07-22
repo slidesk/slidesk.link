@@ -17,8 +17,8 @@ import checkId from "../database/user/checkId";
 import deleteUser from "../database/user/delete";
 import getToken from "../database/user/getToken";
 import update from "../database/user/update";
-import createUserPage from "../services/createUserPage";
 import { JWT_SECRET } from "../services/env";
+import { shell } from "./spa";
 
 // Delete an addon the user owns, along with its uploaded archive.
 // Returns false when the user does not own an addon with that slug.
@@ -60,14 +60,10 @@ const profile = new Elysia({ prefix: "/profile" })
       secret: JWT_SECRET,
     }),
   )
-  .get("/", async ({ jwt, cookie: { auth }, redirect }) => {
-    const profile = await jwt.verify(auth.value as string);
-
-    if (!profile) return redirect("/");
-    return new Response(Bun.file(`${process.cwd()}/dist-html/profile.html`), {
-      headers: { "Content-Type": "text/html" },
-    });
-  })
+  // The SPA shell for the /profile route (this module owns the /profile prefix).
+  // Auth is gated client-side; unauthenticated users are redirected after
+  // /profile/data returns 401.
+  .get("/", shell)
   .get("/data", async ({ jwt, cookie: { auth } }) => {
     const profile = await jwt.verify(auth.value as string);
 
@@ -109,8 +105,8 @@ const profile = new Elysia({ prefix: "/profile" })
 
       const user = await checkId(Number(profile.id));
       if (user) {
+        // update() modifies the user row, so @updatedAt bumps automatically.
         await update(user.id, body);
-        await createUserPage(user);
       }
 
       return redirect("/profile");

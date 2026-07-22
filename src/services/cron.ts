@@ -1,7 +1,6 @@
 import { rmSync } from "node:fs";
 import deleteHostedPresentations from "../database/hostedPresentation/deletes";
 import { db } from "../db";
-import createUserPage from "./createUserPage";
 
 export default async () => {
   const ids = (
@@ -17,9 +16,4 @@ export default async () => {
     });
   });
   await deleteHostedPresentations(ids);
-
-  const users = await db.user.findMany();
-  for await (const u of users) {
-    await createUserPage(u);
-  }
 };

@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Token mapping — preserves the existing Slidesk identity (zinc neutrals +
+  teal primary) on top of the canonical shadcn/ui HSL variable system.
+  Dark is the default (.dark on <html>), light under :root.
+*/
+@layer base {
+  :root {
+    --background: 0 0% 98%; /* #fafafa */
+    --foreground: 240 10% 3.9%; /* #09090b */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 173 80% 40%; /* teal-500 #14b8a6 — reads better on white */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%; /* #ef4444 */
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 173 80% 40%;
+    --radius: 0.75rem;
+
+    /* Slidesk status identity */
+    --status-accepted: 142 71% 45%; /* #22c55e */
+    --status-declined: 38 92% 50%; /* #f59e0b */
+    --status-pending: 38 92% 50%;
+
+    /* Glass / gradient identity (light) */
+    --glass-bg: rgba(0, 0, 0, 0.02);
+    --glass-bg-hover: rgba(0, 0, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glow: rgba(20, 184, 166, 0.06);
+    --gradient-primary: linear-gradient(135deg, #14b8a6, #0d9488, #0891b2);
+    --gradient-hero: linear-gradient(-45deg, #fafafa, #f0fdfa, #fafafa, #f0fdfa);
+  }
+
+  .dark {
+    --background: 240 10% 3.9%; /* #09090b */
+    --foreground: 0 0% 98%; /* #fafafa */
+    --card: 240 6% 8%; /* #131316 */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 5.9% 10%; /* #18181b */
+    --popover-foreground: 0 0% 98%;
+    --primary: 172 66% 50%; /* teal-400 #2dd4bf */
+    --primary-foreground: 240 10% 3.9%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 173 80% 40%;
+
+    /* status stays the same hues in dark */
+    --status-accepted: 142 71% 45%;
+    --status-declined: 38 92% 50%;
+    --status-pending: 38 92% 50%;
+
+    /* Glass / gradient identity (dark) */
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-bg-hover: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glow: rgba(20, 184, 166, 0.12);
+    --gradient-hero: linear-gradient(-45deg, #09090b, #1c1917, #0c0a1e, #09090b);
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Identity utilities (glassmorphism + gradient hero + glow) kept as explicit
+   opt-in classes so shadcn's solid tokens stay canonical. */
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .glass-hover:hover {
+    background: var(--glass-bg-hover);
+  }
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .gradient-primary-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .gradient-hero {
+    background: var(--gradient-hero);
+    background-size: 400% 400%;
+  }
+  .glow {
+    box-shadow: 0 0 60px -12px var(--glow);
+  }
+}
+
+/* highlight.js token colors, themed with our palette */
+.hljs {
+  color: hsl(var(--foreground));
+  background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-property {
+  color: hsl(var(--primary));
+}
+.hljs-string,
+.hljs-meta-string {
+  color: hsl(var(--status-accepted));
+}
+.hljs-number,
+.hljs-literal,
+.hljs-bullet {
+  color: hsl(var(--status-declined));
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta {
+  color: hsl(var(--primary));
+  font-weight: 600;
+}

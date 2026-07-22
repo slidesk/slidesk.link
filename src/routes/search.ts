@@ -5,9 +5,9 @@ import presentationSearch from "../database/presentation/search";
 import userSearch from "../database/user/search";
 import extractHeaderComment from "../services/extractHeaderComment";
 
-const search = new Elysia({ prefix: "/search" })
-  .get("/", () => Bun.file(`${process.cwd()}/dist-html/search.html`))
-  .post("/:search/:kinds", async ({ params: { search, kinds } }) => {
+const search = new Elysia({ prefix: "/search" }).post(
+  "/:search/:kinds",
+  async ({ params: { search, kinds } }) => {
     const md = markdownIt({
       xhtmlOut: true,
       linkify: true,
@@ -156,6 +156,7 @@ const search = new Elysia({ prefix: "/search" })
       }));
 
     return Response.json(res);
-  });
+  },
+);
 
 export default search;

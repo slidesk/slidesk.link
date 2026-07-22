@@ -4,7 +4,7 @@ import { telegram } from "../api/telegram";
 import { addonRepositories, isAddonKind } from "../database/addon/repository";
 import checkSlug from "../database/user/checkSlug";
 import checkToken from "../database/user/checkToken";
-import createUserPage from "../services/createUserPage";
+import touchUser from "../database/user/touch";
 import { slugify } from "../services/slug";
 
 const addons = new Elysia({
@@ -56,7 +56,7 @@ const addons = new Elysia({
         tagsValue,
         body.desc,
       );
-      await createUserPage(user);
+      await touchUser(user.id);
       await bksy(
         `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${slug}`,
         {

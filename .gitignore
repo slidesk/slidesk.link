@@ -5,6 +5,7 @@ src/generated/prisma/
 dev.db*
 public/*.css
 dist-html
+dist-client
 app/components/*
 !app/components/.gitkeep
 app/plugins/*
