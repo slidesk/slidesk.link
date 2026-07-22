@@ -14,8 +14,10 @@ import search from "./routes/search";
 import sitemap from "./routes/sitemap";
 import upload from "./routes/upload";
 import user from "./routes/user";
-import cronService from "./services/cron";
 import { buildWeb } from "./services/build-web";
+import cronService from "./services/cron";
+import { isValidUuid, safeJoin } from "./services/paths";
+import { assertSafeUrl } from "./services/safe-fetch";
 
 const app = new Elysia()
   .use(staticPlugin())
@@ -43,11 +45,19 @@ const app = new Elysia()
   .use(search)
   .get("/health", () => ({ success: true, message: "healthy" }))
   .get("/css/:id", async ({ params: { id } }) => {
-    const file = Bun.file(`${process.cwd()}/dist-html/${id}.css`);
+    const path = safeJoin(`${process.cwd()}/dist-html`, `${id}.css`);
+    if (!path) return "";
+    const file = Bun.file(path);
     if (await file.exists()) return file;
     return "";
   })
   .get("/api/proxy-pdf", async ({ query, set }) => {
+    try {
+      await assertSafeUrl(query.url);
+    } catch {
+      set.status = 400;
+      return "URL invalide";
+    }
     try {
       const response = await fetch(query.url);
       if (!response.ok) {
@@ -67,9 +77,14 @@ const app = new Elysia()
   })
   .ws("/s/:uuid/ws", {
     message(ws, message) {
+      if (!isValidUuid(ws.data.params.uuid)) return;
       ws.publish(ws.data.params.uuid, message);
     },
     open(ws) {
+      if (!isValidUuid(ws.data.params.uuid)) {
+        ws.close();
+        return;
+      }
       ws.subscribe(ws.data.params.uuid);
     },
     close(ws) {

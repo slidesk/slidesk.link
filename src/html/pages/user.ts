@@ -180,7 +180,9 @@ export const userPageHtml = (data: UserPageData) => {
         });
       }
     }
-    return groups.filter((g) => g.items.some((item) => item.session.status !== 0));
+    return groups.filter((g) =>
+      g.items.some((item) => item.session.status !== 0),
+    );
   })();
 
   const calendarHtml = calendarData.length

@@ -5,7 +5,14 @@ import { ogSvg } from "../services/og-image";
 
 const authorizedKinds = ["plugin", "component", "theme", "template"];
 
-const ogPage = (kind: string, userSlug: string, slug: string, description: string | null, ogImage: string, redirectUrl: string) => {
+const ogPage = (
+  kind: string,
+  userSlug: string,
+  slug: string,
+  description: string | null,
+  ogImage: string,
+  redirectUrl: string,
+) => {
   const typeLabel = kind.charAt(0).toUpperCase() + kind.slice(1);
   const title = `${slug} - ${typeLabel} by @${userSlug} | SliDesk.link`;
   const desc = description
@@ -37,13 +44,26 @@ const ogPage = (kind: string, userSlug: string, slug: string, description: strin
 </html>`;
 };
 
-const handleOgLookup = async (kind: string, user: string, slug: string, ogImagePrefix: string, redirectUrl: string) => {
+const handleOgLookup = async (
+  kind: string,
+  user: string,
+  slug: string,
+  ogImagePrefix: string,
+  redirectUrl: string,
+) => {
   const data = await findForOg(kind, user, slug);
   if (!data) return null;
 
   const ogImage = `https://slidesk.link/${ogImagePrefix}/${kind}/${data.userSlug}/${data.slug}/og`;
 
-  return ogPage(kind, data.userSlug, data.slug, data.description, ogImage, redirectUrl);
+  return ogPage(
+    kind,
+    data.userSlug,
+    data.slug,
+    data.description,
+    ogImage,
+    redirectUrl,
+  );
 };
 
 const addonPage = new Elysia({ prefix: "/a" })
@@ -83,7 +103,9 @@ const addonPage = new Elysia({ prefix: "/a" })
           const avatarRes = await fetch(data.avatarUrl);
           if (avatarRes.ok) {
             const avatarBuf = await avatarRes.arrayBuffer();
-            const base64 = btoa(String.fromCharCode(...new Uint8Array(avatarBuf)));
+            const base64 = btoa(
+              String.fromCharCode(...new Uint8Array(avatarBuf)),
+            );
             avatarDataUri = `data:${avatarRes.headers.get("content-type") || "image/png"};base64,${base64}`;
           }
         } catch {

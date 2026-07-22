@@ -17,7 +17,7 @@ const header = (extra: string, big?: boolean) => {
     <nav class="container">
       <ul><li>${left}</li></ul>
       <ul class="nav-desktop">
-        ${addonLinks.replace(/<a /g, '<li><a ').replace(/<\/a>/g, '</a></li>')}
+        ${addonLinks.replace(/<a /g, "<li><a ").replace(/<\/a>/g, "</a></li>")}
         <li><a href="/search/">Search</a></li>
         ${extra}
       </ul>
@@ -46,9 +46,14 @@ export const internalHeader = () => header("");
 export const userHeader = () => header("");
 
 export const profileHeader = () =>
-  header(`<li><a href="#" id="gotomypage">My page</a></li><li><a href="/exit">Logout</a></li>`);
+  header(
+    `<li><a href="#" id="gotomypage">My page</a></li><li><a href="/exit">Logout</a></li>`,
+  );
 
-const sidebarBase = (extra: string, logout: string) => `<aside class="profile-sidebar">
+const sidebarBase = (
+  extra: string,
+  logout: string,
+) => `<aside class="profile-sidebar">
   <a href="/" class="brand">${logoSvg}<span>SliDesk.link</span></a>
   <nav>
     ${extra}
@@ -65,5 +70,4 @@ export const profileSidebar = () =>
     <a href="/exit" class="logout">Logout</a>`,
   );
 
-export const userSidebar = () =>
-  sidebarBase("", "");
+export const userSidebar = () => sidebarBase("", "");

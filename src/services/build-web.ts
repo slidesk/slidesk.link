@@ -2,12 +2,12 @@ import { Glob } from "bun";
 import hljs from "highlight.js";
 import { minify } from "minify";
 import { db } from "../db";
+import mainCSS from "../html/css/main.css" with { type: "text" };
 import { homePage } from "../html/pages/home";
 import { itemPage } from "../html/pages/item";
 import { mentionsPage } from "../html/pages/mentions";
 import { profilePage } from "../html/pages/profile";
 import { searchPage } from "../html/pages/search";
-import mainCSS from "../html/css/main.css" with { type: "text" };
 import createUserPage from "./createUserPage";
 
 export const buildWeb = async () => {

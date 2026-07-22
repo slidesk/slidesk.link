@@ -1,6 +1,7 @@
 import { jwt } from "@elysiajs/jwt";
 import { Elysia } from "elysia";
 import { oauth2 } from "elysia-oauth2";
+import { JWT_SECRET } from "../services/env";
 import getUser from "../services/getUser";
 
 const login = new Elysia({ prefix: "/login" })
@@ -23,7 +24,7 @@ const login = new Elysia({ prefix: "/login" })
   .use(
     jwt({
       name: "jwt",
-      secret: Bun.env.JWT_SECRET ?? "slidesk.link",
+      secret: JWT_SECRET,
     }),
   )
   .get("/", ({ oauth2 }) => oauth2.redirect("GitHub", ["read:user"]))

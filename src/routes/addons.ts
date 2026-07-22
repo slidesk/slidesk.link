@@ -1,27 +1,11 @@
 import { Elysia, t } from "elysia";
 import { bksy } from "../api/bsky";
 import { telegram } from "../api/telegram";
-import componentAddDownload from "../database/component/addDownload";
-import componentGetByUserAndSlug from "../database/component/getByUserAndSlug";
-import componentSearch from "../database/component/search";
-import componentUpsert from "../database/component/upsert";
-import pluginAddDownload from "../database/plugin/addDownload";
-import pluginGetByUserAndSlug from "../database/plugin/getByUserAndSlug";
-import pluginSearch from "../database/plugin/search";
-import pluginUpsert from "../database/plugin/upsert";
-import templateAddDownload from "../database/template/addDownload";
-import templateGetByUserAndSlug from "../database/template/getByUserAndSlug";
-import templateSearch from "../database/template/search";
-import templateUpsert from "../database/template/upsert";
-import themeAddDownload from "../database/theme/addDownload";
-import themeGetByUserAndSlug from "../database/theme/getByUserAndSlug";
-import themeSearch from "../database/theme/search";
-import themeUpsert from "../database/theme/upsert";
+import { addonRepositories, isAddonKind } from "../database/addon/repository";
 import checkSlug from "../database/user/checkSlug";
 import checkToken from "../database/user/checkToken";
 import createUserPage from "../services/createUserPage";
-
-const authorizedKinds = ["plugin", "component", "theme", "template"];
+import { slugify } from "../services/slug";
 
 const addons = new Elysia({
   prefix: "/addons",
@@ -34,10 +18,26 @@ const addons = new Elysia({
         return new Response("err: No token found", { status: 401 });
       const user = await checkToken(headers["x-slidesk"]);
       if (!user) return new Response("err: No user found", { status: 403 });
-      if (!authorizedKinds.includes(body.type))
+      if (!isAddonKind(body.type))
         return new Response("err: No type allowed", { status: 403 });
-      const slug = body.name.toLowerCase().replace(/[^a-z]/g, "");
-      if (!slug) return new Response("err: Name must contain at least one letter", { status: 400 });
+      const slug = slugify(body.name);
+      if (!slug)
+        return new Response("err: Name must contain at least one letter", {
+          status: 400,
+        });
+
+      // Plugins/components store their tags list; themes/templates store the
+      // raw json payload (e.g. base64 preview images) in the same column.
+      let tagsValue = body.json;
+      if (body.type === "plugin" || body.type === "component") {
+        try {
+          const tags = (JSON.parse(body.json).tags ?? []) as string[];
+          tagsValue = tags.map((tag) => tag.toLowerCase()).join("|");
+        } catch {
+          return new Response("err: Invalid json", { status: 400 });
+        }
+      }
+
       await telegram(
         JSON.stringify({
           action: "push",
@@ -50,44 +50,12 @@ const addons = new Elysia({
         `${process.cwd()}/app/${body.type}s/${user.id}/${slug}.tgz`,
         body.file,
       );
-      switch (body.type) {
-        case "plugin":
-          await pluginUpsert(
-            slug,
-            user.id,
-            (JSON.parse(body.json).tags ?? [])
-              .map((t: string) => t.toLowerCase())
-              .join("|"),
-            body.desc,
-          );
-          break;
-        case "component":
-          await componentUpsert(
-            slug,
-            user.id,
-            (JSON.parse(body.json).tags ?? [])
-              .map((t: string) => t.toLowerCase())
-              .join("|"),
-            body.desc,
-          );
-          break;
-        case "theme":
-          await themeUpsert(
-            slug,
-            user.id,
-            body.json,
-            body.desc,
-          );
-          break;
-        case "template":
-          await templateUpsert(
-            slug,
-            user.id,
-            body.json,
-            body.desc,
-          );
-          break;
-      }
+      await addonRepositories[body.type].upsert(
+        slug,
+        user.id,
+        tagsValue,
+        body.desc,
+      );
       await createUserPage(user);
       await bksy(
         `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${slug}`,
@@ -111,39 +79,24 @@ const addons = new Elysia({
     },
   )
   .get("/search/:kind/:search", async ({ params: { kind, search } }) => {
-    if (!authorizedKinds.includes(kind))
+    if (!isAddonKind(kind))
       return new Response("Wrong kind of asset", { status: 403 });
-    let finds: {
-      user: {
-        slug: string;
-      };
-      slug: string;
-      tags: string;
-    }[] = [];
-    switch (kind) {
-      case "plugin":
-        finds = await pluginSearch(search.toLowerCase());
-        break;
-      case "component":
-        finds = await componentSearch(search.toLowerCase());
-        break;
-      case "theme":
-        finds = await themeSearch(search.toLowerCase());
-        break;
-      case "template":
-        finds = await templateSearch(search.toLowerCase());
-        break;
-    }
+    const finds = await addonRepositories[kind].search(search.toLowerCase());
     if (finds.length === 0) return new Response("not found", { status: 404 });
     return Response.json(finds.map((f) => `@${f.user.slug}/${f.slug}`));
   })
   .get(
     "/download/:kind/:user/:name",
     async ({ params: { kind, name, user } }) => {
-      if (!authorizedKinds.includes(kind))
+      if (!isAddonKind(kind))
         return new Response("Wrong kind of asset", { status: 403 });
       const _user = await checkSlug(user);
       if (!_user) return new Response("User not found", { status: 404 });
+      const addon = await addonRepositories[kind].getByUserAndSlug(
+        _user.id,
+        name,
+      );
+      if (!addon) return new Response(`${kind} not found`, { status: 404 });
       await telegram(
         JSON.stringify({
           action: "download",
@@ -152,64 +105,14 @@ const addons = new Elysia({
           name,
         }),
       );
-      switch (kind) {
-        case "plugin": {
-          const plugin = await pluginGetByUserAndSlug(_user.id, name);
-          if (plugin) {
-            await pluginAddDownload(
-              plugin.userId,
-              plugin.slug,
-              plugin.downloaded + 1,
-            );
-            return Bun.file(
-              `${process.cwd()}/app/plugins/${plugin.userId}/${plugin.slug}.tgz`,
-            );
-          }
-          return new Response("Plugin not found", { status: 404 });
-        }
-        case "component": {
-          const component = await componentGetByUserAndSlug(_user.id, name);
-          if (component) {
-            await componentAddDownload(
-              component.userId,
-              component.slug,
-              component.downloaded + 1,
-            );
-            return Bun.file(
-              `${process.cwd()}/app/components/${component.userId}/${component.slug}.tgz`,
-            );
-          }
-          return new Response("Component not found", { status: 404 });
-        }
-        case "template": {
-          const template = await templateGetByUserAndSlug(_user.id, name);
-          if (template) {
-            await templateAddDownload(
-              template.userId,
-              template.slug,
-              template.downloaded + 1,
-            );
-            return Bun.file(
-              `${process.cwd()}/app/templates/${template.userId}/${template.slug}.tgz`,
-            );
-          }
-          return new Response("Template not found", { status: 404 });
-        }
-        case "theme": {
-          const theme = await themeGetByUserAndSlug(_user.id, name);
-          if (theme) {
-            await themeAddDownload(
-              theme.userId,
-              theme.slug,
-              theme.downloaded + 1,
-            );
-            return Bun.file(
-              `${process.cwd()}/app/themes/${theme.userId}/${theme.slug}.tgz`,
-            );
-          }
-          return new Response("Theme not found", { status: 404 });
-        }
-      }
+      await addonRepositories[kind].addDownload(
+        addon.userId,
+        addon.slug,
+        addon.downloaded + 1,
+      );
+      return Bun.file(
+        `${process.cwd()}/app/${kind}s/${addon.userId}/${addon.slug}.tgz`,
+      );
     },
   );
 export default addons;

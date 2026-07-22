@@ -65,7 +65,8 @@ const uploadBlob = async (
   size: number;
 }> => {
   const imageRes = await fetch(imageUrl);
-  if (!imageRes.ok) throw new Error(`Failed to fetch image: ${await imageRes.text()}`);
+  if (!imageRes.ok)
+    throw new Error(`Failed to fetch image: ${await imageRes.text()}`);
   const buffer = await imageRes.arrayBuffer();
 
   const res = await fetch(

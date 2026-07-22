@@ -1,10 +1,7 @@
 import Elysia from "elysia";
 import markdownIt from "markdown-it";
-import componentSearch from "../database/component/search";
-import pluginSearch from "../database/plugin/search";
+import { addonRepositories } from "../database/addon/repository";
 import presentationSearch from "../database/presentation/search";
-import templateSearch from "../database/template/search";
-import themeSearch from "../database/theme/search";
 import userSearch from "../database/user/search";
 import extractHeaderComment from "../services/extractHeaderComment";
 
@@ -69,37 +66,37 @@ const search = new Elysia({ prefix: "/search" })
     const sections = kinds.split(",");
     if (search === "*") search = "";
     if (sections.includes("plugins"))
-      res.plugins = [...(await pluginSearch(search.toLowerCase()))].map(
-        (p) => ({
-          slug: p.slug,
-          downloaded: p.downloaded,
-          description: md
-            .render(p.description ?? "")
-            .replace("<h1", "<h4")
-            .replace("</h1", "</h4")
-            .replace("<h2", "<h5")
-            .replace("</h2", "</h5")
-            .replace("<h3", "<h6")
-            .replace("</h3", "</h6"),
-          user: p.user.slug,
-        }),
-      );
+      res.plugins = [
+        ...(await addonRepositories.plugin.search(search.toLowerCase())),
+      ].map((p) => ({
+        slug: p.slug,
+        downloaded: p.downloaded,
+        description: md
+          .render(p.description ?? "")
+          .replace("<h1", "<h4")
+          .replace("</h1", "</h4")
+          .replace("<h2", "<h5")
+          .replace("</h2", "</h5")
+          .replace("<h3", "<h6")
+          .replace("</h3", "</h6"),
+        user: p.user.slug,
+      }));
     if (sections.includes("components"))
-      res.components = [...(await componentSearch(search.toLowerCase()))].map(
-        (c) => ({
-          slug: c.slug,
-          downloaded: c.downloaded,
-          description: md
-            .render(extractHeaderComment(c.description ?? ""))
-            .replace("<h1", "<h4")
-            .replace("</h1", "</h4")
-            .replace("<h2", "<h5")
-            .replace("</h2", "</h5")
-            .replace("<h3", "<h6")
-            .replace("</h3", "</h6"),
-          user: c.user.slug,
-        }),
-      );
+      res.components = [
+        ...(await addonRepositories.component.search(search.toLowerCase())),
+      ].map((c) => ({
+        slug: c.slug,
+        downloaded: c.downloaded,
+        description: md
+          .render(extractHeaderComment(c.description ?? ""))
+          .replace("<h1", "<h4")
+          .replace("</h1", "</h4")
+          .replace("<h2", "<h5")
+          .replace("</h2", "</h5")
+          .replace("<h3", "<h6")
+          .replace("</h3", "</h6"),
+        user: c.user.slug,
+      }));
     if (sections.includes("users"))
       res.users = [...(await userSearch(search.toLowerCase()))].map((u) => ({
         name: u.name ?? "",
@@ -122,23 +119,25 @@ const search = new Elysia({ prefix: "/search" })
         }),
       );
     if (sections.includes("templates"))
-      res.templates = [...(await templateSearch(search.toLowerCase()))].map(
-        (t) => ({
-          slug: t.slug,
-          downloaded: t.downloaded,
-          description: md
-            .render(t.description ?? "")
-            .replace("<h1", "<h4")
-            .replace("</h1", "</h4")
-            .replace("<h2", "<h5")
-            .replace("</h2", "</h5")
-            .replace("<h3", "<h6")
-            .replace("</h3", "</h6"),
-          user: t.user.slug,
-        }),
-      );
+      res.templates = [
+        ...(await addonRepositories.template.search(search.toLowerCase())),
+      ].map((t) => ({
+        slug: t.slug,
+        downloaded: t.downloaded,
+        description: md
+          .render(t.description ?? "")
+          .replace("<h1", "<h4")
+          .replace("</h1", "</h4")
+          .replace("<h2", "<h5")
+          .replace("</h2", "</h5")
+          .replace("<h3", "<h6")
+          .replace("</h3", "</h6"),
+        user: t.user.slug,
+      }));
     if (sections.includes("themes"))
-      res.themes = [...(await themeSearch(search.toLowerCase()))].map((t) => ({
+      res.themes = [
+        ...(await addonRepositories.theme.search(search.toLowerCase())),
+      ].map((t) => ({
         slug: t.slug,
         downloaded: t.downloaded,
         description:
