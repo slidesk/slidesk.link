@@ -1,4 +1,4 @@
-import { List } from "lucide-react";
+import { List, Presentation } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import {
   Accordion,
@@ -34,8 +34,19 @@ function scrollToId(id: string) {
  * desktop with scroll-spy highlighting, and a Cmd/Ctrl+K command palette on
  * mobile. Derives entirely from the same data as the rendered cards.
  */
-export function AddonNav({ groups }: { groups: AddonNavGroup[] }) {
-  const ids = allAddonIds(groups);
+export interface TalkNavItem {
+  id: string;
+  title: string;
+}
+
+export function AddonNav({
+  groups,
+  talks = [],
+}: {
+  groups: AddonNavGroup[];
+  talks?: TalkNavItem[];
+}) {
+  const ids = [...talks.map((t) => t.id), ...allAddonIds(groups)];
   const activeId = useScrollSpy(ids);
   const [open, setOpen] = useState(false);
 
@@ -70,9 +81,49 @@ export function AddonNav({ groups }: { groups: AddonNavGroup[] }) {
         <ScrollArea className="max-h-[calc(100vh-11rem)] pr-2">
           <Accordion
             type="multiple"
-            defaultValue={groups.map((g) => g.kind)}
+            defaultValue={[
+              ...(talks.length > 0 ? ["talks"] : []),
+              ...groups.map((g) => g.kind),
+            ]}
             className="w-full"
           >
+            {talks.length > 0 && (
+              <AccordionItem value="talks" className="border-none">
+                <AccordionTrigger className="py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:no-underline">
+                  <span className="flex items-center gap-2">
+                    <Presentation className="h-3.5 w-3.5" />
+                    Talks
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="pb-1">
+                  <ul className="flex flex-col border-l border-border">
+                    {talks.map((talk) => {
+                      const active = talk.id === activeId;
+                      return (
+                        <li key={talk.id}>
+                          <a
+                            href={`#${talk.id}`}
+                            aria-current={active ? "location" : undefined}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(talk.id);
+                            }}
+                            className={cn(
+                              "-ml-px block truncate border-l-2 py-1 pl-3 text-sm transition-colors",
+                              active
+                                ? "border-primary font-medium text-foreground"
+                                : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
+                            )}
+                          >
+                            {talk.title}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            )}
             {groups.map((group) => {
               const meta = ADDON_META[group.kind];
               const Icon = meta.icon;
@@ -131,9 +182,22 @@ export function AddonNav({ groups }: { groups: AddonNavGroup[] }) {
         <List className="h-4 w-4" /> Jump to
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Jump to an addon…" />
+        <CommandInput placeholder="Jump to…" />
         <CommandList>
-          <CommandEmpty>No addon found.</CommandEmpty>
+          <CommandEmpty>Nothing found.</CommandEmpty>
+          {talks.length > 0 && (
+            <CommandGroup heading="Talks">
+              {talks.map((talk) => (
+                <CommandItem
+                  key={talk.id}
+                  value={talk.title}
+                  onSelect={() => navigate(talk.id)}
+                >
+                  {talk.title}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
           {groups.map((group) => (
             <CommandGroup
               key={group.kind}

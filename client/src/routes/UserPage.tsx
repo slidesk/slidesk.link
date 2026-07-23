@@ -19,16 +19,8 @@ import { buildAddonGroups } from "@/lib/addon-groups";
 import { useDocumentTitle } from "@/lib/hooks/use-document-title";
 import { useHashScroll } from "@/lib/hooks/use-hash-scroll";
 import { useUserPage } from "@/lib/queries";
+import { initials } from "@/lib/utils";
 import type { SearchResponse, UserPageData } from "@/types/api";
-
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 
 /** Adapt the per-user addon payload to the shared SearchResponse shape. */
 function toAddonData(data: UserPageData): SearchResponse {
@@ -85,7 +77,7 @@ function TalksSection({ data }: { data: UserPageData }) {
   if (data.talks.length === 0) return null;
 
   return (
-    <section className="mt-12">
+    <section>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Talks</h2>
         {hasRejected && (
@@ -202,20 +194,29 @@ export function UserPage() {
           </aside>
         </div>
 
-        <TalksSection data={data} />
-
-        {groups.length > 0 && (
-          <section className="mt-12">
-            <h2 className="mb-6 text-2xl font-bold tracking-tight">Addons</h2>
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_220px]">
-              <div className="min-w-0">
-                <AddonSections data={addonData} />
-              </div>
-              <aside>
-                <AddonNav groups={groups} />
-              </aside>
+        {(data.talks.length > 0 || groups.length > 0) && (
+          <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_220px]">
+            <div className="flex min-w-0 flex-col gap-12">
+              <TalksSection data={data} />
+              {groups.length > 0 && (
+                <section>
+                  <h2 className="mb-6 text-2xl font-bold tracking-tight">
+                    Addons
+                  </h2>
+                  <AddonSections data={addonData} />
+                </section>
+              )}
             </div>
-          </section>
+            <aside>
+              <AddonNav
+                groups={groups}
+                talks={data.talks.map((t) => ({
+                  id: `t${t.id}`,
+                  title: t.title,
+                }))}
+              />
+            </aside>
+          </div>
         )}
       </main>
     </PdfViewerDialog>

@@ -22,6 +22,7 @@ const navLinks = [
     to: ADDON_META[k].path,
     label: ADDON_META[k].labelPlural,
   })),
+  { to: "/users", label: "Users" },
   { to: "/search", label: "Search" },
 ];
 

@@ -10,7 +10,7 @@ import type { AddonKind } from "@/types/api";
 
 function LoadingGrid() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4">
       {Array.from({ length: 6 }).map((_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
         <Skeleton key={i} className="h-40 w-full" />

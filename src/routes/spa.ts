@@ -19,7 +19,9 @@ const spa = new Elysia()
   .get("/themes", shell)
   .get("/themes/", shell)
   .get("/search", shell)
-  .get("/search/", shell);
+  .get("/search/", shell)
+  .get("/users", shell)
+  .get("/users/", shell);
 // NOTE: GET /profile is served by the profile module itself (it owns the
 // /profile prefix, which would otherwise shadow a shell route here).
 

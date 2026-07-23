@@ -39,6 +39,9 @@ const sitemap = new Elysia()
     <url>
       <loc>${HOST}/mentions</loc>
     </url>
+    <url>
+      <loc>${HOST}/users</loc>
+    </url>
     ${[...users]
       .map(
         (u) => `<url>

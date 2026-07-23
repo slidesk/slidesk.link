@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AddonSections } from "@/components/AddonSections";
 import { HtmlContent } from "@/components/HtmlContent";
 import { SessionRow } from "@/components/SessionRow";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDocumentTitle } from "@/lib/hooks/use-document-title";
 import { useHashScroll } from "@/lib/hooks/use-hash-scroll";
 import { useSearch } from "@/lib/queries";
+import { initials } from "@/lib/utils";
 import type { SearchKind } from "@/types/api";
 
 const FILTERS: { key: SearchKind; label: string }[] = [
@@ -107,7 +109,7 @@ export function SearchPage() {
         )}
 
         {searching && isLoading && (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton
               <Skeleton key={i} className="h-40 w-full" />
@@ -126,20 +128,39 @@ export function SearchPage() {
             {data.users.length > 0 && (
               <section>
                 <h2 className="mb-4 text-xl font-semibold">Users</h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {data.users.map((u) => (
-                    <Card key={u.slug} className="p-4">
-                      <Link to={`/u/${u.slug}`} className="group block">
-                        <h3 className="font-semibold group-hover:text-primary">
-                          {u.name || u.slug}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          @{u.slug}
-                        </p>
-                      </Link>
-                      {u.bio && <HtmlContent html={u.bio} className="mt-2" />}
-                    </Card>
-                  ))}
+                <div className="grid grid-cols-1 gap-4">
+                  {data.users.map((u) => {
+                    const name = u.name || u.slug;
+                    return (
+                      <Card key={u.slug} className="flex gap-4 p-4">
+                        <Link
+                          to={`/u/${u.slug}`}
+                          className="shrink-0"
+                          aria-label={name}
+                        >
+                          <Avatar className="h-12 w-12 border">
+                            {u.avatarUrl && (
+                              <AvatarImage src={u.avatarUrl} alt={name} />
+                            )}
+                            <AvatarFallback>{initials(name)}</AvatarFallback>
+                          </Avatar>
+                        </Link>
+                        <div className="min-w-0 flex-1">
+                          <Link to={`/u/${u.slug}`} className="group block">
+                            <h3 className="truncate font-semibold group-hover:text-primary">
+                              {name}
+                            </h3>
+                            <p className="truncate text-xs text-muted-foreground">
+                              @{u.slug}
+                            </p>
+                          </Link>
+                          {u.bio && (
+                            <HtmlContent html={u.bio} className="mt-2" />
+                          )}
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
               </section>
             )}
