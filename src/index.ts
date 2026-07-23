@@ -5,22 +5,29 @@ import addonPage from "./routes/addon-page";
 import addons from "./routes/addons";
 import auth from "./routes/auth";
 import exit from "./routes/exit";
-import home from "./routes/home";
 import hosted from "./routes/hosted";
 import login from "./routes/login";
+import me from "./routes/me";
 import profile from "./routes/profile";
 import pushtotalk from "./routes/pushtotalk";
 import search from "./routes/search";
 import sitemap from "./routes/sitemap";
+import spa from "./routes/spa";
 import upload from "./routes/upload";
 import user from "./routes/user";
-import { buildWeb } from "./services/build-web";
 import cronService from "./services/cron";
-import { isValidUuid, safeJoin } from "./services/paths";
+import { isValidUuid } from "./services/paths";
 import { assertSafeUrl } from "./services/safe-fetch";
 
 const app = new Elysia()
   .use(staticPlugin())
+  .use(
+    staticPlugin({
+      assets: "dist-client/assets",
+      prefix: "/assets",
+      headers: { "Cache-Control": "public, max-age=31536000, immutable" },
+    }),
+  )
   .use(
     cron({
       name: "clean",
@@ -30,9 +37,9 @@ const app = new Elysia()
       },
     }),
   )
-  .use(home)
   .use(user)
   .use(login)
+  .use(me)
   .use(upload)
   .use(hosted)
   .use(auth)
@@ -43,14 +50,8 @@ const app = new Elysia()
   .use(addonPage)
   .use(addons)
   .use(search)
+  .use(spa)
   .get("/health", () => ({ success: true, message: "healthy" }))
-  .get("/css/:id", async ({ params: { id } }) => {
-    const path = safeJoin(`${process.cwd()}/dist-html`, `${id}.css`);
-    if (!path) return "";
-    const file = Bun.file(path);
-    if (await file.exists()) return file;
-    return "";
-  })
   .get("/api/proxy-pdf", async ({ query, set }) => {
     try {
       await assertSafeUrl(query.url);
@@ -92,8 +93,6 @@ const app = new Elysia()
     },
   })
   .listen(3000);
-
-await buildWeb();
 
 console.log(
   `🦊 Slidesk.link is running at http://${app.server?.hostname}:${app.server?.port}`,

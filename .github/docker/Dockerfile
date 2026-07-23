@@ -8,9 +8,18 @@ RUN mkdir -p /temp/prod
 COPY package.json bun.lock /temp/prod/
 RUN cd /temp/prod && bun install --frozen-lockfile
 
+# build the React/Vite SPA (needs dev dependencies)
+FROM base AS clientbuild
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+COPY . .
+RUN bun run build
+
 FROM base AS prerelease
 COPY --from=install /temp/prod/node_modules node_modules
 COPY . .
+# ship the built SPA (dist-client) produced by the clientbuild stage
+COPY --from=clientbuild /usr/src/app/dist-client ./dist-client
 
 # copy production dependencies and source code into final image
 FROM base AS release

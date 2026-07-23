@@ -4,8 +4,8 @@ import checkTitle from "../database/presentation/checkTitle";
 import update from "../database/presentation/update";
 import addSession from "../database/session/add";
 import deleteSessions from "../database/session/deleteByPresentationId";
+import touchUser from "../database/user/touch";
 import type { SlideskLinkUser } from "../types";
-import createUserPage from "./createUserPage";
 
 export default async (yml: string, user: SlideskLinkUser) => {
   const parsed = parse(yml);
@@ -45,5 +45,5 @@ export default async (yml: string, user: SlideskLinkUser) => {
       });
     }
   }
-  await createUserPage(user);
+  await touchUser(Number(user.id));
 };
