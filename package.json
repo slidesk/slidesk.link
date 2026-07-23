@@ -2,7 +2,7 @@
   "name": "slidesk.link",
   "module": "src/index.ts",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "dependencies": {
     "@elysiajs/cron": "^1.4.1",
     "@elysiajs/jwt": "^1.4.0",
