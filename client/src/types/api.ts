@@ -18,6 +18,7 @@ export interface SearchAddon {
 export interface SearchUser {
   name: string;
   slug: string;
+  avatarUrl: string | null;
   bio: string; // HTML
 }
 export interface SearchSession {
@@ -42,6 +43,15 @@ export interface SearchResponse {
   templates: SearchAddon[];
 }
 export type SearchKind = keyof SearchResponse;
+
+// ---- GET /api/users ----
+export interface UserListItem {
+  name: string;
+  slug: string;
+  avatarUrl: string | null;
+  url: string | null;
+  bioHtml: string; // server-rendered, sanitized markdown HTML
+}
 
 // ---- GET /api/me ----
 export interface Me {

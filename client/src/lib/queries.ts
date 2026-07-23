@@ -34,6 +34,13 @@ export function useSearch(term: string, kinds: SearchKind[]) {
   });
 }
 
+export function useUsers() {
+  return useQuery({
+    queryKey: ["users"],
+    queryFn: () => api.users(),
+  });
+}
+
 export function useUserPage(slug: string) {
   return useQuery({
     queryKey: ["user", slug],

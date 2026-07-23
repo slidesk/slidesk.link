@@ -4,6 +4,7 @@ import type {
   ProfileUpdate,
   SearchKind,
   SearchResponse,
+  UserListItem,
   UserPageData,
 } from "@/types/api";
 
@@ -36,6 +37,10 @@ export const api = {
         method: "POST",
       }),
     );
+  },
+
+  async users(): Promise<UserListItem[]> {
+    return json<UserListItem[]>(await fetch("/api/users", opts));
   },
 
   async userPage(slug: string): Promise<UserPageData> {

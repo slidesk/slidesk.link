@@ -29,6 +29,7 @@ const search = new Elysia({ prefix: "/search" }).post(
       users: {
         name: string;
         slug: string;
+        avatarUrl: string | null;
         bio: string;
       }[];
       talks: {
@@ -101,6 +102,7 @@ const search = new Elysia({ prefix: "/search" }).post(
       res.users = [...(await userSearch(search.toLowerCase()))].map((u) => ({
         name: u.name ?? "",
         slug: u.slug,
+        avatarUrl: u.avatarUrl,
         bio: md.render(u.bio ?? ""),
       }));
     if (sections.includes("talks"))

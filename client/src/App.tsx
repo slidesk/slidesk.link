@@ -9,6 +9,7 @@ import { MentionsPage } from "@/routes/MentionsPage";
 import { ProfilePage } from "@/routes/ProfilePage";
 import { SearchPage } from "@/routes/SearchPage";
 import { UserPage } from "@/routes/UserPage";
+import { UsersPage } from "@/routes/UsersPage";
 
 function RootLayout() {
   return (
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       { path: "/themes", element: <AddonListPage kind="theme" /> },
       { path: "/templates", element: <AddonListPage kind="template" /> },
       { path: "/search", element: <SearchPage /> },
+      { path: "/users", element: <UsersPage /> },
       { path: "/profile", element: <ProfilePage /> },
       { path: "/u/:slug", element: <UserPage /> },
       { path: "*", element: <Placeholder name="Not found" /> },
