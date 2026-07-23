@@ -21,7 +21,7 @@ function Section({ kind, items }: { kind: AddonKind; items: SearchAddon[] }) {
           ({items.length})
         </span>
       </h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4">
         {items.map((addon) => (
           <AddonCard
             key={`${addon.user}/${addon.slug}`}
