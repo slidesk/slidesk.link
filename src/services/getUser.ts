@@ -1,3 +1,4 @@
+import { telegram } from "../api/telegram";
 import add from "../database/user/add";
 import checkGithub from "../database/user/checkGithub";
 import checkSlug from "../database/user/checkSlug";
@@ -18,7 +19,7 @@ export default async (userInfo: {
         userInfo.login = `${u}-${cpt++}`;
       } while (await checkSlug(userInfo.login));
     }
-    return await add({
+    const newUser = await add({
       id: undefined,
       name: userInfo.name,
       bio: userInfo.bio ?? "",
@@ -30,6 +31,10 @@ export default async (userInfo: {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
+    telegram(
+      `🎉 Nouveau compte : ${newUser.name ?? "sans nom"} (@${newUser.slug})`,
+    ).catch((error) => console.error("Telegram signup alert failed:", error));
+    return newUser;
   }
   return dbUser;
 };
