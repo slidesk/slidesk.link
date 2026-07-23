@@ -1,6 +1,7 @@
 import { cron } from "@elysiajs/cron";
 import staticPlugin from "@elysiajs/static";
 import { Elysia } from "elysia";
+import { mcpRoutes } from "../mcp/elysia";
 import addonPage from "./routes/addon-page";
 import addons from "./routes/addons";
 import auth from "./routes/auth";
@@ -50,6 +51,14 @@ const app = new Elysia()
   .use(addonPage)
   .use(addons)
   .use(search)
+  .use(
+    // Exposes the addon hub to AI agents at /mcp (same port). Discovery-only;
+    // install_addon returns the command for the client to run locally.
+    mcpRoutes({
+      hostBase: "http://localhost:3000",
+      publicBase: Bun.env.HOST ?? "https://slidesk.link",
+    }),
+  )
   .use(spa)
   .get("/health", () => ({ success: true, message: "healthy" }))
   .get("/api/proxy-pdf", async ({ query, set }) => {

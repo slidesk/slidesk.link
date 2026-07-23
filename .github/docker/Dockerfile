@@ -3,36 +3,44 @@
 FROM oven/bun:1 AS base
 WORKDIR /usr/src/app
 
-FROM base AS install
-RUN mkdir -p /temp/prod
-COPY package.json bun.lock /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile
-
-# build the React/Vite SPA (needs dev dependencies)
-FROM base AS clientbuild
+# --- build stage: full deps → SPA bundle + generated Prisma client ---
+FROM base AS build
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
+RUN bunx prisma generate
 
-FROM base AS prerelease
-COPY --from=install /temp/prod/node_modules node_modules
-COPY . .
-# ship the built SPA (dist-client) produced by the clientbuild stage
-COPY --from=clientbuild /usr/src/app/dist-client ./dist-client
+# --- runtime deps only: excludes the client/build toolchain (vite, react,
+#     radix, tailwind, pdfjs, …), keeping the image small ---
+FROM base AS prod-deps
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
 
-# copy production dependencies and source code into final image
+# --- release image: server source + prod deps + built artifacts ---
 FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app .
+ENV NODE_ENV=production
+COPY --from=prod-deps /usr/src/app/node_modules node_modules
 
-# install fonts for resvg SVG-to-PNG text rendering
+# server code and config only (the client/ source is not needed at runtime)
+COPY src ./src
+COPY mcp ./mcp
+COPY prisma ./prisma
+COPY public ./public
+COPY app ./app
+COPY package.json bun.lock prisma.config.ts tsconfig.json ./
+
+# built SPA + generated Prisma client from the build stage
+COPY --from=build /usr/src/app/dist-client ./dist-client
+COPY --from=build /usr/src/app/src/generated ./src/generated
+
+# fonts for resvg SVG-to-PNG text rendering (OG images)
 RUN apt-get update && apt-get install --no-install-recommends -y fonts-dejavu-core fontconfig && rm -rf /var/lib/apt/lists/* && fc-cache -f
 
-RUN bunx prisma generate
-RUN bunx prisma db push
+# apply the schema to the sqlite db (client is already generated & copied)
+RUN bunx prisma@7 db push --skip-generate
 
-# run the app
+# run the app (web/API + /mcp on the same port)
 USER bun
 EXPOSE 3000/tcp
 ENTRYPOINT ["bun", "src/index.ts"]
