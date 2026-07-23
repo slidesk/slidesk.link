@@ -17,24 +17,30 @@ const upload = new Elysia({
     const count = await countByUser(user.id);
     if (count >= 5) return "err: Too many presentations, wait 72h";
     const uuid = Bun.randomUUIDv7();
+    const dir = `${process.cwd()}/app/presentations/${uuid}`;
+    const archive = `${dir}/link.tgz`;
     await addHostedPresentation(uuid, user.id);
-    await Bun.write(
-      `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
-      body.file,
-    );
+    await Bun.write(archive, body.file);
     await telegram(
       JSON.stringify({
         action: "host",
         user: user.slug,
       }),
     );
-    await extract({
-      file: `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
-      C: `${process.cwd()}/app/presentations/${uuid}`,
-    });
-    await Bun.file(
-      `${process.cwd()}/app/presentations/${uuid}/link.tgz`,
-    ).unlink();
+    try {
+      await extract({
+        file: archive,
+        C: dir,
+        // Reject any entry that would escape the target directory (tar-slip).
+        filter: (path) =>
+          !path.startsWith("/") && !path.split(/[\\/]/).includes(".."),
+      });
+    } catch (error) {
+      console.error("extract failed:", error);
+      return new Response("err: Invalid archive", { status: 400 });
+    } finally {
+      await Bun.file(archive).unlink();
+    }
     return uuid;
   },
   {

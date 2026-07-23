@@ -1,33 +1,63 @@
 import { rmSync } from "node:fs";
 import { jwt } from "@elysiajs/jwt";
 import Elysia, { t } from "elysia";
-import deleteComponent from "../database/component/delete";
-import getComponentsByUser from "../database/component/getByUser";
+import {
+  type AddonKind,
+  addonRepositories,
+} from "../database/addon/repository";
 import deleteHostedById from "../database/hostedPresentation/deleteById";
 import getHostedsByUser from "../database/hostedPresentation/getByUser";
-import deletePlugin from "../database/plugin/delete";
-import getPluginsByUser from "../database/plugin/getByUser";
 import checkPresentationIdAndUserId from "../database/presentation/checkIdAndUserId";
 import deletePresentationById from "../database/presentation/deleteById";
 import getPresentationsByUser from "../database/presentation/getByUser";
 import deleteSessionById from "../database/session/deleteById";
 import deleteSessionsByPresentationId from "../database/session/deleteByPresentationId";
 import getSessionById from "../database/session/getById";
-import deleteTemplate from "../database/template/delete";
-import getTemplatesByUser from "../database/template/getByUser";
-import deleteTheme from "../database/theme/delete";
-import getThemesByUser from "../database/theme/getByUser";
 import checkId from "../database/user/checkId";
 import deleteUser from "../database/user/delete";
+import getToken from "../database/user/getToken";
 import update from "../database/user/update";
 import createUserPage from "../services/createUserPage";
-import getToken from "../database/user/getToken";
+import { JWT_SECRET } from "../services/env";
+
+// Delete an addon the user owns, along with its uploaded archive.
+// Returns false when the user does not own an addon with that slug.
+const deleteOwnedAddon = async (
+  kind: AddonKind,
+  userId: number,
+  slug: string,
+): Promise<boolean> => {
+  const owned = (await addonRepositories[kind].getByUser(userId)).map(
+    (a) => a.slug,
+  );
+  if (!owned.includes(slug)) return false;
+  await addonRepositories[kind].delete(userId, slug);
+  await Bun.file(
+    `${process.cwd()}/app/${kind}s/${userId}/${slug}.tgz`,
+  ).delete();
+  return true;
+};
+
+// Shared handler body for the four addon deletion routes.
+const respondAddonDelete = async (
+  jwt: { verify: (token: string) => Promise<false | Record<string, unknown>> },
+  token: string,
+  kind: AddonKind,
+  slug: string,
+): Promise<Response> => {
+  const profile = await jwt.verify(token);
+  if (!profile) return new Response("Unauthorized", { status: 401 });
+  const ok = await deleteOwnedAddon(kind, Number(profile.id), slug);
+  return ok
+    ? new Response("OK", { status: 200 })
+    : new Response("Unauthorized", { status: 401 });
+};
 
 const profile = new Elysia({ prefix: "/profile" })
   .use(
     jwt({
       name: "jwt",
-      secret: Bun.env.JWT_SECRET ?? "slidesk.link",
+      secret: JWT_SECRET,
     }),
   )
   .get("/", async ({ jwt, cookie: { auth }, redirect }) => {
@@ -56,10 +86,14 @@ const profile = new Elysia({ prefix: "/profile" })
         },
         hosted: await getHostedsByUser(Number(profile.id)),
         presentations: await getPresentationsByUser(Number(profile.id)),
-        plugins: await getPluginsByUser(Number(profile.id)),
-        components: await getComponentsByUser(Number(profile.id)),
-        templates: await getTemplatesByUser(Number(profile.id)),
-        themes: await getThemesByUser(Number(profile.id)),
+        plugins: await addonRepositories.plugin.getByUser(Number(profile.id)),
+        components: await addonRepositories.component.getByUser(
+          Number(profile.id),
+        ),
+        templates: await addonRepositories.template.getByUser(
+          Number(profile.id),
+        ),
+        themes: await addonRepositories.theme.getByUser(Number(profile.id)),
         token: await getToken(Number(profile.id)),
       }),
       {
@@ -152,77 +186,17 @@ const profile = new Elysia({ prefix: "/profile" })
     }
     return new Response("Unauthorized", { status: 401 });
   })
-  .delete(
-    "/plugin/:slug",
-    async ({ jwt, cookie: { auth }, params: { slug } }) => {
-      const profile = await jwt.verify(auth.value as string);
-      if (!profile) return new Response("Unauthorized", { status: 401 });
-      const plugins = [...(await getPluginsByUser(Number(profile.id)))].map(
-        (p) => p.slug,
-      );
-      if (plugins.includes(slug)) {
-        await deletePlugin(Number(profile.id), slug);
-        await Bun.file(
-          `${process.cwd()}/app/plugins/${profile.id}/${slug}.tgz`,
-        ).delete();
-        return new Response("OK", { status: 200 });
-      }
-      return new Response("Unauthorized", { status: 401 });
-    },
+  .delete("/plugin/:slug", ({ jwt, cookie: { auth }, params: { slug } }) =>
+    respondAddonDelete(jwt, auth.value as string, "plugin", slug),
   )
-  .delete(
-    "/component/:slug",
-    async ({ jwt, cookie: { auth }, params: { slug } }) => {
-      const profile = await jwt.verify(auth.value as string);
-      if (!profile) return new Response("Unauthorized", { status: 401 });
-      const components = [
-        ...(await getComponentsByUser(Number(profile.id))),
-      ].map((p) => p.slug);
-      if (components.includes(slug)) {
-        await deleteComponent(Number(profile.id), slug);
-        await Bun.file(
-          `${process.cwd()}/app/components/${profile.id}/${slug}.tgz`,
-        ).delete();
-        return new Response("OK", { status: 200 });
-      }
-      return new Response("Unauthorized", { status: 401 });
-    },
+  .delete("/component/:slug", ({ jwt, cookie: { auth }, params: { slug } }) =>
+    respondAddonDelete(jwt, auth.value as string, "component", slug),
   )
-  .delete(
-    "/template/:slug",
-    async ({ jwt, cookie: { auth }, params: { slug } }) => {
-      const profile = await jwt.verify(auth.value as string);
-      if (!profile) return new Response("Unauthorized", { status: 401 });
-      const templates = [...(await getTemplatesByUser(Number(profile.id)))].map(
-        (p) => p.slug,
-      );
-      if (templates.includes(slug)) {
-        await deleteTemplate(Number(profile.id), slug);
-        await Bun.file(
-          `${process.cwd()}/app/templates/${profile.id}/${slug}.tgz`,
-        ).delete();
-        return new Response("OK", { status: 200 });
-      }
-      return new Response("Unauthorized", { status: 401 });
-    },
+  .delete("/template/:slug", ({ jwt, cookie: { auth }, params: { slug } }) =>
+    respondAddonDelete(jwt, auth.value as string, "template", slug),
   )
-  .delete(
-    "/theme/:slug",
-    async ({ jwt, cookie: { auth }, params: { slug } }) => {
-      const profile = await jwt.verify(auth.value as string);
-      if (!profile) return new Response("Unauthorized", { status: 401 });
-      const themes = [...(await getThemesByUser(Number(profile.id)))].map(
-        (p) => p.slug,
-      );
-      if (themes.includes(slug)) {
-        await deleteTheme(Number(profile.id), slug);
-        await Bun.file(
-          `${process.cwd()}/app/themes/${profile.id}/${slug}.tgz`,
-        ).delete();
-        return new Response("OK", { status: 200 });
-      }
-      return new Response("Unauthorized", { status: 401 });
-    },
+  .delete("/theme/:slug", ({ jwt, cookie: { auth }, params: { slug } }) =>
+    respondAddonDelete(jwt, auth.value as string, "theme", slug),
   );
 
 export default profile;

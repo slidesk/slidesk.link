@@ -1,5 +1,5 @@
-import { page } from "../components/layout";
 import { profileHeader } from "../components/header";
+import { page } from "../components/layout";
 
 export const profilePage = () =>
   page(

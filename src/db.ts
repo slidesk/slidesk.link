@@ -1,5 +1,5 @@
-import { PrismaClient } from "./generated/prisma/client";
 import { PrismaBunSqlite } from "prisma-adapter-bun-sqlite";
+import { PrismaClient } from "./generated/prisma/client";
 
 const adapter = new PrismaBunSqlite({
   url: "file:./app/dev.db",

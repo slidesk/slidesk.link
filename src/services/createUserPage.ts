@@ -1,11 +1,8 @@
 import { Glob } from "bun";
 import markdownIt from "markdown-it";
 import { minify } from "minify";
-import componentGetByUser from "../database/component/getByUser";
-import pluginGetByUser from "../database/plugin/getByUser";
+import { addonRepositories } from "../database/addon/repository";
 import presentationGetByUser from "../database/presentation/getByUser";
-import templateGetByUser from "../database/template/getByUser";
-import themeGetByUser from "../database/theme/getByUser";
 import { db } from "../db";
 import { userPageHtml } from "../html/pages/user";
 import type { SlideskLinkSession, SlideskLinkUser } from "../types";
@@ -48,18 +45,20 @@ export default async (u: SlideskLinkUser) => {
     });
   }
 
-  const plugins = (await pluginGetByUser(u.id as number)).toSorted((a, b) =>
-    a.slug.localeCompare(b.slug),
-  );
-  const components = (await componentGetByUser(u.id as number)).toSorted(
-    (a, b) => a.slug.localeCompare(b.slug),
-  );
-  const themes = (await themeGetByUser(u.id as number)).toSorted((a, b) =>
-    a.slug.localeCompare(b.slug),
-  );
-  const templates = (await templateGetByUser(u.id as number)).toSorted((a, b) =>
-    a.slug.localeCompare(b.slug),
-  );
+  const bySlug = (a: { slug: string }, b: { slug: string }) =>
+    a.slug.localeCompare(b.slug);
+  const plugins = (
+    await addonRepositories.plugin.getByUser(u.id as number)
+  ).toSorted(bySlug);
+  const components = (
+    await addonRepositories.component.getByUser(u.id as number)
+  ).toSorted(bySlug);
+  const themes = (
+    await addonRepositories.theme.getByUser(u.id as number)
+  ).toSorted(bySlug);
+  const templates = (
+    await addonRepositories.template.getByUser(u.id as number)
+  ).toSorted(bySlug);
 
   const sanitizeHTML = (html: string) =>
     html

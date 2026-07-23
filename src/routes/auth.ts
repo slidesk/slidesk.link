@@ -1,12 +1,13 @@
 import { jwt } from "@elysiajs/jwt";
 import Elysia from "elysia";
 import getToken from "../database/user/getToken";
+import { JWT_SECRET } from "../services/env";
 
 const auth = new Elysia({ prefix: "/auth" })
   .use(
     jwt({
       name: "jwt",
-      secret: Bun.env.JWT_SECRET ?? "slidesk.link",
+      secret: JWT_SECRET,
     }),
   )
   .get("/", async ({ jwt, cookie: { auth }, redirect }) => {

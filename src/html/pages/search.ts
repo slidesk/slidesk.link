@@ -1,5 +1,5 @@
-import { page } from "../components/layout";
 import { internalHeader } from "../components/header";
+import { page } from "../components/layout";
 
 export const searchPage = () =>
   page(
