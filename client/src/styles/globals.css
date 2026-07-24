@@ -129,7 +129,10 @@
 }
 .hljs-attr,
 .hljs-attribute,
-.hljs-property {
+.hljs-property,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-selector-attr {
   color: hsl(var(--primary));
 }
 .hljs-string,
@@ -145,6 +148,29 @@
 .hljs-selector-tag,
 .hljs-meta {
   color: hsl(var(--primary));
+  font-weight: 600;
+}
+.hljs-title,
+.hljs-name,
+.hljs-built_in,
+.hljs-type,
+.hljs-section {
+  color: hsl(var(--status-declined));
+}
+.hljs-tag,
+.hljs-punctuation {
+  color: hsl(var(--muted-foreground));
+}
+.hljs-addition {
+  color: hsl(var(--status-accepted));
+}
+.hljs-deletion {
+  color: hsl(var(--destructive));
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
   font-weight: 600;
 }
 

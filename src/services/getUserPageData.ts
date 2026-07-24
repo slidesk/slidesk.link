@@ -1,22 +1,7 @@
-import markdownIt from "markdown-it";
 import { addonRepositories } from "../database/addon/repository";
 import presentationGetByUser from "../database/presentation/getByUser";
 import extractHeaderComment from "./extractHeaderComment";
-
-const md = markdownIt({ xhtmlOut: true, linkify: true, typographer: true });
-
-// Demote h1-h3 to h4-h6 so user content never competes with the page headings.
-const demote = (html: string) =>
-  html
-    .replace(/<h1/g, "<h4")
-    .replace(/<\/h1/g, "</h4")
-    .replace(/<h2/g, "<h5")
-    .replace(/<\/h2/g, "</h5")
-    .replace(/<h3/g, "<h6")
-    .replace(/<\/h3/g, "</h6");
-
-const render = (source: string | null | undefined) =>
-  demote(md.render(source ?? ""));
+import { renderDemoted as render } from "./markdown";
 
 type AddonUser = { id: number; name: string | null; slug: string };
 

@@ -1,11 +1,11 @@
 import { jwt } from "@elysiajs/jwt";
 import { Elysia } from "elysia";
-import markdownIt from "markdown-it";
 import checkId from "../database/user/checkId";
 import checkSlug from "../database/user/checkSlug";
 import getAllUsers from "../database/user/getAll";
 import { JWT_SECRET } from "../services/env";
 import getUserPageData from "../services/getUserPageData";
+import { render } from "../services/markdown";
 
 // Lets the SPA know who (if anyone) is logged in, since the `auth` cookie is
 // HttpOnly and unreadable from JS. Replaces the server-side index/index-logged
@@ -34,14 +34,13 @@ const me = new Elysia({ prefix: "/api" })
     return getUserPageData(user);
   })
   .get("/users", async () => {
-    const md = markdownIt({ xhtmlOut: true, linkify: true, typographer: true });
     const users = await getAllUsers();
     return users.map((u) => ({
       name: u.name ?? "",
       slug: u.slug,
       avatarUrl: u.avatarUrl,
       url: u.url,
-      bioHtml: md.render(u.bio ?? ""),
+      bioHtml: render(u.bio ?? ""),
     }));
   });
 
