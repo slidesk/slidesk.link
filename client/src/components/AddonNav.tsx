@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowDownAZ, Flame, List, Presentation } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { MarqueeText } from "@/components/MarqueeText";
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +17,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { type AddonNavGroup, allAddonIds } from "@/lib/addon-groups";
 import { ADDON_META } from "@/lib/addon-meta";
 import type { AddonSort } from "@/lib/addon-sort";
@@ -126,7 +126,10 @@ export function AddonNav({
             className="mb-3 border-b pb-3"
           />
         )}
-        <ScrollArea className="max-h-[calc(100vh-11rem)] pr-2">
+        {/* A plain scroller, not ScrollArea: the latter sizes its content to
+            max-content, which defeats `truncate`, and never scrolls when the
+            height comes from `max-h` alone. */}
+        <div className="max-h-[calc(100vh-11rem)] overflow-y-auto overscroll-contain pr-2">
           <Accordion
             type="multiple"
             defaultValue={[
@@ -137,10 +140,13 @@ export function AddonNav({
           >
             {talks.length > 0 && (
               <AccordionItem value="talks" className="border-none">
-                <AccordionTrigger className="py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:no-underline">
+                <AccordionTrigger className="sticky top-0 z-10 bg-background py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:no-underline">
                   <span className="flex items-center gap-2">
                     <Presentation className="h-3.5 w-3.5" />
                     Talks
+                    <span className="font-normal normal-case">
+                      ({talks.length})
+                    </span>
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="pb-1">
@@ -157,13 +163,13 @@ export function AddonNav({
                               navigate(talk.id);
                             }}
                             className={cn(
-                              "-ml-px block truncate border-l-2 py-1 pl-3 text-sm transition-colors",
+                              "-ml-px block border-l-2 py-1 pl-3 text-sm transition-colors",
                               active
                                 ? "border-primary font-medium text-foreground"
                                 : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
                             )}
                           >
-                            {talk.title}
+                            <MarqueeText>{talk.title}</MarqueeText>
                           </a>
                         </li>
                       );
@@ -181,10 +187,13 @@ export function AddonNav({
                   value={group.kind}
                   className="border-none"
                 >
-                  <AccordionTrigger className="py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:no-underline">
+                  <AccordionTrigger className="sticky top-0 z-10 bg-background py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:no-underline">
                     <span className="flex items-center gap-2">
                       <Icon className="h-3.5 w-3.5" />
                       {meta.labelPlural}
+                      <span className="font-normal normal-case">
+                        ({group.items.length})
+                      </span>
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="pb-1">
@@ -201,13 +210,13 @@ export function AddonNav({
                                 navigate(item.id);
                               }}
                               className={cn(
-                                "-ml-px block truncate border-l-2 py-1 pl-3 text-sm transition-colors",
+                                "-ml-px block border-l-2 py-1 pl-3 text-sm transition-colors",
                                 active
                                   ? "border-primary font-medium text-foreground"
                                   : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
                               )}
                             >
-                              {item.slug}
+                              <MarqueeText>{item.slug}</MarqueeText>
                             </a>
                           </li>
                         );
@@ -218,7 +227,7 @@ export function AddonNav({
               );
             })}
           </Accordion>
-        </ScrollArea>
+        </div>
       </nav>
 
       {/* Mobile floating jump button + command palette */}

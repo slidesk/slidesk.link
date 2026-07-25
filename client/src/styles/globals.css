@@ -115,6 +115,38 @@
   .glow {
     box-shadow: 0 0 60px -12px var(--glow);
   }
+
+  /* Single-line label that ellipsises, then scrolls its tail into view while
+     hovered. `--marquee-shift` (the overflow width) is measured in
+     MarqueeText; at 0 nothing moves. */
+  .marquee {
+    overflow: hidden;
+  }
+  .marquee > span {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: transform var(--marquee-duration, 0.25s) linear;
+  }
+  .marquee:hover > span,
+  .marquee:focus-within > span {
+    overflow: visible;
+    text-overflow: clip;
+    transform: translateX(calc(-1 * var(--marquee-shift, 0px)));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee > span {
+      transition: none;
+    }
+    .marquee:hover > span,
+    .marquee:focus-within > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transform: none;
+    }
+  }
 }
 
 /* highlight.js token colors, themed with our palette */

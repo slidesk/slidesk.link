@@ -40,14 +40,17 @@ function toAddonData(data: UserPageData): SearchResponse {
     themes: data.themes.map((t) => ({
       slug: t.slug,
       downloaded: t.downloaded,
+      // Previews go in a `.images` grid, same markup as the search API emits.
       description:
         t.descriptionHtml +
-        t.previews
-          .map(
-            (b64) =>
-              `<img src="data:image/webp;base64,${b64}" alt="" loading="lazy" width="320" />`,
-          )
-          .join(""),
+        (t.previews.length > 0
+          ? `<div class="images">${t.previews
+              .map(
+                (b64) =>
+                  `<img src="data:image/webp;base64,${b64}" alt="" loading="lazy" width="320" />`,
+              )
+              .join("")}</div>`
+          : ""),
       user: data.slug,
     })),
     users: [],
