@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { AddonNav } from "@/components/AddonNav";
 import { AddonSections } from "@/components/AddonSections";
 import { Skeleton } from "@/components/ui/skeleton";
 import { buildAddonGroups } from "@/lib/addon-groups";
 import { ADDON_META } from "@/lib/addon-meta";
+import { type AddonSort, sortAddons } from "@/lib/addon-sort";
 import { useDocumentTitle } from "@/lib/hooks/use-document-title";
 import { useHashScroll } from "@/lib/hooks/use-hash-scroll";
 import { useAddons } from "@/lib/queries";
@@ -24,7 +26,9 @@ export function AddonListPage({ kind }: { kind: AddonKind }) {
   const Icon = meta.icon;
   useDocumentTitle(`${meta.labelPlural} | SliDesk.link`);
 
-  const { data, isLoading, isError } = useAddons(kind);
+  const [sort, setSort] = useState<AddonSort>("name");
+  const { data: raw, isLoading, isError } = useAddons(kind);
+  const data = raw ? sortAddons(raw, sort) : undefined;
   const groups = data ? buildAddonGroups(data) : [];
   const isEmpty = data ? groups.length === 0 : false;
 
@@ -60,7 +64,7 @@ export function AddonListPage({ kind }: { kind: AddonKind }) {
         </div>
         {data && !isEmpty && (
           <aside>
-            <AddonNav groups={groups} />
+            <AddonNav groups={groups} sort={sort} onSortChange={setSort} />
           </aside>
         )}
       </div>

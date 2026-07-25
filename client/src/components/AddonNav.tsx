@@ -1,4 +1,5 @@
-import { List, Presentation } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { ArrowDownAZ, Flame, List, Presentation } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import {
   Accordion,
@@ -18,6 +19,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { type AddonNavGroup, allAddonIds } from "@/lib/addon-groups";
 import { ADDON_META } from "@/lib/addon-meta";
+import type { AddonSort } from "@/lib/addon-sort";
 import { useScrollSpy } from "@/lib/hooks/use-scroll-spy";
 import { cn } from "@/lib/utils";
 
@@ -39,12 +41,51 @@ export interface TalkNavItem {
   title: string;
 }
 
+/** Sort toggle rendered above the nav items; omitted when no handler is given. */
+function SortButtons({
+  sort,
+  onSortChange,
+  className,
+}: {
+  sort: AddonSort;
+  onSortChange: (sort: AddonSort) => void;
+  className?: string;
+}) {
+  const options: { value: AddonSort; label: string; icon: LucideIcon }[] = [
+    { value: "name", label: "Name", icon: ArrowDownAZ },
+    { value: "popularity", label: "Popular", icon: Flame },
+  ];
+  return (
+    <fieldset className={cn("flex gap-1", className)}>
+      <legend className="sr-only">Sort addons</legend>
+      {options.map(({ value, label, icon: Icon }) => (
+        <Button
+          key={value}
+          type="button"
+          size="sm"
+          variant={sort === value ? "secondary" : "ghost"}
+          aria-pressed={sort === value}
+          onClick={() => onSortChange(value)}
+          className="flex-1"
+        >
+          <Icon className="h-3.5 w-3.5" />
+          {label}
+        </Button>
+      ))}
+    </fieldset>
+  );
+}
+
 export function AddonNav({
   groups,
   talks = [],
+  sort,
+  onSortChange,
 }: {
   groups: AddonNavGroup[];
   talks?: TalkNavItem[];
+  sort?: AddonSort;
+  onSortChange?: (sort: AddonSort) => void;
 }) {
   const ids = [...talks.map((t) => t.id), ...allAddonIds(groups)];
   const activeId = useScrollSpy(ids);
@@ -78,6 +119,13 @@ export function AddonNav({
         <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           On this page
         </p>
+        {sort && onSortChange && (
+          <SortButtons
+            sort={sort}
+            onSortChange={onSortChange}
+            className="mb-3 border-b pb-3"
+          />
+        )}
         <ScrollArea className="max-h-[calc(100vh-11rem)] pr-2">
           <Accordion
             type="multiple"
@@ -183,6 +231,13 @@ export function AddonNav({
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Jump to…" />
+        {sort && onSortChange && (
+          <SortButtons
+            sort={sort}
+            onSortChange={onSortChange}
+            className="border-b px-2 py-2"
+          />
+        )}
         <CommandList>
           <CommandEmpty>Nothing found.</CommandEmpty>
           {talks.length > 0 && (
