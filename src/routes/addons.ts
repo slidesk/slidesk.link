@@ -5,6 +5,7 @@ import { addonRepositories, isAddonKind } from "../database/addon/repository";
 import checkSlug from "../database/user/checkSlug";
 import checkToken from "../database/user/checkToken";
 import touchUser from "../database/user/touch";
+import { HOST } from "../services/env";
 import { slugify } from "../services/slug";
 
 const addons = new Elysia({
@@ -58,12 +59,12 @@ const addons = new Elysia({
       );
       await touchUser(user.id);
       await bksy(
-        `New ${body.type}! Go to ${Bun.env.HOST}/${body.type}s/#${user.slug}__${slug}`,
+        `New ${body.type}! Go to ${HOST}/${body.type}s/#${user.slug}__${slug}`,
         {
-          uri: `${Bun.env.HOST}/${body.type}s/#${user.slug}__${slug}`,
+          uri: `${HOST}/${body.type}s/#${user.slug}__${slug}`,
           title: `New ${body.type}: ${slug}`,
           description: body.desc ?? "",
-          ogImageUrl: `${Bun.env.HOST}/a/${body.type}/${user.slug}/${slug}/og`,
+          ogImageUrl: `${HOST}/a/${body.type}/${user.slug}/${slug}/og`,
         },
       );
       return new Response("", { status: 201 });

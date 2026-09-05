@@ -1,7 +1,7 @@
 import { jwt } from "@elysiajs/jwt";
 import { Elysia } from "elysia";
 import { oauth2 } from "elysia-oauth2";
-import { JWT_SECRET } from "../services/env";
+import { HOST, HOST_IS_HTTPS, JWT_SECRET } from "../services/env";
 import getUser from "../services/getUser";
 
 const login = new Elysia({ prefix: "/login" })
@@ -11,12 +11,12 @@ const login = new Elysia({ prefix: "/login" })
         GitHub: [
           Bun.env.GITHUB_OAUTH_CLIENT_ID ?? "",
           Bun.env.GITHUB_OAUTH_CLIENT_SECRET ?? "",
-          `${Bun.env.HOST}/login/github/authorized`,
+          `${HOST}/login/github/authorized`,
         ],
       },
       {
         cookie: {
-          secure: Bun.env.HOST !== "http://localhost:3000",
+          secure: HOST_IS_HTTPS,
         },
       },
     ),
