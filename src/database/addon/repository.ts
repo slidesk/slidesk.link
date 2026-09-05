@@ -1,23 +1,18 @@
 import { db } from "../../db";
-import type { Plugin, User } from "../../generated/prisma/client";
+import {
+  type JoinedUserRow,
+  likeTerm,
+  toJoinedUser,
+  USER_JOIN_COLUMNS,
+} from "../rows";
+import type { Addon, User } from "../types";
 
 export type AddonKind = "plugin" | "component" | "theme" | "template";
 
 // The four addon models (Plugin/Component/Theme/Template) are structurally
 // identical, so a single row shape describes any of them.
-export type AddonRow = Plugin;
+export type AddonRow = Addon;
 export type AddonRowWithUser = AddonRow & { user: User };
-
-// Minimal structural view of a Prisma model delegate. The concrete delegates
-// are cast to this once below; keeping args as `unknown` avoids leaking the
-// generated (and divergent) per-model input types into the generic layer.
-interface AddonDelegate {
-  findMany: (args?: unknown) => Promise<AddonRowWithUser[]>;
-  findFirst: (args?: unknown) => Promise<AddonRow | null>;
-  upsert: (args: unknown) => Promise<AddonRow>;
-  delete: (args: unknown) => Promise<AddonRow>;
-  update: (args: unknown) => Promise<AddonRow>;
-}
 
 export interface AddonRepository {
   upsert(
@@ -25,62 +20,95 @@ export interface AddonRepository {
     userId: number,
     tags: string,
     description: string,
-  ): Promise<AddonRow>;
+  ): Promise<void>;
   search(term: string): Promise<AddonRowWithUser[]>;
   getByUser(userId: number): Promise<AddonRowWithUser[]>;
   getByUserAndSlug(userId: number, slug: string): Promise<AddonRow | null>;
-  delete(userId: number, slug: string): Promise<AddonRow>;
-  addDownload(
-    userId: number,
-    slug: string,
-    downloaded: number,
-  ): Promise<AddonRow>;
+  delete(userId: number, slug: string): Promise<void>;
+  addDownload(userId: number, slug: string, downloaded: number): Promise<void>;
 }
 
-const build = (
-  delegate: AddonDelegate,
-  searchField: "tags" | "description",
-): AddonRepository => ({
-  upsert: (slug, userId, tags, description) =>
-    delegate.upsert({
-      create: { slug, userId, tags, description },
-      update: { tags, description },
-      where: { userId_slug: { userId, slug } },
-    }),
-  search: (term) =>
-    delegate.findMany({
-      where: {
-        OR: [
-          { slug: { contains: term } },
-          { [searchField]: { contains: term } },
-        ],
-      },
-      include: { user: true },
-      orderBy: { slug: "asc" },
-    }),
-  getByUser: (userId) =>
-    delegate.findMany({
-      where: { userId: { equals: userId } },
-      include: { user: true },
-    }),
-  getByUserAndSlug: (userId, slug) =>
-    delegate.findFirst({
-      where: { slug: { equals: slug }, userId: { equals: userId } },
-    }),
-  delete: (userId, slug) =>
-    delegate.delete({ where: { userId_slug: { userId, slug } } }),
-  addDownload: (userId, slug, downloaded) =>
-    delegate.update({
-      where: { userId_slug: { userId, slug } },
-      data: { downloaded },
-    }),
+const ADDON_COLUMNS = `a.userId, a.slug, a.tags, a.description, a.downloaded`;
+
+const toAddonWithUser = (row: AddonRow & JoinedUserRow): AddonRowWithUser => ({
+  userId: row.userId,
+  slug: row.slug,
+  tags: row.tags,
+  description: row.description,
+  downloaded: row.downloaded,
+  user: toJoinedUser(row),
 });
 
+/**
+ * Builds the repository for one addon table. `table` and `searchField` are
+ * module-level constants (never user input), so they are safe to interpolate
+ * into the statements below.
+ */
+const build = (
+  table: "Plugin" | "Component" | "Theme" | "Template",
+  searchField: "tags" | "description",
+): AddonRepository => {
+  const upsert = db.query<
+    void,
+    [{ slug: string; userId: number; tags: string; description: string }]
+  >(
+    `INSERT INTO "${table}" (userId, slug, tags, description)
+          VALUES ($userId, $slug, $tags, $description)
+     ON CONFLICT (userId, slug)
+     DO UPDATE SET tags = $tags, description = $description`,
+  );
+  const search = db.query<AddonRow & JoinedUserRow, [{ term: string }]>(
+    `SELECT ${ADDON_COLUMNS}, ${USER_JOIN_COLUMNS}
+       FROM "${table}" a
+       JOIN "User" u ON u.id = a.userId
+      WHERE a.slug LIKE '%' || $term || '%' ESCAPE '\\'
+         OR a."${searchField}" LIKE '%' || $term || '%' ESCAPE '\\'
+      ORDER BY a.slug ASC`,
+  );
+  const byUser = db.query<AddonRow & JoinedUserRow, [{ userId: number }]>(
+    `SELECT ${ADDON_COLUMNS}, ${USER_JOIN_COLUMNS}
+       FROM "${table}" a
+       JOIN "User" u ON u.id = a.userId
+      WHERE a.userId = $userId`,
+  );
+  const byUserAndSlug = db.query<AddonRow, [{ userId: number; slug: string }]>(
+    `SELECT userId, slug, tags, description, downloaded
+       FROM "${table}"
+      WHERE userId = $userId AND slug = $slug
+      LIMIT 1`,
+  );
+  const remove = db.query(
+    `DELETE FROM "${table}" WHERE userId = $userId AND slug = $slug`,
+  );
+  const setDownloads = db.query(
+    `UPDATE "${table}"
+        SET downloaded = $downloaded
+      WHERE userId = $userId AND slug = $slug`,
+  );
+
+  return {
+    upsert: async (slug, userId, tags, description) => {
+      upsert.run({ slug, userId, tags, description });
+    },
+    search: async (term) =>
+      search.all({ term: likeTerm(term) }).map(toAddonWithUser),
+    getByUser: async (userId) => byUser.all({ userId }).map(toAddonWithUser),
+    getByUserAndSlug: async (userId, slug) =>
+      byUserAndSlug.get({ userId, slug }),
+    delete: async (userId, slug) => {
+      remove.run({ userId, slug });
+    },
+    addDownload: async (userId, slug, downloaded) => {
+      setDownloads.run({ userId, slug, downloaded });
+    },
+  };
+};
+
 export const addonRepositories: Record<AddonKind, AddonRepository> = {
-  plugin: build(db.plugin as unknown as AddonDelegate, "tags"),
-  component: build(db.component as unknown as AddonDelegate, "tags"),
-  theme: build(db.theme as unknown as AddonDelegate, "description"),
-  template: build(db.template as unknown as AddonDelegate, "description"),
+  plugin: build("Plugin", "tags"),
+  component: build("Component", "tags"),
+  theme: build("Theme", "description"),
+  template: build("Template", "description"),
 };
 
 export const authorizedKinds = Object.keys(addonRepositories) as AddonKind[];

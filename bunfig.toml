@@ -1,0 +1,5 @@
+[test]
+# Run every test against a throwaway in-memory database. This has to happen in a
+# preload: the test files share one module registry, so `src/db` may be imported
+# (and its connection opened) before any test file body runs.
+preload = ["./tests/setup.ts"]

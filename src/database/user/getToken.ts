@@ -1,4 +1,8 @@
 import { db } from "../../db";
 
-export default async (id: number) =>
-  (await db.user.findFirst({ where: { id: { equals: id } } }))?.token || null;
+const tokenById = db.query<{ token: string }, [{ id: number }]>(
+  `SELECT token FROM "User" WHERE id = $id LIMIT 1`,
+);
+
+export default async (id: number): Promise<string | null> =>
+  tokenById.get({ id })?.token || null;

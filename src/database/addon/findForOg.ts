@@ -1,4 +1,4 @@
-import { db } from "../../db";
+import checkSlug from "../user/checkSlug";
 import { addonRepositories, isAddonKind } from "./repository";
 
 type OgAddonData = {
@@ -16,9 +16,7 @@ export default async (
 ): Promise<OgAddonData> => {
   if (!isAddonKind(kind)) return null;
 
-  const user = await db.user.findFirst({
-    where: { slug: { equals: userSlug } },
-  });
+  const user = await checkSlug(userSlug);
   if (!user) return null;
 
   const addon = await addonRepositories[kind].getByUserAndSlug(

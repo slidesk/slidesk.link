@@ -14,3 +14,9 @@ helm-charts
 .idea
 coverage*
 **/.DS_Store
+# build outputs are produced inside the build stage, never copied in
+dist-client
+dist-server
+dist-html
+# never bake a local database into the image; it is created at runtime
+app/dev.db*

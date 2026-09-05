@@ -1,11 +1,11 @@
 node_modules
 .DS_Store
 .env
-src/generated/prisma/
 dev.db*
 public/*.css
 dist-html
 dist-client
+dist-server
 app/components/*
 !app/components/.gitkeep
 app/plugins/*

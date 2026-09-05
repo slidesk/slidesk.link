@@ -3,13 +3,13 @@ import {
   addonRepositories,
   authorizedKinds,
 } from "../database/addon/repository";
-import { db } from "../db";
+import getAllUsers from "../database/user/getAll";
 
 const HOST = "https://slidesk.link";
 
 const sitemap = new Elysia()
   .get("/sitemap.xml", async () => {
-    const users = await db.user.findMany();
+    const users = await getAllUsers();
 
     // All addons across every kind, linked via their crawler-facing /a page
     // (server-rendered with OG meta; the SPA listing uses #fragments which

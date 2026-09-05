@@ -1,6 +1,10 @@
 import { db } from "../../db";
+import type { WriteResult } from "../types";
 
-export default async (presentationId: number) =>
-  await db.session.deleteMany({
-    where: { presentationId: { equals: presentationId } },
-  });
+const remove = db.query(
+  `DELETE FROM "Session" WHERE presentationId = $presentationId`,
+);
+
+export default async (presentationId: number): Promise<WriteResult> => ({
+  count: remove.run({ presentationId }).changes,
+});
