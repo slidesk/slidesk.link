@@ -6,6 +6,7 @@ import {
   addonRepositories,
 } from "../database/addon/repository";
 import deleteHostedById from "../database/hostedPresentation/deleteById";
+import renewHosted from "../database/hostedPresentation/renew";
 import getHostedsByUser from "../database/hostedPresentation/getByUser";
 import checkPresentationIdAndUserId from "../database/presentation/checkIdAndUserId";
 import deletePresentationById from "../database/presentation/deleteById";
@@ -181,6 +182,18 @@ const profile = new Elysia({ prefix: "/profile" })
       return new Response("OK", { status: 200 });
     }
     return new Response("Unauthorized", { status: 401 });
+  })
+  .put("/hosted/:id/renew", async ({ jwt, cookie: { auth }, params: { id } }) => {
+    const profile = await jwt.verify(auth.value as string);
+    if (!profile) return new Response("Unauthorized", { status: 401 });
+    const res = await renewHosted(id, Number(profile.id));
+    if (res.count === 0) return new Response("Not Found", { status: 404 });
+    const row = (
+      await getHostedsByUser(Number(profile.id))
+    ).find((h) => h.id === id);
+    return new Response(JSON.stringify({ createdAt: row?.createdAt }), {
+      headers: { "Content-Type": "application/json" },
+    });
   })
   .delete("/plugin/:slug", ({ jwt, cookie: { auth }, params: { slug } }) =>
     respondAddonDelete(jwt, auth.value as string, "plugin", slug),
