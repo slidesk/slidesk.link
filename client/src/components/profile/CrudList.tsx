@@ -59,6 +59,7 @@ export interface CrudListProps<T> {
   primary: (item: T) => ReactNode;
   secondary?: (item: T) => ReactNode;
   onDelete: (item: T) => void;
+  actions?: (item: T) => ReactNode;
   emptyText?: string;
 }
 
@@ -70,6 +71,7 @@ export function CrudList<T>({
   primary,
   secondary,
   onDelete,
+  actions,
   emptyText = "Nothing here yet.",
 }: CrudListProps<T>) {
   return (
@@ -103,6 +105,7 @@ export function CrudList<T>({
                     </span>
                   )}
                 </div>
+                {actions?.(item)}
                 <ConfirmDelete
                   onConfirm={() => onDelete(item)}
                   description="This item will be permanently deleted."
