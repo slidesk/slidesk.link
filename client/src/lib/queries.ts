@@ -83,3 +83,11 @@ export function useDeleteProfileItem() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["profile"] }),
   });
 }
+
+export function useRenewHosted() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.renewHosted(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["profile"] }),
+  });
+}
