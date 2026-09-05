@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { ApiTokenCard } from "@/components/profile/ApiTokenCard";
 import { ConfirmDelete, CrudList } from "@/components/profile/CrudList";
 import { DangerZone } from "@/components/profile/DangerZone";
@@ -22,7 +23,6 @@ import { useDocumentTitle } from "@/lib/hooks/use-document-title";
 import { useDeleteProfileItem, useProfile, useRenewHosted } from "@/lib/queries";
 import { formatDate } from "@/lib/utils";
 import type { ProfileAddon, ProfilePresentation } from "@/types/api";
-import { toast } from "sonner";
 
 export function ProfilePage() {
   useDocumentTitle("Your profile | SliDesk.link");
