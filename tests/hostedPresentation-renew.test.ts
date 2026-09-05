@@ -21,4 +21,13 @@ describe("renew", () => {
       data: { createdAt: expect.any(Date) },
     });
   });
+
+  test("returns { count: 0 } when the row is not owned by the user", async () => {
+    updateMany.mockResolvedValue({ count: 0 });
+    const { default: renew } = await import(
+      "../src/database/hostedPresentation/renew"
+    );
+    const res = await renew("uuid-2", 42);
+    expect(res).toEqual({ count: 0 });
+  });
 });
