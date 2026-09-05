@@ -4,6 +4,7 @@ import {
   Palette,
   Presentation,
   Puzzle,
+  RotateCw,
   Server,
   Trash2,
 } from "lucide-react";
@@ -18,14 +19,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ApiError } from "@/lib/api";
 import { useDocumentTitle } from "@/lib/hooks/use-document-title";
-import { useDeleteProfileItem, useProfile } from "@/lib/queries";
+import { useDeleteProfileItem, useProfile, useRenewHosted } from "@/lib/queries";
 import { formatDate } from "@/lib/utils";
 import type { ProfileAddon, ProfilePresentation } from "@/types/api";
+import { toast } from "sonner";
 
 export function ProfilePage() {
   useDocumentTitle("Your profile | SliDesk.link");
   const { data, isLoading, error } = useProfile();
   const del = useDeleteProfileItem();
+  const renew = useRenewHosted();
 
   const unauthorized = error instanceof ApiError && error.status === 401;
   useEffect(() => {
@@ -91,6 +94,26 @@ export function ProfilePage() {
         )}
         secondary={(h) => formatDate(h.createdAt)}
         onDelete={(h) => del.mutate({ type: "hosted", id: h.id })}
+        actions={(h) => (
+          <Button
+            variant="link"
+            size="sm"
+            className="h-8 shrink-0 px-1 text-muted-foreground hover:text-primary"
+            onClick={() =>
+              renew.mutate(h.id, {
+                onSuccess: () => toast.success("Presentation renewed"),
+                onError: () => toast.error("Could not renew presentation"),
+              })
+            }
+            disabled={renew.isPending}
+          >
+            {renew.isPending && renew.variables === h.id ? (
+              <RotateCw className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <span>Renew</span>
+            )}
+          </Button>
+        )}
         emptyText="No hosted presentations."
       />
 
