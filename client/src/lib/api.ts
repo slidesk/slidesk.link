@@ -79,6 +79,15 @@ export const api = {
     if (!res.ok) throw new ApiError(res.status, await res.text());
   },
 
+  async renewHosted(id: string): Promise<{ createdAt: string }> {
+    return json<{ createdAt: string }>(
+      await fetch(`/profile/hosted/${id}/renew`, {
+        ...opts,
+        method: "PUT",
+      }),
+    );
+  },
+
   async deleteAccount(): Promise<void> {
     await fetch("/profile/user", { ...opts, method: "DELETE" });
   },
