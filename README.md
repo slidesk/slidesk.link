@@ -27,6 +27,20 @@ bun web
 The sqlite file is created and migrated on startup, so there is no separate
 migration command.
 
+### MCP for AI agents
+
+The deployed app exposes the addon hub to AI agents at **`/mcp`** over
+Streamable HTTP — nothing to clone, nothing to run:
+
+```sh
+claude mcp add --transport http slidesk-addons https://slidesk.link/mcp
+```
+
+The endpoint is stateless (one POST, one JSON reply, no session identifier), and
+`install_addon` there only ever *returns* the command — installing touches the
+user's own SliDesk project, so a local stdio server (`bun run mcp`) is what
+actually runs it. See [`mcp/README.md`](mcp/README.md).
+
 ### Database migrations
 
 Migrations live in `src/database/migrations` as plain `.sql` files and are

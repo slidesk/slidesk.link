@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { SKILL_INSTRUCTIONS } from "./skill";
 import { registerAddonTools } from "./tools";
 
 /**
@@ -10,7 +11,10 @@ import { registerAddonTools } from "./tools";
  *
  * Env: SLIDESK_HOST (default https://slidesk.link), SLIDESK_BIN (default slidesk).
  */
-const server = new McpServer({ name: "slidesk-addons", version: "0.1.0" });
+const server = new McpServer(
+  { name: "slidesk-addons", version: "0.1.0" },
+  { instructions: SKILL_INSTRUCTIONS },
+);
 
 registerAddonTools(server, {
   hostBase: process.env.SLIDESK_HOST ?? "https://slidesk.link",
