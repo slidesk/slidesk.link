@@ -1,7 +1,7 @@
 import { jwt } from "@elysiajs/jwt";
 import Elysia from "elysia";
 import getToken from "../database/user/getToken";
-import { JWT_SECRET } from "../services/env";
+import { HOST_IS_HTTPS, JWT_SECRET } from "../services/env";
 
 /** The CLI listens on 1337 unless that port is taken; older CLIs do not say. */
 const cliPort = (value: unknown) => {
@@ -21,7 +21,13 @@ const auth = new Elysia({ prefix: "/auth" })
     const profile = await jwt.verify(auth.value as string);
     if (!profile) {
       // remembered so that the GitHub login comes back here, see routes/login
-      cli.set({ value: String(port), path: "/", maxAge: 600, httpOnly: true });
+      cli.set({
+        value: String(port),
+        path: "/",
+        maxAge: 600,
+        httpOnly: true,
+        secure: HOST_IS_HTTPS,
+      });
       return redirect("/login");
     }
     cli.remove();

@@ -49,7 +49,7 @@ const login = new Elysia({ prefix: "/login" })
       headers: {
         // a CLI login started on /auth finishes there
         Location: cli.value ? "/auth" : "/profile",
-        "Set-Cookie": `auth=${value}; Path=/; Max-Age=${7 * 86400}; HttpOnly`,
+        "Set-Cookie": `auth=${value}; Path=/; Max-Age=${7 * 86400}; HttpOnly${HOST_IS_HTTPS ? "; Secure" : ""}`,
       },
     });
   });
