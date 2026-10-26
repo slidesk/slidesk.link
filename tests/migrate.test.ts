@@ -23,8 +23,8 @@ const tables = (db: Database) =>
 
 describe("migration list", () => {
   test("versions are increasing positive integers", () => {
-    expect(MIGRATIONS.map((m) => m.version)).toEqual([1, 2]);
-    expect(LATEST_VERSION).toBe(2);
+    expect(MIGRATIONS.map((m) => m.version)).toEqual([1, 2, 3]);
+    expect(LATEST_VERSION).toBe(3);
   });
 
   test("every migration carries non-empty sql", () => {

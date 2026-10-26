@@ -2,6 +2,7 @@ import initialSchema from "./001_initial_schema.sql" with { type: "text" };
 import normalizeDatetimes from "./002_normalize_datetimes.sql" with {
   type: "text",
 };
+import speakerToken from "./003_speaker_token.sql" with { type: "text" };
 
 export type Migration = {
   /** The `PRAGMA user_version` this migration brings the database to. */
@@ -22,4 +23,5 @@ export type Migration = {
 export const MIGRATIONS: Migration[] = [
   { version: 1, name: "initial_schema", sql: initialSchema },
   { version: 2, name: "normalize_datetimes", sql: normalizeDatetimes },
+  { version: 3, name: "speaker_token", sql: speakerToken },
 ];
