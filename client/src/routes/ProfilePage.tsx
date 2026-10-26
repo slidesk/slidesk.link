@@ -20,7 +20,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ApiError } from "@/lib/api";
 import { useDocumentTitle } from "@/lib/hooks/use-document-title";
-import { useDeleteProfileItem, useProfile, useRenewHosted } from "@/lib/queries";
+import {
+  useDeleteProfileItem,
+  useProfile,
+  useRenewHosted,
+} from "@/lib/queries";
 import { formatDate } from "@/lib/utils";
 import type { ProfileAddon, ProfilePresentation } from "@/types/api";
 
