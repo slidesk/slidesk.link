@@ -28,7 +28,7 @@ const login = new Elysia({ prefix: "/login" })
     }),
   )
   .get("/", ({ oauth2 }) => oauth2.redirect("GitHub", ["read:user"]))
-  .get("/github/authorized", async ({ jwt, oauth2 }) => {
+  .get("/github/authorized", async ({ jwt, oauth2, cookie: { cli } }) => {
     const tokens = await oauth2.authorize("GitHub");
 
     const accessToken = tokens.accessToken();
@@ -47,7 +47,8 @@ const login = new Elysia({ prefix: "/login" })
     return new Response(null, {
       status: 301,
       headers: {
-        Location: "/profile",
+        // a CLI login started on /auth finishes there
+        Location: cli.value ? "/auth" : "/profile",
         "Set-Cookie": `auth=${value}; Path=/; Max-Age=${7 * 86400}; HttpOnly`,
       },
     });
