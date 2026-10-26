@@ -28,7 +28,7 @@ const auth = new Elysia({ prefix: "/auth" })
         httpOnly: true,
         secure: HOST_IS_HTTPS,
       });
-      return redirect("/login");
+      return redirect("/login?from=cli");
     }
     cli.remove();
     const token = await getToken(Number(profile.id));

@@ -46,7 +46,7 @@ describe("GET /auth", () => {
 
   test("remembers the port across the GitHub login", async () => {
     const res = await authRequest("?port=51043");
-    expect(res.headers.get("location")).toBe("/login");
+    expect(res.headers.get("location")).toBe("/login?from=cli");
     expect(res.headers.get("set-cookie")).toContain("cli=51043");
     const back = await authRequest("", `auth=${session}; cli=51043`);
     expect(back.headers.get("location")).toBe(
