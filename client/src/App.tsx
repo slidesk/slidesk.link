@@ -1,15 +1,11 @@
+import type { ReactNode } from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 
 import { AppFooter } from "@/components/AppFooter";
 import { AppHeader } from "@/components/AppHeader";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AddonListPage } from "@/routes/AddonListPage";
 import { HomePage } from "@/routes/HomePage";
-import { MentionsPage } from "@/routes/MentionsPage";
-import { ProfilePage } from "@/routes/ProfilePage";
-import { SearchPage } from "@/routes/SearchPage";
-import { UserPage } from "@/routes/UserPage";
-import { UsersPage } from "@/routes/UsersPage";
+import type { AddonKind } from "@/types/api";
 
 function RootLayout() {
   return (
@@ -33,20 +29,61 @@ function Placeholder({ name }: { name: string }) {
   );
 }
 
+// pages load on first visit so the home page does not ship pdf.js, highlight.js…
+const page =
+  <M,>(load: () => Promise<M>, pick: (m: M) => ReactNode) =>
+  async () => ({ element: pick(await load()) });
+
+const addons = (kind: AddonKind) =>
+  page(
+    () => import("@/routes/AddonListPage"),
+    (m) => <m.AddonListPage kind={kind} />,
+  );
+
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "/mentions", element: <MentionsPage /> },
-      { path: "/plugins", element: <AddonListPage kind="plugin" /> },
-      { path: "/components", element: <AddonListPage kind="component" /> },
-      { path: "/themes", element: <AddonListPage kind="theme" /> },
-      { path: "/templates", element: <AddonListPage kind="template" /> },
-      { path: "/search", element: <SearchPage /> },
-      { path: "/users", element: <UsersPage /> },
-      { path: "/profile", element: <ProfilePage /> },
-      { path: "/u/:slug", element: <UserPage /> },
+      {
+        path: "/mentions",
+        lazy: page(
+          () => import("@/routes/MentionsPage"),
+          (m) => <m.MentionsPage />,
+        ),
+      },
+      { path: "/plugins", lazy: addons("plugin") },
+      { path: "/components", lazy: addons("component") },
+      { path: "/themes", lazy: addons("theme") },
+      { path: "/templates", lazy: addons("template") },
+      {
+        path: "/search",
+        lazy: page(
+          () => import("@/routes/SearchPage"),
+          (m) => <m.SearchPage />,
+        ),
+      },
+      {
+        path: "/users",
+        lazy: page(
+          () => import("@/routes/UsersPage"),
+          (m) => <m.UsersPage />,
+        ),
+      },
+      {
+        path: "/profile",
+        lazy: page(
+          () => import("@/routes/ProfilePage"),
+          (m) => <m.ProfilePage />,
+        ),
+      },
+      {
+        path: "/u/:slug",
+        lazy: page(
+          () => import("@/routes/UserPage"),
+          (m) => <m.UserPage />,
+        ),
+      },
       { path: "*", element: <Placeholder name="Not found" /> },
     ],
   },
