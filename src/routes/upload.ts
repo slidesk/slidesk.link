@@ -19,7 +19,7 @@ const upload = new Elysia({
     const uuid = Bun.randomUUIDv7();
     const dir = `${process.cwd()}/app/presentations/${uuid}`;
     const archive = `${dir}/link.tgz`;
-    await addHostedPresentation(uuid, user.id);
+    await addHostedPresentation(uuid, user.id, body.token ?? null);
     await Bun.write(archive, body.file);
     await telegram(
       JSON.stringify({
@@ -46,6 +46,8 @@ const upload = new Elysia({
   {
     body: t.Object({
       file: t.File(),
+      // sent by CLIs that protect the speaker view; see hostedPresentation/canDrive
+      token: t.Optional(t.String({ minLength: 16, maxLength: 128 })),
     }),
   },
 );

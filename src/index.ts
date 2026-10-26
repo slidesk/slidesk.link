@@ -1,7 +1,8 @@
 import { cron } from "@elysiajs/cron";
 import staticPlugin from "@elysiajs/static";
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { mcpRoutes } from "../mcp/elysia";
+import canDrive from "./database/hostedPresentation/canDrive";
 import addonPage from "./routes/addon-page";
 import addons from "./routes/addons";
 import auth from "./routes/auth";
@@ -86,9 +87,11 @@ const app = new Elysia()
     }
   })
   .ws("/s/:uuid/ws", {
+    query: t.Object({ token: t.Optional(t.String()) }),
     message(ws, message) {
-      if (!isValidUuid(ws.data.params.uuid)) return;
-      ws.publish(ws.data.params.uuid, message);
+      const { uuid } = ws.data.params;
+      if (!isValidUuid(uuid) || !canDrive(uuid, ws.data.query.token)) return;
+      ws.publish(uuid, message);
     },
     open(ws) {
       if (!isValidUuid(ws.data.params.uuid)) {
