@@ -27,9 +27,12 @@ const login = new Elysia({ prefix: "/login" })
       secret: JWT_SECRET,
     }),
   )
-  .get("/", ({ oauth2, query, cookie: { cli } }) => {
+  .get("/", ({ oauth2, query, cookie: { cli, clistate } }) => {
     // a web login must not finish on an abandoned CLI login, see routes/auth
-    if (query.from !== "cli") cli.remove();
+    if (query.from !== "cli") {
+      cli.remove();
+      clistate.remove();
+    }
     return oauth2.redirect("GitHub", ["read:user"]);
   })
   .get("/github/authorized", async ({ jwt, oauth2, cookie: { cli } }) => {
