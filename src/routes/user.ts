@@ -1,7 +1,6 @@
 import { Elysia } from "elysia";
 import checkSlug from "../database/user/checkSlug";
-
-const HOST = Bun.env.HOST ?? "https://slidesk.link";
+import { HOST } from "../services/env";
 
 const esc = (s: string) =>
   s

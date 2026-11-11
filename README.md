@@ -21,7 +21,7 @@ DATABASE_PATH=./app/dev.db
 
 ```bash
 bun install
-bun web
+bun start
 ```
 
 The sqlite file is created and migrated on startup, so there is no separate

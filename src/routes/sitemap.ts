@@ -4,8 +4,7 @@ import {
   authorizedKinds,
 } from "../database/addon/repository";
 import getAllUsers from "../database/user/getAll";
-
-const HOST = "https://slidesk.link";
+import { HOST } from "../services/env";
 
 const sitemap = new Elysia()
   .get("/sitemap.xml", async () => {
@@ -55,6 +54,6 @@ const sitemap = new Elysia()
       { headers: { "Content-Type": "text/xml" } },
     );
   })
-  .get("/robots.txt", () => "Sitemap: https://slidesk.link/sitemap.xml");
+  .get("/robots.txt", () => `Sitemap: ${HOST}/sitemap.xml`);
 
 export default sitemap;
