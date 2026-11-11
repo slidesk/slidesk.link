@@ -18,6 +18,7 @@ import spa from "./routes/spa";
 import upload from "./routes/upload";
 import user from "./routes/user";
 import cronService from "./services/cron";
+import { HOST } from "./services/env";
 import { isValidUuid } from "./services/paths";
 import { assertSafeUrl } from "./services/safe-fetch";
 
@@ -57,7 +58,7 @@ const app = new Elysia()
     // install_addon returns the command for the client to run locally.
     mcpRoutes({
       hostBase: "http://localhost:3000",
-      publicBase: Bun.env.HOST ?? "https://slidesk.link",
+      publicBase: HOST,
     }),
   )
   .use(spa)

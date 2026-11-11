@@ -1,6 +1,7 @@
 import { Resvg } from "@resvg/resvg-js";
 import { Elysia } from "elysia";
 import findForOg from "../database/addon/findForOg";
+import { HOST } from "../services/env";
 import { ogSvg } from "../services/og-image";
 
 const authorizedKinds = ["plugin", "component", "theme", "template"];
@@ -54,7 +55,7 @@ const handleOgLookup = async (
   const data = await findForOg(kind, user, slug);
   if (!data) return null;
 
-  const ogImage = `https://slidesk.link/${ogImagePrefix}/${kind}/${data.userSlug}/${data.slug}/og`;
+  const ogImage = `${HOST}/${ogImagePrefix}/${kind}/${data.userSlug}/${data.slug}/og`;
 
   return ogPage(
     kind,
@@ -73,7 +74,7 @@ const addonPage = new Elysia({ prefix: "/a" })
       return "Not found";
     }
 
-    const redirectUrl = `https://slidesk.link/${kind}s/#${user}__${slug}`;
+    const redirectUrl = `${HOST}/${kind}s/#${user}__${slug}`;
     const html = await handleOgLookup(kind, user, slug, "a", redirectUrl);
     if (!html) {
       set.status = 404;
